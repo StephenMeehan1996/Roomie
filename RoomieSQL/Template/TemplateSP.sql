@@ -51,13 +51,13 @@ AS BEGIN;
                         GETDATE()
                     );
 
-            SELECT
-                Firstname,
-                Secondname,
-                Email,
-                RequestDate
-            FROM
-                SampleTable;
+                SELECT
+                    Firstname,
+                    Secondname,
+                    Email,
+                    RequestDate
+                FROM
+                    SampleTable;
 
         COMMIT TRANSACTION SampleSP;
     END TRY
