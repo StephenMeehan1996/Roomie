@@ -1,30 +1,43 @@
+
 import {View, Text, SafeAreaView, StyleSheet, ScrollView} from 'react-native';
-import React from 'react'
-import CarouselCards from '../components/CarouselCards'
-import AddDetail from '../components/AddDetail'
+import React, { useEffect, useState } from 'react'
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { User, onAuthStateChanged } from 'firebase/auth';
+//import { createStackNavigator } from '@react-navigation/stack';
+
+import Login from '../components/Login';
+import HomePage from '../components/HomePage';
+import { FIREBASE_APP } from '../FirebaseConfig';
+
+const Stack = createNativeStackNavigator();
+
+const InsideStack = createNativeStackNavigator();
+
+function InsideLayout(){
+    <InsideStack.Navigator>
+        <InsideStack.Screen name = "Home" component={HomePage}/>
+    </InsideStack.Navigator>
+}
 
 const Home = () =>{
+   // const [user, setUser] = useState<User | null>(null);
+
+    // useEffect(() =>{
+    //    onAuthStateChanged(FIREBASE_APP, (user) =>{
+    //     console.log('user', user)
+    //    }); 
+  //  })
     return (
-    <SafeAreaView style={styles.container}>
-        <ScrollView>
+        <NavigationContainer  independent={true}>
+            <Stack.Navigator initialRouteName='Login'>
+                <Stack.Screen name='Login' component={Login} options={{headerShown: false}}/>
+            </Stack.Navigator>
+        </NavigationContainer>
 
-            <View style={styles.addContainer}>
-                <CarouselCards />
-                <AddDetail />
-            </View>
+     
 
-            <View style={styles.addContainer}>
-                <CarouselCards />
-                <AddDetail />
-            </View>
 
-            <View style={styles.addContainer}>
-                <CarouselCards />
-                <AddDetail />
-            </View>
-
-        </ScrollView>
-    </SafeAreaView>
     )
 }
 const styles = StyleSheet.create({

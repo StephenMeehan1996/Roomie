@@ -20,13 +20,13 @@ const CarouselCardItem = ({ item, index }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: windowWidth - 40,
-    paddingHorizontal: 20,
+    width: windowWidth - 30,
+    paddingHorizontal: 15,
     borderRadius: 8,
   },
   image: {
     width: Dimensions.get('window').width,
-    height: 200, // Set your desired image height
+    height: 180, // Set your desired image height
     resizeMode: 'cover',
   }
 })
