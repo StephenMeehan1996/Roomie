@@ -1,7 +1,7 @@
 
 import {View, Text, SafeAreaView, StyleSheet, ScrollView} from 'react-native';
 import React, { useEffect, useState } from 'react'
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, createSwitchNavigator } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { onAuthStateChanged } from 'firebase/auth';
 import { User } from 'firebase/auth';
@@ -11,24 +11,39 @@ import { FIREBASE_AUTH } from '../FirebaseConfig';
 import Login from '../components/Login';
 import HomePage from '../components/HomePage';
 import { FIREBASE_APP } from '../FirebaseConfig';
+import Profile from '../components/Profile';
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
 const OutsideStack = createNativeStackNavigator();
 
-function InsideLayout(){
-   
+const InsideLayout = () =>{
+   return(
     <InsideStack.Navigator initialRouteName='Home'>
         <InsideStack.Screen name = "HomePage" component={HomePage}/>
+        <InsideStack.Screen name = "Profile" component={Profile}/>
     </InsideStack.Navigator>
+    )
 }
 
-function OutsideLayout(){
-   
+const OutsideLayout = () =>{
+   return(
     <OutsideStack.Navigator initialRouteName='Login'>
         <OutsideStack.Screen name = "Login" component={Login}/>
     </OutsideStack.Navigator>
+    )
 }
+
+// const AppSwitchNavigator = createSwitchNavigator(
+//     {
+//       AuthLoading: AuthLoadingScreen, // Loading screen to check user authentication
+//       Auth: AuthStack, // Authenticated user stack
+//       NonAuth: NonAuthStack, // Non-authenticated user stack
+//     },
+//     {
+//       initialRouteName: 'AuthLoading', // Initial route to check user authentication
+//     }
+//   );
 
 const Home = () =>{
     const auth = FIREBASE_AUTH;
@@ -52,9 +67,9 @@ const Home = () =>{
    }, []);
     return (
         <NavigationContainer  independent={true}>
-             <HomePage/>
+            
           <Stack.Navigator initialRouteName='Login'>
-                {user ? <Stack.Screen name='Inside' component={InsideLayout} /> : <Stack.Screen name='Login' component={OutsideLayout} options={{headerShown: false}}/> }
+                {user ? <Stack.Screen name='Inside' component={InsideLayout} options={{headerShown: false}}/> : <Stack.Screen name='Login' component={OutsideLayout} options={{headerShown: false}}/> }
             </Stack.Navigator>
         </NavigationContainer>
     )

@@ -4,6 +4,7 @@ import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
 import { NavigationProp } from '@react-navigation/native'
 import { FIREBASE_AUTH } from '../FirebaseConfig'
+import Profile from '../components/Profile';
 
 // function RouterProps{
 //     navigation: NavigationProp<any, any>
