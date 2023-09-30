@@ -5,6 +5,7 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'fire
 import { TextInput } from 'react-native-gesture-handler';
 
 const Login = () => {
+   
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -47,7 +48,7 @@ const Login = () => {
 
             {loading ? <ActivityIndicator size="large" color="#0000ff"/>
             : <>
-            <Button title="Login" onPress={signIn}></Button>
+            <Button title="Login" onPress={signIn} style={styles.margin}></Button>
             <Button title="Create Account" onPress={signUp}></Button>
             </>}
        </KeyboardAvoidingView>
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
 container: {
     marginHorizontal: 20,
     flex: 1,
-    justifyContent: 'center'
+    marginTop: 200
 },
 input: {
     marginVertical: 4,
@@ -68,6 +69,11 @@ input: {
     borderRadius: 4,
     padding: 10,
     backgroundColor: '#fff'
+}, 
+margin:{
+    marginVertical: 10
 }
 });
+
+
 export default Login

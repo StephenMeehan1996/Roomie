@@ -6,9 +6,14 @@ import { NavigationProp } from '@react-navigation/native'
 import { FIREBASE_AUTH } from '../FirebaseConfig'
 import Profile from '../components/Profile';
 
-// function RouterProps{
-//     navigation: NavigationProp<any, any>
-// }
+const InsideLayout = () =>{
+    return(
+     <InsideStack.Navigator initialRouteName='Home' screenOptions={{headerShown: false}}>
+         <InsideStack.Screen name = "HomePage" component={HomePage}/>
+         <InsideStack.Screen name = "Profile" component={Profile}/>
+     </InsideStack.Navigator>
+     )
+ }
 
 const HomePage = ({navigation}) => {
   return (
