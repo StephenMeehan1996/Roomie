@@ -43,14 +43,8 @@ const CarouselCards = () => {
         <Pagination
               dotsLength={data.length}
               activeDotIndex={index}
-              containerStyle={{ backgroundColor: '#fff' }}
-              dotStyle={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: 5,
-                  marginHorizontal: 8,
-                  backgroundColor: 'rgba(0, 0, 0, 0.8)'
-              }}
+             
+              dotStyle={styles.dot}
               inactiveDotStyle={{
                   // Define styles for inactive dots here
               }}
@@ -62,26 +56,10 @@ const CarouselCards = () => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 100
-  },
-  slide: {
-    width: Dimensions.get('window').width,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
- 
-  pagination: {
-    position: 'absolute',
-    bottom: 5,
-  },
   dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
 });

@@ -1,40 +1,28 @@
 import React from 'react'
-import { View, Text, StyleSheet, Dimensions, Image } from "react-native"
+import { View, Text, StyleSheet, Dimensions, Image, ScrollView } from "react-native"
 
 export const SLIDER_WIDTH = Dimensions.get('window').width + 80
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7)
+const windowWidth = Dimensions.get('window').width;
 
 const CarouselCardItem = ({ item, index }) => {
   return (
-    <View style={styles.slide} key={index}>
+    <ScrollView 
+      style={styles.container} key={index}
+      showsHorizontalScrollIndicator={false}>
       <Image
         source={{ uri: item.imgUrl }}
         style={styles.image}
       />
-    </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  slide: {
-    width: Dimensions.get('window').width,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   container: {
-    width: Dimensions.get('window').width,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    width: windowWidth - 40,
+    paddingHorizontal: 20,
     borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.29,
-    shadowRadius: 4.65,
-    elevation: 1, // changes height after snap
   },
   image: {
     width: Dimensions.get('window').width,
