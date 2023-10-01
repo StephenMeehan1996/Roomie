@@ -33,7 +33,7 @@ const OutsideLayout = () =>{
     )
 }
 
-const Home = () =>{
+const Home =  () =>{
     const auth = FIREBASE_AUTH;
     const [selectedOption, setselectedOption] = useState(null);
     const [user, setUser] = useState(null);
@@ -50,6 +50,7 @@ const Home = () =>{
      });
      return () => unsubscribe();
    }, []);
+   
     return (
         <SafeAreaView style={{flex: 1}}>
             <NavigationContainer  independent={true}>
