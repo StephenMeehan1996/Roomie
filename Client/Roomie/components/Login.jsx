@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet, ActivityIndicator, Button, KeyboardAvoidingView } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator,  KeyboardAvoidingView } from 'react-native'
 import React, { useState } from 'react'
 import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { TextInput } from 'react-native-gesture-handler';
+import { Avatar, Card, Title, Paragraph, Button,IconButton } from 'react-native-paper';
 
 const Login = () => {
    
@@ -48,8 +49,21 @@ const Login = () => {
 
             {loading ? <ActivityIndicator size="large" color="#0000ff"/>
             : <>
-            <Button title="Login" onPress={signIn} style={styles.margin}></Button>
-            <Button title="Create Account" onPress={signUp}></Button>
+            <Button
+                mode="contained" // Use "contained" for a filled button
+                color="#FF5733" // Set your desired button color
+                labelStyle={styles.buttonLabel} // Apply custom label text style
+                style={{marginTop:15, marginBottom: 10}} // Apply custom button style
+                onPress={signIn}>
+                Login
+            </Button>
+            <Button
+                mode="outlined" // Use "outlined" for an outlined button
+                color="#FF5733" // Set your desired button color
+                labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
+                onPress={signUp}>
+                Create Account
+            </Button>
             </>}
        </KeyboardAvoidingView>
     </View>

@@ -5,7 +5,14 @@ import AddDetail from './AddDetail'
 
 
 
-const Search = () => {
+const Search = ({navigation}) => {
+
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+          headerShown: false, 
+        });
+      }, [navigation]);
+
   return (
       <SafeAreaView style={styles.container}>
         <ScrollView>

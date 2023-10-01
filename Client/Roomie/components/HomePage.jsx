@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet, ScrollView, Button,TouchableOpacity,Image } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, ScrollView,TouchableOpacity,Image } from 'react-native'
 import React from 'react'
 import { FIREBASE_AUTH } from '../FirebaseConfig'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -7,37 +7,37 @@ import { Ionicons } from '@expo/vector-icons';
 import Profile from '../components/Profile';
 import Search from '../components/Search';
 import Login from './Login';
+import { Avatar, Card, Title, Paragraph, Button,IconButton } from 'react-native-paper';
 
 const Tab = createBottomTabNavigator();
 
 const HomePage = ({navigation}) => {
 
-    const logout = () => {
-        // Execute your function when the Home tab is pressed
-        FIREBASE_AUTH.signOut()
-      };
   return (
+
     <View style={{flex: 1}}>
         <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
+            {/* <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
                 <Image
                  source={require('../assets/Icons/menu.png')}
                  style={[styles.icon, styles.profileIcon]}
                  />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             {/* <TouchableOpacity onPress={() => navigation.navigate('OptionsScreen')}>
                 <Image
                     source={require('../assets/Icons/images/kemal.jpg')}
                     style={styles.icon}
                 />
             </TouchableOpacity> */}
-            <TouchableOpacity onPress={() => FIREBASE_AUTH.signOut()} style={styles.button}>
-                <Text style={styles.buttonText}>Logout</Text>
-            </TouchableOpacity>
-        </View>
 
-      
-    
+            <IconButton
+                icon="logout"
+                mode="text"
+                size={30}
+                style={{flex:1,alignItems: 'flex-end'}}
+                onPress={() => FIREBASE_AUTH.signOut()}>
+            </IconButton>
+        </View>
         <Tab.Navigator
             initialRouteName='Home'
             screenOptions={({ route }) => ({
@@ -60,11 +60,6 @@ const HomePage = ({navigation}) => {
         > 
         <Tab.Screen name="Profile" component={Profile} />
         <Tab.Screen name="Search" component={Search} />
-        {/* <Tab.Screen name="N/A"  options={{
-        tabBarOnPress: () => {
-            logout();
-        },
-      }}/> */}
       </Tab.Navigator>
    </View>
   )
@@ -94,7 +89,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingVertical: 10,
+        paddingVertical: 0,
         backgroundColor: '#fff'
       },
       icon: {
@@ -108,10 +103,8 @@ const styles = StyleSheet.create({
       },
       button: {
         backgroundColor: '#FF5733', // Background color
-        borderRadius: 10, // Rounded corners
-        paddingVertical: 10, // Vertical padding
-        paddingHorizontal: 20, // Horizontal padding
-        marginVertical: 10, // Spacing from top and bottom
+        width: 50,
+        height: 50
       },
       buttonText: {
         color: 'white', // Text color
