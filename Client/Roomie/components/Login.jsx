@@ -5,7 +5,7 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'fire
 import { TextInput } from 'react-native-gesture-handler';
 import { Avatar, Card, Title, Paragraph, Button,IconButton } from 'react-native-paper';
 
-const Login = () => {
+const Login = ({navigation}) => {
    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -61,7 +61,7 @@ const Login = () => {
                 mode="outlined" // Use "outlined" for an outlined button
                 color="#FF5733" // Set your desired button color
                 labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
-                onPress={signUp}>
+                onPress={() => navigation.navigate('SignupForm')}>
                 Create Account
             </Button>
             </>}

@@ -10,6 +10,7 @@ import HomePage from '../components/HomePage';
 import { FIREBASE_APP } from '../FirebaseConfig';
 import Profile from '../components/Profile';
 import Search from '../components/Search';
+import SignUpForm from '../components/SignupForm';
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
@@ -29,6 +30,7 @@ const OutsideLayout = () =>{
    return(
     <OutsideStack.Navigator initialRouteName='Login' screenOptions={{headerShown: false}}>
         <OutsideStack.Screen name = "Login" component={Login}/>
+        <OutsideStack.Screen name = "SignupForm" component={SignUpForm}/>
     </OutsideStack.Navigator>
     )
 }
@@ -50,7 +52,7 @@ const Home =  () =>{
      });
      return () => unsubscribe();
    }, []);
-   
+
     return (
         <SafeAreaView style={{flex: 1}}>
             <NavigationContainer  independent={true}>
