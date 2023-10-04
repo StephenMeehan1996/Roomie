@@ -10,21 +10,36 @@ const SignUpForm = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [country, setCountry] = useState(''); // Dropdown selector state
-
-
+  const [gender, setGender] = useState(''); // Dropdown selector state
   const [age, setAge] = useState(''); // Calculated age
-  const [date, setDate] = React.useState(undefined);
+  const [dob, setDob] = React.useState(undefined);
+
   const [open, setOpen] = React.useState(false);
+
+  const countryOptions = ['USA', 'Canada', 'UK', 'Australia', 'Other'];
+  const genderOptions = ['Male', 'Female', 'X'];
 
   const onDismissSingle = React.useCallback(() => {
     setOpen(false);
   }, [setOpen]);
 
-
-  // Dropdown selector options
-  const countryOptions = ['USA', 'Canada', 'UK', 'Australia', 'Other'];
-  const genderOptions = ['Male', 'Female', 'X'];
+  const onConfirmSingle = React.useCallback(
+    (params) => {
+      setOpen(false);
+      setDob(params.date);
+      setAge(calculateAge());
+    },
+    [setOpen, setDob]
+  );
+  
+  
+  const calculateAge = () => {
+    const birthDate = new Date(dob);
+    const currentDate = new Date();
+    const age = currentDate.getFullYear() - birthDate.getFullYear();
+    console.log(age)
+    return age;
+  };
 
   const handleSignUp = () => {
     // Perform sign-up logic here, e.g., sending data to a server
@@ -52,115 +67,93 @@ const SignUpForm = () => {
      }
 }
 
-const onConfirmSingle = React.useCallback(
-  (params) => {
-    setOpen(false);
-    setDate(params.date);
-    setAge(calculateAge());
-  },
-  [setOpen, setDate]
-);
-
-
-const calculateAge = () => {
-  const birthDate = new Date(date);
-  const currentDate = new Date();
-  const age = currentDate.getFullYear() - birthDate.getFullYear();
-  console.log(age)
-  return age;
-};
-
-
 useEffect(() => {
-  setAge(calculateAge(date));
-}, [date]);
-
+  setAge(calculateAge(dob));
+}, [dob]);
 
   return (
     <Card elevation={5} style={styles.card}>
       <Card.Content>
          <Title style={styles.title}>Personal Details</Title>
-        <View>
-          <View style={styles.sameLineContainer}>
-            <View style={styles.lineInput}>
-              <Text style={styles.label}>First Name</Text>
-              <TextInput
-                style={styles.input}
-                onChangeText={setFirstName}
-                value={firstName}
-                placeholder="Enter your first name"
-              />
+          <View>
+            <View style={styles.sameLineContainer}>
+              <View style={styles.lineInput}>
+                <Text style={styles.label}>First Name</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setFirstName}
+                  value={firstName}
+                  placeholder="Enter your first name"
+                />
+              </View>
+              <View style={styles.lineInput}>
+                <Text style={styles.label}>Last Name</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setLastName}
+                  value={lastName}
+                  placeholder="Enter your last name"
+                />
+              </View>
             </View>
-            <View style={styles.lineInput}>
-              <Text style={styles.label}>Last Name</Text>
-              <TextInput
-                style={styles.input}
-                onChangeText={setLastName}
-                value={lastName}
-                placeholder="Enter your last name"
-              />
-            </View>
-          </View>
 
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={setEmail}
-            value={email}
-            placeholder="Enter your email"
-            keyboardType="email-address"
-          />
-          
-          <View style={styles.sameLineContainer}>
-            <View style={styles.lineInput}>
-              <Text style={styles.label}>Date of Birth</Text>
-              {age ? ( // If age is not empty (truthy value), display one button
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={setEmail}
+              value={email}
+              placeholder="Enter your email"
+              keyboardType="email-address"
+            />
+            
+            <View style={styles.sameLineContainer}>
+              <View style={styles.lineInput}>
+                <Text style={styles.label}>Date of Birth</Text>
+                {age ? ( // If age is not empty (truthy value), display one button
+                  <Button icon="calendar-outline" onPress={() => setOpen(true)} uppercase={false} mode="outlined">
+                  <Text>Age:{age}</Text>
+                </Button>
+                ) : ( // If age is empty (falsy value), display another button
                 <Button icon="calendar-outline" onPress={() => setOpen(true)} uppercase={false} mode="outlined">
-                <Text>Age:{age}</Text>
-              </Button>
-              ) : ( // If age is empty (falsy value), display another button
-              <Button icon="calendar-outline" onPress={() => setOpen(true)} uppercase={false} mode="outlined">
-               DOB
-              </Button>
-            )}
+                DOB
+                </Button>
+              )}
+              </View>
+              <View style={styles.lineInput}>
+                <Text style={styles.label}>Gender</Text>
+                <Picker
+                  selectedValue={gender}
+                  style={styles.input}
+                  onValueChange={(itemValue) => setGender(itemValue)}  
+                >
+                  {genderOptions.map((option, index) => (
+                    <Picker.Item key={index} label={option} value={option} />
+                  ))}
+                </Picker>
+              </View>
             </View>
-            <View style={styles.lineInput}>
-              <Text style={styles.label}>Country</Text>
-              <Picker
-                selectedValue={country}
-                style={styles.input}
-                onValueChange={(itemValue) => setCountry(itemValue)}  
-              >
-                {countryOptions.map((option, index) => (
-                  <Picker.Item key={index} label={option} value={option} />
-                ))}
-              </Picker>
-            </View>
+            <Button
+              mode="contained" // Use "outlined" for an outlined button
+              color="#FF5733" // Set your desired button color
+              labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
+              onPress={handleSignUp}>
+              Create Account
+            </Button>
           </View>
-          <SafeAreaProvider>
-            <View style={{ justifyContent: 'center' }}>
-              <DatePickerModal
-                locale="en"
-                mode="single"
-                visible={open}
-                onDismiss={onDismissSingle}
-                date={date}
-                onConfirm={onConfirmSingle}
-              />
-            </View>
-          </SafeAreaProvider>
-          <Button
-            mode="contained" // Use "outlined" for an outlined button
-            color="#FF5733" // Set your desired button color
-            labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
-            onPress={handleSignUp}>
-            Create Account
-          </Button>
-        </View>
       </Card.Content>
+      <SafeAreaProvider>
+              <View style={{ justifyContent: 'center' }}>
+                <DatePickerModal
+                  locale="en"
+                  mode="single"
+                  visible={open}
+                  onDismiss={onDismissSingle}
+                  date={dob}
+                  onConfirm={onConfirmSingle}
+                />
+              </View>
+      </SafeAreaProvider>
     </Card>
-
-    
   );
 };
 
