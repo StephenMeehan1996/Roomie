@@ -8,7 +8,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
 
 
-const SignUpForm = () => {
+const SignUpForm = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -27,7 +27,7 @@ const SignUpForm = () => {
   const [shareName, setShareName] = useState(false);
   const [shareData, setShareData] = useState(false);
 
-  const [selected, setSelected] = useState([]);
+  const [selectedRentalPref, setSelectedRentalPref] = useState([]);
 
   const [open, setOpen] = React.useState(false);
 
@@ -350,14 +350,25 @@ useEffect(() => {
                     placeholder="What are you interested in:"
                     search
                     searchPlaceholder="Search"
-                    value={selected}
+                    value={selectedRentalPref}
                     onChange={item => {
-                    setSelected(item);
+                    setSelectedRentalPref(item);
                         console.log('selected', item);
                     }}
                     renderItem={item => _renderItem(item)}
                 />
 
+               <Button
+                mode="contained" // Use "outlined" for an outlined button
+                color="#FF5733" // Set your desired button color
+                labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
+                onPress={() => navigation.navigate('RentalPreferences',{
+                  rentalPref: selectedRentalPref,
+                })}>
+                Next Page
+              </Button>
+         
+    
           </Card.Content>
         </Card>
        </View>
