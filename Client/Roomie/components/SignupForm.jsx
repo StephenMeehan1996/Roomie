@@ -7,9 +7,54 @@ import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
 
+import { Formik, Form, Field } from 'formik';
+import * as Yup from 'yup';
+
 import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference } from '../data/formData';
 import  styles  from '../styles/formStyle.style';
 
+const SignupSchema = Yup.object().shape({
+  firstName: Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Please enter your first name.'),
+  lastName: Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Please enter your last name name.'),
+  email: Yup.string().email('Invalid email')
+    .required('Please enter your email.'),
+  gender: Yup.string()
+  .notOneOf(['Select an option'], 'Please select a gender')
+  .required('Please select a gender'),
+  dob: Yup.string()
+  .required('Please select your date of birth'),
+  bio: Yup.string(),
+  occupation: Yup.string()
+  .notOneOf(['Select an option'], 'Please select an occupation')
+  .required('Please select an occupation'),
+  occupationDropdownValue: Yup.string()
+  .notOneOf(['Select an option'], 'Please select a value')
+  .required('Please select a value'),
+  smoke: Yup.string()
+  .notOneOf(['Select an option'], 'Please select a value')
+  .required('Please select a value'),
+  profilePicURL: Yup.string(),
+  intoVideoURL: Yup.string(),
+  smoke: Yup.string()
+  .notOneOf(['Select an option'], 'Please select a value')
+  .required('Please select a value'),
+  shareName: Yup.string()
+  .notOneOf(['Select an option'], 'Please select a value')
+  .required('Please select a value'),
+  shareData: Yup.string()
+  .notOneOf(['Select an option'], 'Please select a value')
+  .required('Please select a value'),
+  selectedRentalPref: Yup.array().of(Yup.string())
+  .notOneOf(['Select an option'], 'Please select value')
+  .required('Please select at least one value'),
+
+});
 
 const SignUpForm = ({navigation}) => {
 
@@ -129,9 +174,6 @@ const SignUpForm = ({navigation}) => {
       formData: formData 
     });
   };
-
-
-
   
   const _renderItem = item => {
     return (
@@ -162,6 +204,26 @@ useEffect(() => {
 
   return (
     <ScrollView>
+       <Formik
+       initialValues={{
+          firstName: '',
+          lastName: '',
+          email: '',
+          gender: '',
+          dob: '',
+          occupation: '',
+          occupationDropdownValue: '',
+          smoke: '',
+          profilePicURL: '',
+          intoVideoURL: '',
+          smoke: '',
+          shareName: '',
+          shareData: '',
+          selectedRentalPref: '',
+       }}
+       validationSchema={SignupSchema}
+       >
+        {({ values, errors, touched, handleSubmit}) => (
       <View style={styles.container}>
       <Card elevation={5} style={styles.card}>
         <Card.Content>
@@ -381,6 +443,8 @@ useEffect(() => {
           </Card.Content>
         </Card>
        </View>
+       )}
+       </Formik>
     </ScrollView>
   );
 };
