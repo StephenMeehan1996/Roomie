@@ -132,6 +132,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 0,
     backgroundColor: '#fff'
+  },
+  errorTxt:{
+    fontSize: 12,
+    color: '#FF0D10',
+    marginVertical: 2
   }
   });
 

@@ -1,8 +1,8 @@
 const genderOptions = [
-    { label:'Select an option', value:"" },
-    { label: 'Male', value: 'Male' },
-    { label: 'Female', value: 'Female' },
-    { label: 'Other', value: 'Other' },
+    { label:'Select an option', value:"",  enabled : false },
+    { label: 'Male', value: 'Male',  enabled : true  },
+    { label: 'Female', value: 'Female',  enabled : true  },
+    { label: 'Other', value: 'Other' ,  enabled : true },
   ];
 
   const workingHoursOptions = [
@@ -56,7 +56,7 @@ const genderOptions = [
   ];
 
   const roomType = [
-    { label:'Select an option', value:"" },
+    { label:'Select an option', value:"", enabled : false },
     { label: 'Single', value: 'Single' },
     { label: 'Double', value: 'Double' }
   ];

@@ -6,6 +6,7 @@ import { DatePickerModal } from 'react-native-paper-dates';
 import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
+import DatePicker from 'react-native-date-picker';
 
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -25,10 +26,18 @@ const SignupSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email')
     .required('Please enter your email.'),
   gender: Yup.string()
-  .notOneOf(['Select an option'], 'Please select a gender')
+  .notOneOf([Yup.ref('Select an option')], 'Please select a gender')
   .required('Please select a gender'),
-  dob: Yup.string()
+  dateBirth: Yup.string()
   .required('Please select your date of birth'),
+  password: Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Please enter your last name name.'),
+  confirmPassword: Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Please enter your last name name.'),
   bio: Yup.string(),
   occupation: Yup.string()
   .notOneOf(['Select an option'], 'Please select an occupation')
@@ -52,7 +61,7 @@ const SignupSchema = Yup.object().shape({
   .required('Please select a value'),
   selectedRentalPref: Yup.array().of(Yup.string())
   .notOneOf(['Select an option'], 'Please select value')
-  .required('Please select at least one value'),
+  .required('Please select at least one value')
 
 });
 
@@ -61,7 +70,7 @@ const SignUpForm = ({navigation}) => {
   const [firstName, setFirstName] = useState('Stephen');
   const [lastName, setLastName] = useState('Meehan');
   const [email, setEmail] = useState('StephenMeehan@gmail.com');
-  const [gender, setGender] = useState('Male'); // Dropdown selector state
+  const [gender, setGender] = useState(''); // Dropdown selector state
   const [age, setAge] = useState(''); // Calculated age
   const [dob, setDob] = useState('');
 
@@ -101,6 +110,7 @@ const SignUpForm = ({navigation}) => {
       setOpen(false);
       setDob(params.date);
       setAge(calculateAge());
+      validateDob(params.date);
     },
     [setOpen, setDob]
   );
@@ -202,28 +212,44 @@ useEffect(() => {
   setAge(calculateAge(dob));
 }, [dob]);
 
+const validateDob = async (value) => {
+  try {
+    await SignupSchema.validate({ dateBirth: value }, { abortEarly: false });
+    // Validation passed
+    console.log('true');
+    return true
+  } catch (error) {
+    // Validation failed, handle the error
+    console.log('false');
+    return false
+  }
+};
+
   return (
     <ScrollView>
        <Formik
-       initialValues={{
-          firstName: '',
-          lastName: '',
-          email: '',
-          gender: '',
-          dob: '',
-          occupation: '',
-          occupationDropdownValue: '',
-          smoke: '',
-          profilePicURL: '',
-          intoVideoURL: '',
-          smoke: '',
-          shareName: '',
-          shareData: '',
-          selectedRentalPref: '',
-       }}
-       validationSchema={SignupSchema}
+              initialValues={{
+                  firstName: '',
+                  lastName: '',
+                  email: '',
+                  dob: new Date(),
+                  gender: '',
+                  dateBirth: '',
+                  password:'',
+                  confirmPassword : '',
+                  occupation: '',
+                  occupationDropdownValue: '',
+                  smoke: '',
+                  profilePicURL: '',
+                  intoVideoURL: '',
+                  shareName: '',
+                  shareData: '',
+                  selectedRentalPref: '',
+              }}
+               validationSchema={SignupSchema}
        >
-        {({ values, errors, touched, handleSubmit}) => (
+        
+        {({ values, errors, touched, handleChange, setFieldTouched, isValid, handleSubmit}) => (
       <View style={styles.container}>
       <Card elevation={5} style={styles.card}>
         <Card.Content>
@@ -234,61 +260,97 @@ useEffect(() => {
                   <Text style={styles.label}>First Name</Text>
                   <TextInput
                     style={styles.input}
-                    onChangeText={setFirstName}
-                    value={firstName}
                     placeholder="Enter your first name"
+                    onChangeText={handleChange('firstName')}
+                    value={values.firstName}
                   />
+                  {errors.firstName &&(
+                    <Text style={styles.errorTxt}>{errors.firstName}</Text>
+                  )}
                 </View>
                 <View style={styles.lineInput}>
                   <Text style={styles.label}>Last Name</Text>
                   <TextInput
                     style={styles.input}
-                    onChangeText={setLastName}
-                    value={lastName}
                     placeholder="Enter your last name"
+                    value={values.lastName}
+                    onChangeText={handleChange('lastName')}
                   />
+                  {errors.lastName &&(
+                    <Text style={styles.errorTxt}>{errors.lastName}</Text>
+                  )}
                 </View>
               </View>
 
               <Text style={styles.label}>Email</Text>
               <TextInput
                 style={styles.input}
-                onChangeText={setEmail}
-                value={email}
                 placeholder="Enter your email"
                 keyboardType="email-address"
-              />
+                value={values.email}
+                onChangeText={handleChange('email')}
+                />
+                {errors.email &&(
+                  <Text style={styles.errorTxt}>{errors.email}</Text>
+                )}
               
               <View style={styles.sameLineContainer}>
                 <View style={styles.lineInput}>
                   <Text style={styles.label}>Date of Birth</Text>
-                  {age ? ( // If age has a value it will be displayed inside button
-                    <Button icon="calendar-outline" onPress={() => setOpen(true)} uppercase={false} mode="outlined">
-                    <Text>Age:{age}</Text>
-                  </Button>
-                  ) : (
-                  <Button icon="calendar-outline" onPress={() => setOpen(true)} uppercase={false} mode="outlined">
-                  DOB
-                  </Button>
-                )}
+                  <DatePicker
+              date={values.dob}
+              onDateChange={handleChange('dob')}
+              mode="date"
+              placeholder="Select date"
+            />
                 </View>
                 <View style={styles.lineInput}>
                   <Text style={styles.label}>Gender</Text>
                   <Picker
-                    selectedValue={gender}
+                    selectedValue={values.gender}
                     style={styles.input}
-                    onValueChange={(itemValue) => setGender(itemValue)}  
+                    onValueChange={handleChange('gender')}
+                    //onValueChange={(itemValue) => setGender(itemValue)}  
                   >
                     {genderOptions.map((option, index) => (
                       <Picker.Item key={index} label={option.label} value={option.value} />
                     ))}
                   </Picker>
+                  {errors.gender &&(
+                    <Text style={styles.errorTxt}>{errors.gender}</Text>
+                  )}
                 </View>
               </View>
+
+              <View style={styles.lineInput}>
+                <Text style={styles.label}>Password:</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter password"
+                    onChangeText={handleChange('password')}
+                    value={values.password}
+                  />
+                  {errors.password &&(
+                    <Text style={styles.errorTxt}>{errors.password}</Text>
+                  )}
+            </View>
+
+            <View style={styles.lineInput}>
+                <Text style={styles.label}>Confirm Password:</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Confirm password"
+                    onChangeText={handleChange('confirmPassword')}
+                    value={values.confirmPassword}
+                  />
+                  {errors.confirmPassword &&(
+                    <Text style={styles.errorTxt}>{errors.confirmPassword}</Text>
+                  )}
+            </View>
              
             </View>
         </Card.Content>
-        <SafeAreaProvider>
+        {/* <SafeAreaProvider>
                 <View style={{ justifyContent: 'center' }}>
                   <DatePickerModal
                     locale="en"
@@ -299,7 +361,7 @@ useEffect(() => {
                     onConfirm={onConfirmSingle}
                   />
                 </View>
-        </SafeAreaProvider>
+        </SafeAreaProvider> */}
       </Card>
 
       <Card elevation={5} style={styles.card}>
