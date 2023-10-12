@@ -28,16 +28,16 @@ const SignupSchema = Yup.object().shape({
   gender: Yup.string()
   .notOneOf([Yup.ref('Select an option')], 'Please select a gender')
   .required('Please select a gender'),
-  dateBirth: Yup.string()
-  .required('Please select your date of birth'),
+  dateBirth: Yup.date(),
+  //.required('Please select your date of birth'),
   password: Yup.string()
-    .min(2, 'Too Short!')
-    .max(50, 'Too Long!')
-    .required('Please enter your last name name.'),
+    .min(8, 'Password must be at least 8 characters long!')
+    .required('Please enter your password.')
+    .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, 'Must contain minimum of 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character'),
   confirmPassword: Yup.string()
-    .min(2, 'Too Short!')
-    .max(50, 'Too Long!')
-    .required('Please enter your last name name.'),
+    .min(8, 'Confirm password must be at least 8 characters long')
+    .oneOf([Yup.ref('password')], 'Your passwords do not match.')
+    .required('Confirm password is required.'),
   bio: Yup.string(),
   occupation: Yup.string()
   .notOneOf(['Select an option'], 'Please select an occupation')
@@ -50,19 +50,16 @@ const SignupSchema = Yup.object().shape({
   .required('Please select a value'),
   profilePicURL: Yup.string(),
   intoVideoURL: Yup.string(),
-  smoke: Yup.string()
-  .notOneOf(['Select an option'], 'Please select a value')
-  .required('Please select a value'),
   shareName: Yup.string()
   .notOneOf(['Select an option'], 'Please select a value')
   .required('Please select a value'),
   shareData: Yup.string()
   .notOneOf(['Select an option'], 'Please select a value')
   .required('Please select a value'),
-  selectedRentalPref: Yup.array().of(Yup.string())
-  .notOneOf(['Select an option'], 'Please select value')
-  .required('Please select at least one value')
-
+ // selectedRentalPref:  Yup.array().required('Please select at least one option')
+ selectedRentalPref: Yup.array().of(Yup.string())
+ .required('Please select at least one option')
+ .min(1, 'Please select at least one option')
 });
 
 const SignUpForm = ({navigation}) => {
@@ -232,7 +229,7 @@ const validateDob = async (value) => {
                   firstName: '',
                   lastName: '',
                   email: '',
-                  dob: new Date(),
+                  //dob: new Date(),
                   gender: '',
                   dateBirth: '',
                   password:'',
@@ -244,12 +241,13 @@ const validateDob = async (value) => {
                   intoVideoURL: '',
                   shareName: '',
                   shareData: '',
-                  selectedRentalPref: '',
+                  selectedRentalPref: [],
               }}
                validationSchema={SignupSchema}
+               onSubmit={values => console.log(values)}
        >
         
-        {({ values, errors, touched, handleChange, setFieldTouched, isValid, handleSubmit}) => (
+        {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit}) => (
       <View style={styles.container}>
       <Card elevation={5} style={styles.card}>
         <Card.Content>
@@ -263,8 +261,9 @@ const validateDob = async (value) => {
                     placeholder="Enter your first name"
                     onChangeText={handleChange('firstName')}
                     value={values.firstName}
+                    onBlur={() => setFieldTouched('firstName')}
                   />
-                  {errors.firstName &&(
+                  {touched.firstName && errors.firstName &&(
                     <Text style={styles.errorTxt}>{errors.firstName}</Text>
                   )}
                 </View>
@@ -275,8 +274,9 @@ const validateDob = async (value) => {
                     placeholder="Enter your last name"
                     value={values.lastName}
                     onChangeText={handleChange('lastName')}
+                    onBlur={() => setFieldTouched('lastName')}
                   />
-                  {errors.lastName &&(
+                  {touched.lastName && errors.lastName &&(
                     <Text style={styles.errorTxt}>{errors.lastName}</Text>
                   )}
                 </View>
@@ -287,22 +287,30 @@ const validateDob = async (value) => {
                 style={styles.input}
                 placeholder="Enter your email"
                 keyboardType="email-address"
+                autoCapitalize={false}
                 value={values.email}
                 onChangeText={handleChange('email')}
+                onBlur={() => setFieldTouched('email')}
                 />
-                {errors.email &&(
+                {touched.email && errors.email &&(
                   <Text style={styles.errorTxt}>{errors.email}</Text>
                 )}
               
               <View style={styles.sameLineContainer}>
-                <View style={styles.lineInput}>
+              <View style={styles.lineInput}>
                   <Text style={styles.label}>Date of Birth</Text>
-                  <DatePicker
-              date={values.dob}
-              onDateChange={handleChange('dob')}
-              mode="date"
-              placeholder="Select date"
-            />
+                  {age ? ( // If age has a value it will be displayed inside button
+                    <Button icon="calendar-outline" onPress={() => setOpen(true)} uppercase={false} mode="outlined">
+                    <Text>Age:{age}</Text>
+                  </Button>
+                  ) : (
+                  <Button icon="calendar-outline" onPress={() => setOpen(true)} uppercase={false} mode="outlined">
+                  DOB
+                  </Button>
+                )}
+                {errors.dateBirth &&(
+                    <Text style={[styles.errorTxt, {marginTop: 12}]}>{errors.dateBirth}</Text>
+                )}
                 </View>
                 <View style={styles.lineInput}>
                   <Text style={styles.label}>Gender</Text>
@@ -310,58 +318,68 @@ const validateDob = async (value) => {
                     selectedValue={values.gender}
                     style={styles.input}
                     onValueChange={handleChange('gender')}
-                    //onValueChange={(itemValue) => setGender(itemValue)}  
+                    onBlur={() => setFieldTouched('gender')} 
                   >
                     {genderOptions.map((option, index) => (
                       <Picker.Item key={index} label={option.label} value={option.value} />
                     ))}
                   </Picker>
-                  {errors.gender &&(
+                  {touched.gender && errors.gender &&(
                     <Text style={styles.errorTxt}>{errors.gender}</Text>
                   )}
                 </View>
               </View>
 
-              <View style={styles.lineInput}>
+              <View >
                 <Text style={styles.label}>Password:</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Enter password"
                     onChangeText={handleChange('password')}
+                    autoCapitalize={false}
                     value={values.password}
+                    onBlur={() => setFieldTouched('password')} 
+                    
                   />
-                  {errors.password &&(
-                    <Text style={styles.errorTxt}>{errors.password}</Text>
+                  {touched.password && errors.password &&(
+                    <View >
+                    <Text style={[styles.errorTxt, styles.errorMargin]}>{errors.password}</Text>
+                    </View>
                   )}
             </View>
 
-            <View style={styles.lineInput}>
+            <View >
                 <Text style={styles.label}>Confirm Password:</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Confirm password"
                     onChangeText={handleChange('confirmPassword')}
+                    autoCapitalize={false}
                     value={values.confirmPassword}
+                    onBlur={() => setFieldTouched('confirmPassword')} 
                   />
-                  {errors.confirmPassword &&(
-                    <Text style={styles.errorTxt}>{errors.confirmPassword}</Text>
+                  {touched.confirmPassword && errors.confirmPassword &&(
+                    <View>
+                      <Text style={[styles.errorTxt, styles.errorMargin]}>{errors.confirmPassword}</Text>
+                    </View>
                   )}
             </View>
              
             </View>
         </Card.Content>
-        {/* <SafeAreaProvider>
+        <SafeAreaProvider>
                 <View style={{ justifyContent: 'center' }}>
                   <DatePickerModal
                     locale="en"
                     mode="single"
                     visible={open}
                     onDismiss={onDismissSingle}
-                    date={dob}
+                    date={values.dateBirth}
+                     onDateChange={handleChange('dateBirth')}
                     onConfirm={onConfirmSingle}
                   />
                 </View>
-        </SafeAreaProvider> */}
+        </SafeAreaProvider>
       </Card>
 
       <Card elevation={5} style={styles.card}>
@@ -372,10 +390,12 @@ const validateDob = async (value) => {
             <TextInput
               style={styles.input}
               multiline
-              numberOfLines={3}
-              value={bio}
-              onChangeText={(newText) => setBio(newText)}
-              placeholder="Type your text here..."
+              numberOfLines={3}   
+              placeholder="Type your bio here..."
+              onChangeText={handleChange('bio')}
+              autoCapitalize={false}
+              value={values.bio}
+              onBlur={() => setFieldTouched('bio')} 
             />
           </View>
           <View style={styles.sameLineContainer}>
@@ -383,22 +403,33 @@ const validateDob = async (value) => {
                   <Text style={styles.label}>Occupation:</Text>
                   <Picker
                     style={styles.input}
-                    selectedValue={occupation}
-                    onValueChange={(itemValue) => handleOccupationChange(itemValue)}
+                    selectedValue={values.occupation}
+                    onValueChange={handleChange('occupation')}
+                    onBlur={() => setFieldTouched('occupation')}
                     >
                       {occupationOptions.map((option, index) => (
                       <Picker.Item key={index} label={option.label} value={option.value} />
                     ))}
                   </Picker>
+                  {touched.occupation && errors.occupation &&(
+                    <Text style={styles.errorTxt}>{errors.occupation}</Text>
+                  )}
                  </View>
                  <View style={styles.lineInput}>
-                    <Text style={styles.label}>{occupationDetailLabel}:</Text>
-                    <Picker
+                    
+                    {values.occupation === 'Working Professional' ?(
+                      <Text style={styles.label}>Working Hours:</Text>
+                    ):
+                    (
+                        <Text style={styles.label}>Year Of Study:</Text>
+                    )}
+                    <Picker //occupationDropdownValue
                       style={styles.input}
-                      selectedValue={occupationDropdownValue}
-                      onValueChange={(itemValue) => setOccupationDropdownValue(itemValue)}
+                      selectedValue={values.occupationDropdownValue}
+                      onValueChange={handleChange('occupationDropdownValue')}
+                      onBlur={() => setFieldTouched('occupationDropdownValue')}
                     >
-                      {occupation === 'Student'
+                      {values.occupation === 'Student'
                         ? yearOfStudyOptions.map((option, index) => (
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))
@@ -406,6 +437,9 @@ const validateDob = async (value) => {
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                     </Picker>
+                    {touched.occupationDropdownValue && errors.occupationDropdownValue &&(
+                     <Text style={styles.errorTxt}>{errors.occupationDropdownValue}</Text>
+                    )}
                  </View>
             </View>
             
@@ -413,13 +447,17 @@ const validateDob = async (value) => {
                 <Text style={styles.label}>Do You Smoke?</Text>
                 <Picker
                     style={[styles.input, styles.singleLineInput]}
-                    selectedValue={smoke}
-                    onValueChange={(itemValue) => setSmoke(itemValue)}
+                    selectedValue={values.smoke}
+                      onValueChange={handleChange('smoke')}
+                      onBlur={() => setFieldTouched('smoke')}
                     >
                     {yesNO.map((option, index) => (
                       <Picker.Item key={index} label={option.label} value={option.value} />
                     ))}
                 </Picker>
+                {touched.smoke && errors.smoke &&(
+                  <Text style={styles.errorTxt}>{errors.smoke}</Text>
+                )}
             </View>
             <View>
               <Text style={styles.label}>Upload Profile Picture</Text>
@@ -457,24 +495,28 @@ const validateDob = async (value) => {
 
        <Card elevation={5} style={styles.card}>
           <Card.Content>
-
             <Title style={styles.title}>Preferences</Title>
             <Text style={styles.label}>Share name on profile page:</Text>
-            <RadioButton.Group onValueChange={(value) => setShareName(value)} value={shareName}>
+            <RadioButton.Group onValueChange={(newValue) => setFieldValue('shareName', newValue)} value={values.shareName}>
               <View style={styles.radioContainer}>
                 <RadioButton.Item label="Yes" value="1" />
                 <RadioButton.Item label="No" value= "0" />
               </View>
             </RadioButton.Group>
+            { errors.shareName &&(
+                  <Text style={[styles.errorTxt]}>{errors.shareName}</Text>
+            )}
 
             <Text style={styles.label}>Consent to share your data:</Text>
-            <RadioButton.Group onValueChange={(value) => setShareData(value)} value={shareData}>
+            <RadioButton.Group onValueChange={(newValue) => setFieldValue('shareData', newValue)} value={values.shareData}>
               <View style={styles.radioContainer}>
                 <RadioButton.Item label="Yes" value="1" />
                 <RadioButton.Item label="No" value= "0" />
               </View>
             </RadioButton.Group>
-
+            { errors.shareData &&(
+                  <Text style={[styles.errorTxt]}>{errors.shareData}</Text>
+            )}
             <MultiSelect
                     style={styles.dropdown}
                     data={rentalPreference}
@@ -484,20 +526,33 @@ const validateDob = async (value) => {
                     placeholder="What are you interested in:"
                     search
                     searchPlaceholder="Search"
-                    value={selectedRentalPref}
+                    disableSelect
+                    //onSelectionsChange={(selectedValues) => setFieldValue('selectedRentalPref', selectedValues)}
+                    // onSelectionsChange={(selectedValues) => {
+                    //   form.setFieldValue('selectedRentalPref', selectedValues);
+                    //   form.setFieldTouched('selectedRentalPref', true);
+                    // }}
+                    value={values.selectedRentalPref}
+                    // value={selectedRentalPref}
                     onChange={item => {
-                    setSelectedRentalPref(item);
+                      setFieldValue('selectedRentalPref', item);
                         console.log('selected', item);
                     }}
                     renderItem={item => _renderItem(item)}
                 />
+                 { errors.selectedRentalPref &&(
+                  <Text style={[styles.errorTxt]}>{errors.selectedRentalPref}</Text>
+                )}
 
                <Button
                 mode="contained" 
                 color="#FF5733"
+                //style={{marginVertical: 20, padding: 2, backgroundColor: isValid ? '#FF5733' : '#A5C9CA', color: '#FFF' }} 
                 style={{marginVertical: 20, padding: 2}} 
                 labelStyle={styles.buttonLabel} 
-                onPress={() => createDataArray()}>
+                disabled={!isValid}
+                //onPress={() => createDataArray()}>
+                onPress={handleSubmit}>
                 Next Page
               </Button>
          

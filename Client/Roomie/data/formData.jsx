@@ -34,10 +34,10 @@ const genderOptions = [
   ];
 
   const rentalPreference = [
-    { label:'Select an option', value:"" },
-    { label: 'House Rental', value: 'House Rental' },
-    { label: 'House Share', value: 'House Share' },
-    { label: 'Digs', value: 'Digs' }
+    
+    { label: 'House Rental', value: 'House Rental',enabled : true },
+    { label: 'House Share', value: 'House Share',enabled : true },
+    { label: 'Digs', value: 'Digs',enabled : true }
   ];
 
   const priceRange = [

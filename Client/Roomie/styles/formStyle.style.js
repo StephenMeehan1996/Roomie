@@ -135,9 +135,13 @@ const styles = StyleSheet.create({
   },
   errorTxt:{
     fontSize: 12,
-    color: '#FF0D10',
-    marginVertical: 2
+    color: '#FF0D10'
+  },
+  errorMargin:{
+    marginVertical: 5
   }
+
+ 
   });
 
   export default styles;
