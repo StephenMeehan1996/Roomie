@@ -5,88 +5,46 @@ import { Picker } from '@react-native-picker/picker';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
+import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
+
+import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference } from '../data/formData';
+import  styles  from '../styles/formStyle.style';
 
 
 const SignUpForm = ({navigation}) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [gender, setGender] = useState(''); // Dropdown selector state
-  const [age, setAge] = useState(''); // Calculated age
-  const [dob, setDob] = React.useState(undefined);
+  const [FirstName, setFirstName] = useState('');
+  const [LastName, setLastName] = useState('');
+  const [Email, setEmail] = useState('');
+  const [Gender, setGender] = useState(''); // Dropdown selector state
+  const [Age, setAge] = useState(''); // Calculated age
+  const [Dob, setDob] = React.useState(undefined);
 
-  const [bio, setBio] =  useState('');
-  const [occupation, setOccupation] =  useState('');
-  const [occupationDetailLabel, setOccupationDetailLabel] = useState('Working Hours'); // State for the label of the second dropdown
-  const [occupationDropdownValue, setOccupationDropdownValue] = useState('');
-  const [smoke, setSmoke] = useState('');
-  const [profilePicURL, setProfilePicURL] = useState('');
-  const [intoVideoURL, setintoVideoURL] = useState('');
+  const [Bio, setBio] =  useState('');
+  const [Occupation, setOccupation] =  useState('');
+  const [OccupationDetailLabel, setOccupationDetailLabel] = useState('Working Hours'); // State for the label of the second dropdown
+  const [OccupationDropdownValue, setOccupationDropdownValue] = useState('');
+  const [Smoke, setSmoke] = useState('');
+  const [ProfilePicURL, setProfilePicURL] = useState('');
+  const [IntoVideoURL, setintoVideoURL] = useState('');
 
-  const [shareName, setShareName] = useState(false);
-  const [shareData, setShareData] = useState(false);
+  const [ShareName, setShareName] = useState(false);
+  const [ShareData, setShareData] = useState(false);
 
-  const [selectedRentalPref, setSelectedRentalPref] = useState([]);
+  const [SelectedRentalPref, setSelectedRentalPref] = useState([]);
 
-  const [open, setOpen] = React.useState(false);
-
-  const genderOptions = [
-    { label:'Select an option', value:"" },
-    { label: 'Male', value: 'Male' },
-    { label: 'Female', value: 'Female' },
-    { label: 'Other', value: 'Other' },
-  ];
-
-  const workingHoursOptions = [
-    { label:'Select an option', value:"" },
-    { label: '9-5', value: '9-5' },
-    { label: 'Shift-work', value: 'Shift-work' }
-  ];
-
-  const occupationOptions = [
-    { label:'Select an option', value:"" },
-    { label: 'Working Professional', value: 'Working Professional' },
-    { label: 'Student', value: 'Student' }
-  ];
-
-  const yearOfStudyOptions = [
-    { label:'Select an option', value:"" },
-    { label: '1st', value: '1st' },
-    { label: '2nd', value: '2nd' },
-    { label: '3rd', value: '3rd' },
-    { label: '4th', value: '4th' },
-    { label: 'Masters', value: 'Masters' },
-    { label: 'PHD', value: 'PHD' },
-  ];
-
-  const yesNO = [
-    { label:'Select an option', value:"" },
-    { label: 'Yes', value: 'Yes' },
-    { label: 'No', value: 'No' }
-  ];
-
-  const rentalPreference = [
-    { label:'Select an option', value:"" },
-    { label: 'House Rental', value: 'House Rental' },
-    { label: 'House Share', value: 'House Share' },
-    { label: 'Digs', value: 'Digs' }
-  ];
-
+  const [open, setOpen] = React.useState(false); // var for calendar open/close 
   
   const handleOccupationChange = (value) => {
     setOccupation(value);
-    // Set the label and initial value of the second dropdown based on the selection
     if (value === '' || value === 'Working Professional') {
       setOccupationDetailLabel('Working Hours');
-      setOccupationDropdownValue(workingHoursOptions[0]); // Set the initial value to the first option
+      setOccupationDropdownValue(workingHoursOptions[0]); 
     } else if (value === 'Student') {
       setOccupationDetailLabel('Year of Study');
-      setOccupationDropdownValue(yearOfStudyOptions[0]); // Set the initial value to the first option
+      setOccupationDropdownValue(yearOfStudyOptions[0]); 
     }
   };
   
-
   const onDismissSingle = React.useCallback(() => {
     setOpen(false);
   }, [setOpen]);
@@ -102,7 +60,7 @@ const SignUpForm = ({navigation}) => {
   
   
   const calculateAge = () => {
-    const birthDate = new Date(dob);
+    const birthDate = new Date(Dob);
     const currentDate = new Date();
     const age = currentDate.getFullYear() - birthDate.getFullYear();
     console.log(age)
@@ -110,18 +68,18 @@ const SignUpForm = ({navigation}) => {
   };
 
   const handleSignUp = () => {
-    // Perform sign-up logic here, e.g., sending data to a server
+
     console.log('Signing up...');
-    console.log('First Name:', firstName);
-    console.log('Last Name:', lastName);
-    console.log('Email:', email);
-    console.log('Gender:', gender);
-    console.log('DOB:', dob);
-    console.log('age:', age);
-    console.log('occupation:', occupation);
-    console.log('detail:', occupationDropdownValue);
-    console.log('shareName:', shareName);
-    console.log('sharedata:', shareData);
+    console.log('First Name:', FirstName);
+    console.log('Last Name:', LastName);
+    console.log('Email:', Email);
+    console.log('Gender:', Gender);
+    console.log('DOB:', Dob);
+    console.log('age:', Age);
+    console.log('occupation:', Occupation);
+    console.log('detail:', OccupationDropdownValue);
+    console.log('shareName:', ShareName);
+    console.log('sharedata:', ShareData);
 
   };
 
@@ -138,7 +96,7 @@ const SignUpForm = ({navigation}) => {
   const signUp = async () =>{
     setLoading(true);
     try{
-        const responce = await createUserWithEmailAndPassword(auth, email, password);
+        const responce = await createUserWithEmailAndPassword(auth, Email, password);
         console.log(responce); 
         alert('Check your emails!');
      } catch (error){
@@ -150,8 +108,8 @@ const SignUpForm = ({navigation}) => {
 }
 
 useEffect(() => {
-  setAge(calculateAge(dob));
-}, [dob]);
+  setAge(calculateAge(Dob));
+}, [Dob]);
 
   return (
     <ScrollView>
@@ -166,7 +124,7 @@ useEffect(() => {
                   <TextInput
                     style={styles.input}
                     onChangeText={setFirstName}
-                    value={firstName}
+                    value={FirstName}
                     placeholder="Enter your first name"
                   />
                 </View>
@@ -175,7 +133,7 @@ useEffect(() => {
                   <TextInput
                     style={styles.input}
                     onChangeText={setLastName}
-                    value={lastName}
+                    value={LastName}
                     placeholder="Enter your last name"
                   />
                 </View>
@@ -185,7 +143,7 @@ useEffect(() => {
               <TextInput
                 style={styles.input}
                 onChangeText={setEmail}
-                value={email}
+                value={Email}
                 placeholder="Enter your email"
                 keyboardType="email-address"
               />
@@ -193,11 +151,11 @@ useEffect(() => {
               <View style={styles.sameLineContainer}>
                 <View style={styles.lineInput}>
                   <Text style={styles.label}>Date of Birth</Text>
-                  {age ? ( // If age is not empty (truthy value), display one button
+                  {Age ? ( // If age has a value it will be displayed inside button
                     <Button icon="calendar-outline" onPress={() => setOpen(true)} uppercase={false} mode="outlined">
-                    <Text>Age:{age}</Text>
+                    <Text>Age:{Age}</Text>
                   </Button>
-                  ) : ( // If age is empty (falsy value), display another button
+                  ) : (
                   <Button icon="calendar-outline" onPress={() => setOpen(true)} uppercase={false} mode="outlined">
                   DOB
                   </Button>
@@ -206,7 +164,7 @@ useEffect(() => {
                 <View style={styles.lineInput}>
                   <Text style={styles.label}>Gender</Text>
                   <Picker
-                    selectedValue={gender}
+                    selectedValue={Gender}
                     style={styles.input}
                     onValueChange={(itemValue) => setGender(itemValue)}  
                   >
@@ -217,9 +175,9 @@ useEffect(() => {
                 </View>
               </View>
               <Button
-                mode="contained" // Use "outlined" for an outlined button
-                color="#FF5733" // Set your desired button color
-                labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
+                mode="contained" 
+                color="#FF5733" 
+                labelStyle={styles.buttonLabel}
                 onPress={handleSignUp}>
                 Create Account
               </Button>
@@ -232,7 +190,7 @@ useEffect(() => {
                     mode="single"
                     visible={open}
                     onDismiss={onDismissSingle}
-                    date={dob}
+                    date={Dob}
                     onConfirm={onConfirmSingle}
                   />
                 </View>
@@ -247,8 +205,8 @@ useEffect(() => {
             <TextInput
               style={styles.input}
               multiline
-              numberOfLines={3} // You can adjust the number of lines displayed
-              value={bio}
+              numberOfLines={3}
+              value={Bio}
               onChangeText={(newText) => setBio(newText)}
               placeholder="Type your text here..."
             />
@@ -258,7 +216,7 @@ useEffect(() => {
                   <Text style={styles.label}>Occupation:</Text>
                   <Picker
                     style={styles.input}
-                    selectedValue={occupation}
+                    selectedValue={Occupation}
                     onValueChange={(itemValue) => handleOccupationChange(itemValue)}
                     >
                       {occupationOptions.map((option, index) => (
@@ -267,13 +225,13 @@ useEffect(() => {
                   </Picker>
                  </View>
                  <View style={styles.lineInput}>
-                    <Text style={styles.label}>{occupationDetailLabel}:</Text>
+                    <Text style={styles.label}>{OccupationDetailLabel}:</Text>
                     <Picker
                       style={styles.input}
-                      selectedValue={occupationDropdownValue}
+                      selectedValue={OccupationDropdownValue}
                       onValueChange={(itemValue) => setOccupationDropdownValue(itemValue)}
                     >
-                      {occupation === 'Student'
+                      {Occupation === 'Student'
                         ? yearOfStudyOptions.map((option, index) => (
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))
@@ -288,7 +246,7 @@ useEffect(() => {
                 <Text style={styles.label}>Do You Smoke?</Text>
                 <Picker
                     style={[styles.input, styles.singleLineInput]}
-                    selectedValue={smoke}
+                    selectedValue={Smoke}
                     onValueChange={(itemValue) => setSmoke(itemValue)}
                     >
                     {yesNO.map((option, index) => (
@@ -304,7 +262,7 @@ useEffect(() => {
                 </Button>
                 <View style={styles.profilePictureContainer}>
                     <Image
-                      source={require('../assets/Icons/images/kemal.jpg')} // Replace with the actual image source
+                      source={require('../assets/Icons/images/kemal.jpg')}
                       style={styles.profilePicture}
                     />
                 </View>
@@ -326,7 +284,7 @@ useEffect(() => {
 
             <Title style={styles.title}>Preferences</Title>
             <Text style={styles.label}>Share name on profile page:</Text>
-            <RadioButton.Group onValueChange={(value) => setShareName(value)} value={shareName}>
+            <RadioButton.Group onValueChange={(value) => setShareName(value)} value={ShareName}>
               <View style={styles.radioContainer}>
                 <RadioButton.Item label="Yes" value="1" />
                 <RadioButton.Item label="No" value= "0" />
@@ -334,7 +292,7 @@ useEffect(() => {
             </RadioButton.Group>
 
             <Text style={styles.label}>Consent to share your data:</Text>
-            <RadioButton.Group onValueChange={(value) => setShareData(value)} value={shareData}>
+            <RadioButton.Group onValueChange={(value) => setShareData(value)} value={ShareData}>
               <View style={styles.radioContainer}>
                 <RadioButton.Item label="Yes" value="1" />
                 <RadioButton.Item label="No" value= "0" />
@@ -350,7 +308,7 @@ useEffect(() => {
                     placeholder="What are you interested in:"
                     search
                     searchPlaceholder="Search"
-                    value={selectedRentalPref}
+                    value={SelectedRentalPref}
                     onChange={item => {
                     setSelectedRentalPref(item);
                         console.log('selected', item);
@@ -359,11 +317,12 @@ useEffect(() => {
                 />
 
                <Button
-                mode="contained" // Use "outlined" for an outlined button
-                color="#FF5733" // Set your desired button color
-                labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
+                mode="contained" 
+                color="#FF5733"
+                style={{marginVertical: 20, padding: 2}} 
+                labelStyle={styles.buttonLabel} 
                 onPress={() => navigation.navigate('RentalPreferences',{
-                  rentalPref: selectedRentalPref,
+                  rentalPref: SelectedRentalPref,
                 })}>
                 Next Page
               </Button>
@@ -376,131 +335,5 @@ useEffect(() => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  sameLineContainer: {
-    flexDirection: 'row', // Display first and last name fields horizontally
-    justifyContent: 'space-between' // Add space between the two fields
-  },
-  lineInput: {
-    flex: 1, // Take up equal space in the row
-    marginRight: 8, // Add spacing between first and last name fields
-  },
-  singleLineInput:{
-    width: Dimensions.get('window').width * 0.4,
-  },
-  singleLineInputLong:{
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  input: {
-    fontSize: 14,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    marginBottom: 16,
-    backgroundColor: '#FFFFFF'
-  },
-  card: {
-    width: '100%',
-    backgroundColor: '#FFF',
-    marginBottom: 10,
-    padding: 5
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10
-  },
-  datePickerContainer: {
-  
-  },
-  resultText: {
-    fontSize: 18,
-    marginVertical: 10,
-  },
-
-  profilePictureContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 75, // Make it a circle by setting half of the width/height as the border radius
-    backgroundColor: '#E0E0E0', // Placeholder background color
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  profilePicture: {
-    width: 50,
-    height: 50,
-    borderRadius: 75,
-  },
-  uploadButton: {
-    backgroundColor: '#007AFF', // Button background color
-    padding: 10,
-    borderRadius: 5,
-  },
-  uploadButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  checkboxLabel: {
-    marginLeft: 10,
-    fontSize: 16,
-  },
-  explanationText: {
-    fontSize: 14,
-    marginTop: 5,
-  }, 
-  radioContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-
-  dropdown: {
-    backgroundColor: 'white',
-    borderBottomColor: 'gray',
-    borderBottomWidth: 0.5,
-    marginTop: 20,
-},
-icon: {
-    marginRight: 5,
-    width: 18,
-    height: 18,
-},
-item: {
-    paddingVertical: 17,
-    paddingHorizontal: 4,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-},
-textItem: {
-    flex: 1,
-    fontSize: 16,
-},
-shadow: {
-    shadowColor: '#000',
-    shadowOffset: {
-    width: 0,
-    height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
-},
-});
 
 export default SignUpForm;

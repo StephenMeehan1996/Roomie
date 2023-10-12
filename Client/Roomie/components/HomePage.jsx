@@ -17,19 +17,6 @@ const HomePage = ({navigation}) => {
 
     <View style={{flex: 1}}>
         <View style={styles.header}>
-            {/* <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
-                <Image
-                 source={require('../assets/Icons/menu.png')}
-                 style={[styles.icon, styles.profileIcon]}
-                 />
-            </TouchableOpacity> */}
-            {/* <TouchableOpacity onPress={() => navigation.navigate('OptionsScreen')}>
-                <Image
-                    source={require('../assets/Icons/images/kemal.jpg')}
-                    style={styles.icon}
-                />
-            </TouchableOpacity> */}
-
             <IconButton
                 icon="logout"
                 mode="text"

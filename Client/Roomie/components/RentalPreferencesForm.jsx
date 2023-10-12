@@ -6,13 +6,40 @@ import { DatePickerModal } from 'react-native-paper-dates';
 import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
+import { Ionicons } from '@expo/vector-icons';
+
+import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference, priceRange, number, roomType, houseType, houseMateExpect, environment } from '../data/formData';
+import  styles  from '../styles/formStyle.style';
 
 const RentalPreferencesForm = ({navigation, route}) => {
 
     const { rentalPref } = route.params;
-    const [showHouseRental, setShowHouseRental] = useState(false);
-    const [showHouseShare, setShowHouseShare] = useState(false);
-    const [showDigs, setShowDigs] = useState(false);
+  
+    //House share form vars
+    const [HouseSharePriceRangeMin, setHouseSharePriceRangeMin] =  useState('');
+    const [HouseSharePriceRangeMax, setHouseSharePriceRangeMax] =  useState('');
+    const [HouseShareRoomType, setHouseShareRoomType] =  useState('');
+    const [HouseShareHouseType, setHouseShareHouseType] =  useState('');
+    const [HouseShareEnsuite, setHouseShareEnsuite] =  useState('');
+    const [HouseMateExpect, setHouseMateExpect] =  useState('');
+    const [Environment, setEnvironment] =  useState('');
+
+    
+    //House rental form vars
+    const [HouseRentalPriceRangeMin, setHouseRentalPriceRangeMin] =  useState('');
+    const [HouseRentalPriceRangeMax, setHouseRentalPriceRangeMax] =  useState('');
+    const [NumRooms, setNumRooms] =  useState('');
+    const [HouseRentalHouseType, setHouseRentalHouseType] =  useState('');
+
+    //Digs form vars
+    const [DigsPriceRangeMin, setDigsPriceRangeMin] =  useState('');
+    const [DigsPriceRangeMax, setDigsPriceRangeMax] =  useState('');
+    const [DigsRoomType, setDigsRoomType] =  useState('');
+    const [DigsDays, setDigsDays] =  useState('');
+    const [DigsMealIncluded, setDigsMealIncluded] =  useState('');
+
+    const [occupationDetailLabel, setOccupationDetailLabel] = useState('Working Hours'); // State for the label of the second dropdown
+    const [occupationDropdownValue, setOccupationDropdownValue] = useState('');
 
     const isFormVisible = (value) => {
         return rentalPref.includes(value);
@@ -20,28 +47,136 @@ const RentalPreferencesForm = ({navigation, route}) => {
 
   return (
     <ScrollView>
+   
       <View style={styles.container}>
+   
       <Card elevation={5} style={styles.card}>
         <Card.Content>
+      
+        <View style={styles.header}>
+        <Title style={styles.title}>Rental Preferences</Title>
+            <IconButton
+                icon="arrow-left"
+                mode="text"
+                size={30}
+                style={{flex:1,alignItems: 'flex-end'}}
+                onPress={() => navigation.goBack()}>
+            </IconButton>
+        </View>
+
+       
 
         </Card.Content>
       </Card>
 
       <View>
-            {isFormVisible('House Rental') && (
+            {isFormVisible('House Share') && (
             // Render this view when the title is in the array
-            <Card elevation={5} style={styles.card}>
+        <Card elevation={5} style={styles.card}>
             <Card.Content>
               <Title style={styles.title}>House Rental Preferences</Title>
-    
-    
-            </Card.Content>
-          </Card>
-        )}
-        </View>
+              <Text style={styles.label}>Price Range:</Text>
+              <View style={styles.sameLineContainer}>
+                <View style={styles.lineInput}>
+                <Text style={styles.label}>Min:</Text>
+                <Picker
+                    selectedValue={HouseSharePriceRangeMin}
+                    style={styles.input}
+                    onValueChange={(itemValue) => setHouseSharePriceRangeMin(itemValue)}  
+                >
+                    {priceRange.map((option, index) => (
+                        <Picker.Item key={index} label={option.label} value={option.value} />
+                    ))}
+                </Picker>
+               </View>
+               <View style={styles.lineInput}>
+                 <Text style={styles.label}>Max:</Text>
+                    <Picker
+                        selectedValue={HouseSharePriceRangeMax}
+                        style={styles.input}
+                        onValueChange={(itemValue) => setHouseSharePriceRangeMax(itemValue)}  
+                    >
+                        {priceRange.map((option, index) => (
+                        <Picker.Item key={index} label={option.label} value={option.value} />
+                        ))}
+                    </Picker>
+                </View>
+             </View>
 
-        <View>
-            {isFormVisible('House Share') && (
+            <View style={styles.sameLineContainer}>
+                <View style={styles.lineInput}>
+                  <Text style={styles.label}>Room Type:</Text>
+                  <Picker
+                    selectedValue={HouseShareRoomType}
+                    style={styles.input}
+                    onValueChange={(itemValue) => setHouseShareRoomType(itemValue)}  
+                  >
+                    {roomType.map((option, index) => (
+                      <Picker.Item key={index} label={option.label} value={option.value} />
+                    ))}
+                  </Picker>
+                 </View>
+                 <View style={styles.lineInput}>
+                    <Text style={styles.label}>House Type:</Text>
+                    <Picker
+                    selectedValue={HouseShareHouseType}
+                    style={styles.input}
+                    onValueChange={(itemValue) => setHouseShareHouseType(itemValue)}  
+                  >
+                    {houseType.map((option, index) => (
+                      <Picker.Item key={index} label={option.label} value={option.value} />
+                    ))}
+                  </Picker>
+                 </View>
+            </View>
+
+            <View style={styles.lineInput}>
+                <Text style={styles.label}>Ensuite</Text>
+                <Picker
+                    style={[styles.input, styles.singleLineInput]}
+                    selectedValue={HouseShareEnsuite}
+                    onValueChange={(itemValue) => setHouseShareEnsuite(itemValue)}
+                    >
+                    {yesNO.map((option, index) => (
+                      <Picker.Item key={index} label={option.label} value={option.value} />
+                    ))}
+                </Picker>
+            </View>
+
+            <View style={styles.sameLineContainer}>
+                <View style={styles.lineInput}>
+                  <Text style={styles.label}>House Expectations:</Text>
+                  <Picker
+                    selectedValue={HouseMateExpect}
+                    style={styles.input}
+                    onValueChange={(itemValue) => setHouseMateExpect(itemValue)}  
+                  >
+                    {houseMateExpect.map((option, index) => (
+                      <Picker.Item key={index} label={option.label} value={option.value} />
+                    ))}
+                  </Picker>
+                 </View>
+                 <View style={styles.lineInput}>
+                    <Text style={styles.label}>Environment:</Text>
+                    <Picker
+                    selectedValue={Environment}
+                    style={styles.input}
+                    onValueChange={(itemValue) => setEnvironment(itemValue)}  
+                  >
+                    {environment.map((option, index) => (
+                      <Picker.Item key={index} label={option.label} value={option.value} />
+                    ))}
+                  </Picker>
+                 </View>
+             </View>
+            
+            </Card.Content>
+         </Card>
+        )}
+       </View>
+
+       <View>
+            {isFormVisible('House Rental') && (
             // Render this view when the title is in the array
             <Card elevation={5} style={styles.card}>
             <Card.Content>
@@ -72,131 +207,13 @@ const RentalPreferencesForm = ({navigation, route}) => {
   )
 }
 
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 10,
-    },
-    label: {
-      fontSize: 16,
-      marginBottom: 8,
-    },
-    sameLineContainer: {
-      flexDirection: 'row', // Display first and last name fields horizontally
-      justifyContent: 'space-between' // Add space between the two fields
-    },
-    lineInput: {
-      flex: 1, // Take up equal space in the row
-      marginRight: 8, // Add spacing between first and last name fields
-    },
-    singleLineInput:{
-      width: Dimensions.get('window').width * 0.4,
-    },
-    singleLineInputLong:{
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    input: {
-      fontSize: 14,
-      borderWidth: 1,
-      borderColor: '#ccc',
-      borderRadius: 4,
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      marginBottom: 16,
-      backgroundColor: '#FFFFFF'
-    },
-    card: {
-      width: '100%',
-      backgroundColor: '#FFF',
-      marginBottom: 10,
-      padding: 5
-    },
-    title: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      marginBottom: 10
-    },
-    datePickerContainer: {
-    
-    },
-    resultText: {
-      fontSize: 18,
-      marginVertical: 10,
-    },
-  
-    profilePictureContainer: {
-      width: 50,
-      height: 50,
-      borderRadius: 75, // Make it a circle by setting half of the width/height as the border radius
-      backgroundColor: '#E0E0E0', // Placeholder background color
-      justifyContent: 'center',
-      alignItems: 'center'
-    },
-    profilePicture: {
-      width: 50,
-      height: 50,
-      borderRadius: 75,
-    },
-    uploadButton: {
-      backgroundColor: '#007AFF', // Button background color
-      padding: 10,
-      borderRadius: 5,
-    },
-    uploadButtonText: {
-      color: 'white',
-      fontWeight: 'bold',
-    },
-    checkboxContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    checkboxLabel: {
-      marginLeft: 10,
-      fontSize: 16,
-    },
-    explanationText: {
-      fontSize: 14,
-      marginTop: 5,
-    }, 
-    radioContainer: {
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      alignItems: 'center',
-    },
-  
-    dropdown: {
-      backgroundColor: 'white',
-      borderBottomColor: 'gray',
-      borderBottomWidth: 0.5,
-      marginTop: 20,
-  },
-  icon: {
-      marginRight: 5,
-      width: 18,
-      height: 18,
-  },
-  item: {
-      paddingVertical: 17,
-      paddingHorizontal: 4,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-  },
-  textItem: {
-      flex: 1,
-      fontSize: 16,
-  },
-  shadow: {
-      shadowColor: '#000',
-      shadowOffset: {
-      width: 0,
-      height: 1,
-      },
-      shadowOpacity: 0.2,
-      shadowRadius: 1.41,
-      elevation: 2,
-  },
-  });
+
 
 export default RentalPreferencesForm
+
+  
+  
+  
+  
+  
+  
