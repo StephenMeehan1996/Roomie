@@ -8,41 +8,72 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
 import { Ionicons } from '@expo/vector-icons';
 
-import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference, priceRange, number, roomType, houseType, houseMateExpect, environment } from '../data/formData';
+import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference, priceRange, number, roomType, houseType, houseMatExpectations, environmentOptions, days } from '../data/formData';
 import  styles  from '../styles/formStyle.style';
 
 const RentalPreferencesForm = ({navigation, route}) => {
 
-    const { rentalPref } = route.params;
+    const { rentalPref,formData } = route.params;
+    
   
     //House share form vars
-    const [HouseSharePriceRangeMin, setHouseSharePriceRangeMin] =  useState('');
-    const [HouseSharePriceRangeMax, setHouseSharePriceRangeMax] =  useState('');
-    const [HouseShareRoomType, setHouseShareRoomType] =  useState('');
-    const [HouseShareHouseType, setHouseShareHouseType] =  useState('');
-    const [HouseShareEnsuite, setHouseShareEnsuite] =  useState('');
-    const [HouseMateExpect, setHouseMateExpect] =  useState('');
-    const [Environment, setEnvironment] =  useState('');
+    const [houseSharePriceRangeMin, setHouseSharePriceRangeMin] =  useState('100');
+    const [houseSharePriceRangeMax, setHouseSharePriceRangeMax] =  useState('300');
+    const [houseShareRoomType, setHouseShareRoomType] =  useState('Single');
+    const [houseShareHouseType, setHouseShareHouseType] =  useState('Apartment');
+    const [houseShareEnsuite, setHouseShareEnsuite] =  useState('1');
+    const [houseMateExpect, setHouseMateExpect] =  useState('Friendly');
+    const [environment, setEnvironment] =  useState('Social');
 
     
     //House rental form vars
-    const [HouseRentalPriceRangeMin, setHouseRentalPriceRangeMin] =  useState('');
-    const [HouseRentalPriceRangeMax, setHouseRentalPriceRangeMax] =  useState('');
-    const [NumRooms, setNumRooms] =  useState('');
-    const [HouseRentalHouseType, setHouseRentalHouseType] =  useState('');
+    const [houseRentalPriceRangeMin, setHouseRentalPriceRangeMin] =  useState('200');
+    const [houseRentalPriceRangeMax, setHouseRentalPriceRangeMax] =  useState('300');
+    const [numRooms, setNumRooms] =  useState('2');
+    const [houseRentalHouseType, setHouseRentalHouseType] =  useState('Detached');
 
     //Digs form vars
-    const [DigsPriceRangeMin, setDigsPriceRangeMin] =  useState('');
-    const [DigsPriceRangeMax, setDigsPriceRangeMax] =  useState('');
-    const [DigsRoomType, setDigsRoomType] =  useState('');
-    const [DigsDays, setDigsDays] =  useState('');
-    const [DigsMealIncluded, setDigsMealIncluded] =  useState('');
+    const [digsPriceRangeMin, setDigsPriceRangeMin] =  useState('200');
+    const [digsPriceRangeMax, setDigsPriceRangeMax] =  useState('300');
+    const [digsRoomType, setDigsRoomType] =  useState('Double');
+    const [digsHouseType, setDigsHouseType] =  useState('Detached');
+    const [digsDays, setDigsDays] =  useState('Monday-Friday');
+    const [digsMealIncluded, setDigsMealIncluded] =  useState('0');
 
-    const [occupationDetailLabel, setOccupationDetailLabel] = useState('Working Hours'); // State for the label of the second dropdown
-    const [occupationDropdownValue, setOccupationDropdownValue] = useState('');
+    const [formData2, setFormData2] = useState([]);
 
     const isFormVisible = (value) => {
         return rentalPref.includes(value);
+      };
+
+      const createDataArray = () => {
+        const formObj = {
+          HouseSharePriceRangeMin : houseSharePriceRangeMin,
+          HouseSharePriceRangeMax : houseSharePriceRangeMax,
+          HouseShareRoomType : houseShareRoomType,
+          HouseShareHouseType : houseShareHouseType,
+          HouseShareEnsuite : houseShareEnsuite,
+          HouseMateExpect : houseMateExpect,
+          Environment : environment,
+
+          HouseRentalPriceRangeMin : houseRentalPriceRangeMin,
+          HouseRentalPriceRangeMax : houseRentalPriceRangeMax,
+          NumRooms : numRooms,
+          HouseRentalHouseType : houseRentalHouseType,
+
+          DigsPriceRangeMin : digsPriceRangeMin,
+          DigsPriceRangeMax: digsPriceRangeMax,
+          DigsRoomType: digsRoomType,
+          DigsDays : digsDays,
+          DigsMealIncluded: digsMealIncluded
+        };
+    
+        setFormData2([formObj]);
+        
+        console.log(formData);
+        console.log(formData2);
+       
+       
       };
 
   return (
@@ -74,13 +105,13 @@ const RentalPreferencesForm = ({navigation, route}) => {
             // Render this view when the title is in the array
         <Card elevation={5} style={styles.card}>
             <Card.Content>
-              <Title style={styles.title}>House Rental Preferences</Title>
+              <Title style={styles.title}>House Share Preferences</Title>
               <Text style={styles.label}>Price Range:</Text>
               <View style={styles.sameLineContainer}>
                 <View style={styles.lineInput}>
                 <Text style={styles.label}>Min:</Text>
                 <Picker
-                    selectedValue={HouseSharePriceRangeMin}
+                    selectedValue={houseSharePriceRangeMin}
                     style={styles.input}
                     onValueChange={(itemValue) => setHouseSharePriceRangeMin(itemValue)}  
                 >
@@ -92,7 +123,7 @@ const RentalPreferencesForm = ({navigation, route}) => {
                <View style={styles.lineInput}>
                  <Text style={styles.label}>Max:</Text>
                     <Picker
-                        selectedValue={HouseSharePriceRangeMax}
+                        selectedValue={houseSharePriceRangeMax}
                         style={styles.input}
                         onValueChange={(itemValue) => setHouseSharePriceRangeMax(itemValue)}  
                     >
@@ -107,7 +138,7 @@ const RentalPreferencesForm = ({navigation, route}) => {
                 <View style={styles.lineInput}>
                   <Text style={styles.label}>Room Type:</Text>
                   <Picker
-                    selectedValue={HouseShareRoomType}
+                    selectedValue={houseShareRoomType}
                     style={styles.input}
                     onValueChange={(itemValue) => setHouseShareRoomType(itemValue)}  
                   >
@@ -119,7 +150,7 @@ const RentalPreferencesForm = ({navigation, route}) => {
                  <View style={styles.lineInput}>
                     <Text style={styles.label}>House Type:</Text>
                     <Picker
-                    selectedValue={HouseShareHouseType}
+                    selectedValue={houseShareHouseType}
                     style={styles.input}
                     onValueChange={(itemValue) => setHouseShareHouseType(itemValue)}  
                   >
@@ -134,7 +165,7 @@ const RentalPreferencesForm = ({navigation, route}) => {
                 <Text style={styles.label}>Ensuite</Text>
                 <Picker
                     style={[styles.input, styles.singleLineInput]}
-                    selectedValue={HouseShareEnsuite}
+                    selectedValue={houseShareEnsuite}
                     onValueChange={(itemValue) => setHouseShareEnsuite(itemValue)}
                     >
                     {yesNO.map((option, index) => (
@@ -147,11 +178,11 @@ const RentalPreferencesForm = ({navigation, route}) => {
                 <View style={styles.lineInput}>
                   <Text style={styles.label}>House Expectations:</Text>
                   <Picker
-                    selectedValue={HouseMateExpect}
+                    selectedValue={houseMateExpect}
                     style={styles.input}
                     onValueChange={(itemValue) => setHouseMateExpect(itemValue)}  
                   >
-                    {houseMateExpect.map((option, index) => (
+                    {houseMatExpectations.map((option, index) => (
                       <Picker.Item key={index} label={option.label} value={option.value} />
                     ))}
                   </Picker>
@@ -159,11 +190,11 @@ const RentalPreferencesForm = ({navigation, route}) => {
                  <View style={styles.lineInput}>
                     <Text style={styles.label}>Environment:</Text>
                     <Picker
-                    selectedValue={Environment}
+                    selectedValue={environment}
                     style={styles.input}
                     onValueChange={(itemValue) => setEnvironment(itemValue)}  
                   >
-                    {environment.map((option, index) => (
+                    {environmentOptions.map((option, index) => (
                       <Picker.Item key={index} label={option.label} value={option.value} />
                     ))}
                   </Picker>
@@ -180,10 +211,61 @@ const RentalPreferencesForm = ({navigation, route}) => {
             // Render this view when the title is in the array
             <Card elevation={5} style={styles.card}>
             <Card.Content>
-              <Title style={styles.title}>House Share Preferences</Title>
-    
-           
-    
+              <Title style={styles.title}>House Rental Preferences</Title>
+              <Text style={styles.label}>Price Range:</Text>
+              <View style={styles.sameLineContainer}>
+                <View style={styles.lineInput}>
+                <Text style={styles.label}>Min:</Text>
+                <Picker
+                    selectedValue={houseRentalPriceRangeMin}
+                    style={styles.input}
+                    onValueChange={(itemValue) => setHouseRentalPriceRangeMin(itemValue)}  
+                >
+                    {priceRange.map((option, index) => (
+                        <Picker.Item key={index} label={option.label} value={option.value} />
+                    ))}
+                </Picker>
+               </View>
+               <View style={styles.lineInput}>
+                 <Text style={styles.label}>Max:</Text>
+                    <Picker
+                        selectedValue={houseRentalPriceRangeMax}
+                        style={styles.input}
+                        onValueChange={(itemValue) => setHouseRentalPriceRangeMax(itemValue)}  
+                    >
+                        {priceRange.map((option, index) => (
+                        <Picker.Item key={index} label={option.label} value={option.value} />
+                        ))}
+                    </Picker>
+                </View>
+             </View>
+
+             <View style={styles.sameLineContainer}>
+                <View style={styles.lineInput}>
+                <Text style={styles.label}>Num Rooms:</Text>
+                <Picker
+                    selectedValue={numRooms}
+                    style={styles.input}
+                    onValueChange={(itemValue) => setNumRooms(itemValue)}  
+                >
+                    {number.map((option, index) => (
+                        <Picker.Item key={index} label={option.label} value={option.value} />
+                    ))}
+                </Picker>
+               </View>
+               <View style={styles.lineInput}>
+                 <Text style={styles.label}>House Type:</Text>
+                    <Picker
+                        selectedValue={houseRentalHouseType}
+                        style={styles.input}
+                        onValueChange={(itemValue) => setHouseRentalHouseType(itemValue)}  
+                    >
+                        {houseType.map((option, index) => (
+                        <Picker.Item key={index} label={option.label} value={option.value} />
+                        ))}
+                    </Picker>
+                </View>
+             </View>
             </Card.Content>
           </Card>
         )}
@@ -195,8 +277,94 @@ const RentalPreferencesForm = ({navigation, route}) => {
             <Card elevation={5} style={styles.card}>
             <Card.Content>
               <Title style={styles.title}>Digs Preferences</Title>
-    
-              
+              <Text style={styles.label}>Price Range:</Text>
+              <View style={styles.sameLineContainer}>
+                <View style={styles.lineInput}>
+                <Text style={styles.label}>Min:</Text>
+                <Picker
+                    selectedValue={digsPriceRangeMin}
+                    style={styles.input}
+                    onValueChange={(itemValue) => setDigsPriceRangeMin(itemValue)}  
+                >
+                    {priceRange.map((option, index) => (
+                        <Picker.Item key={index} label={option.label} value={option.value} />
+                    ))}
+                </Picker>
+               </View>
+               <View style={styles.lineInput}>
+                 <Text style={styles.label}>Max:</Text>
+                    <Picker
+                        selectedValue={digsPriceRangeMax}
+                        style={styles.input}
+                        onValueChange={(itemValue) => setDigsPriceRangeMax(itemValue)}  
+                    >
+                        {priceRange.map((option, index) => (
+                        <Picker.Item key={index} label={option.label} value={option.value} />
+                        ))}
+                    </Picker>
+                </View>
+             </View>
+
+             <View style={styles.sameLineContainer}>
+                <View style={styles.lineInput}>
+                  <Text style={styles.label}>Room Type:</Text>
+                  <Picker
+                    selectedValue={digsRoomType}
+                    style={styles.input}
+                    onValueChange={(itemValue) => setDigsRoomType(itemValue)}  
+                  >
+                    {roomType.map((option, index) => (
+                      <Picker.Item key={index} label={option.label} value={option.value} />
+                    ))}
+                  </Picker>
+                 </View>
+                 <View style={styles.lineInput}>
+                    <Text style={styles.label}>House Type:</Text>
+                    <Picker
+                    selectedValue={digsHouseType}
+                    style={styles.input}
+                    onValueChange={(itemValue) => setDigsHouseType(itemValue)}  
+                  >
+                    {houseType.map((option, index) => (
+                      <Picker.Item key={index} label={option.label} value={option.value} />
+                    ))}
+                  </Picker>
+                 </View>
+            </View>
+
+            <View style={styles.sameLineContainer}>
+                <View style={styles.lineInput}>
+                  <Text style={styles.label}>Days:</Text>
+                  <Picker
+                    selectedValue={digsDays}
+                    style={styles.input}
+                    onValueChange={(itemValue) => setDigsDays(itemValue)}  
+                  >
+                    {days.map((option, index) => (
+                      <Picker.Item key={index} label={option.label} value={option.value} />
+                    ))}
+                  </Picker>
+                 </View>
+                 <View style={styles.lineInput}>
+                    <Text style={styles.label}>Meals Included:</Text>
+                    <Picker
+                    selectedValue={digsMealIncluded}
+                    style={styles.input}
+                    onValueChange={(itemValue) => setDigsMealIncluded(itemValue)}  
+                  >
+                    {yesNO.map((option, index) => (
+                      <Picker.Item key={index} label={option.label} value={option.value} />
+                    ))}
+                  </Picker>
+                 </View>
+            </View>
+            <Button
+                mode="contained" 
+                color="#FF5733" 
+                labelStyle={styles.buttonLabel}
+                onPress={() => createDataArray()}>
+                Create Account
+              </Button>
     
             </Card.Content>
           </Card>

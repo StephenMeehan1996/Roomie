@@ -69,18 +69,24 @@ const genderOptions = [
     { label: 'Apartment', value: 'Apartment' },
   ];
 
-  const houseMateExpect = [
+  const houseMatExpectations = [
     { label:'Select an option', value:"" },
     { label: 'Everyone does own thing', value: 'Everyone does own thing' },
     { label: 'Friendly', value: 'Friendly' },
     { label: 'Socialize With Housemates', value: 'Socialize With Housemates' }
   ];
 
-  const environment = [
+  const environmentOptions = [
     { label:'Select an option', value:"" },
     { label: 'Quiet', value: 'Quiet' },
     { label: 'Social', value: 'Social' },
     { label: 'Party', value: 'Party' }
   ];
 
-  export {genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference,priceRange, number, roomType, houseType, houseMateExpect, environment};
+  const days = [
+    { label:'Select an option', value:"" },
+    { label: 'Monday-Friday', value: 'Monday-Friday' },
+    { label: 'Full Week', value: 'Full Week' }
+  ];
+
+  export {genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference,priceRange, number, roomType, houseType, houseMatExpectations, environmentOptions, days};

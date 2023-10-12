@@ -12,26 +12,28 @@ import  styles  from '../styles/formStyle.style';
 
 
 const SignUpForm = ({navigation}) => {
-  const [FirstName, setFirstName] = useState('');
-  const [LastName, setLastName] = useState('');
-  const [Email, setEmail] = useState('');
-  const [Gender, setGender] = useState(''); // Dropdown selector state
-  const [Age, setAge] = useState(''); // Calculated age
-  const [Dob, setDob] = React.useState(undefined);
 
-  const [Bio, setBio] =  useState('');
-  const [Occupation, setOccupation] =  useState('');
-  const [OccupationDetailLabel, setOccupationDetailLabel] = useState('Working Hours'); // State for the label of the second dropdown
-  const [OccupationDropdownValue, setOccupationDropdownValue] = useState('');
-  const [Smoke, setSmoke] = useState('');
-  const [ProfilePicURL, setProfilePicURL] = useState('');
-  const [IntoVideoURL, setintoVideoURL] = useState('');
+  const [firstName, setFirstName] = useState('Stephen');
+  const [lastName, setLastName] = useState('Meehan');
+  const [email, setEmail] = useState('StephenMeehan@gmail.com');
+  const [gender, setGender] = useState('Male'); // Dropdown selector state
+  const [age, setAge] = useState(''); // Calculated age
+  const [dob, setDob] = useState('');
 
-  const [ShareName, setShareName] = useState(false);
-  const [ShareData, setShareData] = useState(false);
+  const [bio, setBio] =  useState('Bio');
+  const [occupation, setOccupation] =  useState('Working Professional');
+  const [occupationDetailLabel, setOccupationDetailLabel] = useState('Working Hours'); // State for the label of the second dropdown
+  const [occupationDropdownValue, setOccupationDropdownValue] = useState('9-5');
+  const [smoke, setSmoke] = useState('Yes');
+  const [profilePicURL, setProfilePicURL] = useState('N/A');
+  const [intoVideoURL, setintoVideoURL] = useState('N/A');
 
-  const [SelectedRentalPref, setSelectedRentalPref] = useState([]);
+  const [shareName, setShareName] = useState(false);
+  const [shareData, setShareData] = useState(false);
 
+  const [selectedRentalPref, setSelectedRentalPref] = useState(['House Share', 'House Rental', 'Digs']);
+
+  const [formData, setFormData] = useState([]);
   const [open, setOpen] = React.useState(false); // var for calendar open/close 
   
   const handleOccupationChange = (value) => {
@@ -60,28 +62,75 @@ const SignUpForm = ({navigation}) => {
   
   
   const calculateAge = () => {
-    const birthDate = new Date(Dob);
+    const birthDate = new Date(dob);
     const currentDate = new Date();
     const age = currentDate.getFullYear() - birthDate.getFullYear();
     console.log(age)
     return age;
   };
 
+  function convertToShortDateString(dateString) {
+    const date = new Date(dateString);
+
+    if (isNaN(date)) {
+      return 'Invalid Date';
+    }
+  
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+  
+    const shortDateString = `${month}/${day}/${year}`;
+  
+    return shortDateString;
+  }
+
   const handleSignUp = () => {
 
     console.log('Signing up...');
-    console.log('First Name:', FirstName);
-    console.log('Last Name:', LastName);
-    console.log('Email:', Email);
-    console.log('Gender:', Gender);
-    console.log('DOB:', Dob);
-    console.log('age:', Age);
-    console.log('occupation:', Occupation);
-    console.log('detail:', OccupationDropdownValue);
-    console.log('shareName:', ShareName);
-    console.log('sharedata:', ShareData);
+    console.log('First Name:', firstName);
+    console.log('Last Name:', lastName);
+    console.log('Email:', email);
+    console.log('Gender:', gender);
+    console.log('DOB:', dob);
+    console.log('age:', age);
+    console.log('occupation:', occupation);
+    console.log('detail:', occupationDropdownValue);
+    console.log('shareName:', shareName);
+    console.log('sharedata:', shareData);
 
   };
+
+  const createDataArray = () => {
+    const formObj = {
+      FirstName : firstName,
+      LastName : lastName,
+      Email : email,
+      //Dob : convertToShortDateString(dob),
+      Dob : '10/04/1983',
+      Gender : gender,
+      Bio : bio,
+      Occupation : occupation,
+      OccupationDropdownValue : occupationDropdownValue,
+      Smoke : smoke,
+      ProfilePicURL : profilePicURL,
+      IntoVideoURL : intoVideoURL,
+      SelectedRentalPref : selectedRentalPref,
+      ShareName: shareName,
+      ShareData: shareData
+    };
+
+    setFormData([formObj]);
+    
+    console.log(formData);
+   
+    navigation.navigate('RentalPreferences', { 
+      rentalPref: selectedRentalPref, 
+      formData: formData 
+    });
+  };
+
+
 
   
   const _renderItem = item => {
@@ -96,7 +145,7 @@ const SignUpForm = ({navigation}) => {
   const signUp = async () =>{
     setLoading(true);
     try{
-        const responce = await createUserWithEmailAndPassword(auth, Email, password);
+        const responce = await createUserWithEmailAndPassword(auth, email, password);
         console.log(responce); 
         alert('Check your emails!');
      } catch (error){
@@ -108,8 +157,8 @@ const SignUpForm = ({navigation}) => {
 }
 
 useEffect(() => {
-  setAge(calculateAge(Dob));
-}, [Dob]);
+  setAge(calculateAge(dob));
+}, [dob]);
 
   return (
     <ScrollView>
@@ -124,7 +173,7 @@ useEffect(() => {
                   <TextInput
                     style={styles.input}
                     onChangeText={setFirstName}
-                    value={FirstName}
+                    value={firstName}
                     placeholder="Enter your first name"
                   />
                 </View>
@@ -133,7 +182,7 @@ useEffect(() => {
                   <TextInput
                     style={styles.input}
                     onChangeText={setLastName}
-                    value={LastName}
+                    value={lastName}
                     placeholder="Enter your last name"
                   />
                 </View>
@@ -143,7 +192,7 @@ useEffect(() => {
               <TextInput
                 style={styles.input}
                 onChangeText={setEmail}
-                value={Email}
+                value={email}
                 placeholder="Enter your email"
                 keyboardType="email-address"
               />
@@ -151,9 +200,9 @@ useEffect(() => {
               <View style={styles.sameLineContainer}>
                 <View style={styles.lineInput}>
                   <Text style={styles.label}>Date of Birth</Text>
-                  {Age ? ( // If age has a value it will be displayed inside button
+                  {age ? ( // If age has a value it will be displayed inside button
                     <Button icon="calendar-outline" onPress={() => setOpen(true)} uppercase={false} mode="outlined">
-                    <Text>Age:{Age}</Text>
+                    <Text>Age:{age}</Text>
                   </Button>
                   ) : (
                   <Button icon="calendar-outline" onPress={() => setOpen(true)} uppercase={false} mode="outlined">
@@ -164,7 +213,7 @@ useEffect(() => {
                 <View style={styles.lineInput}>
                   <Text style={styles.label}>Gender</Text>
                   <Picker
-                    selectedValue={Gender}
+                    selectedValue={gender}
                     style={styles.input}
                     onValueChange={(itemValue) => setGender(itemValue)}  
                   >
@@ -174,13 +223,7 @@ useEffect(() => {
                   </Picker>
                 </View>
               </View>
-              <Button
-                mode="contained" 
-                color="#FF5733" 
-                labelStyle={styles.buttonLabel}
-                onPress={handleSignUp}>
-                Create Account
-              </Button>
+             
             </View>
         </Card.Content>
         <SafeAreaProvider>
@@ -190,7 +233,7 @@ useEffect(() => {
                     mode="single"
                     visible={open}
                     onDismiss={onDismissSingle}
-                    date={Dob}
+                    date={dob}
                     onConfirm={onConfirmSingle}
                   />
                 </View>
@@ -206,7 +249,7 @@ useEffect(() => {
               style={styles.input}
               multiline
               numberOfLines={3}
-              value={Bio}
+              value={bio}
               onChangeText={(newText) => setBio(newText)}
               placeholder="Type your text here..."
             />
@@ -216,7 +259,7 @@ useEffect(() => {
                   <Text style={styles.label}>Occupation:</Text>
                   <Picker
                     style={styles.input}
-                    selectedValue={Occupation}
+                    selectedValue={occupation}
                     onValueChange={(itemValue) => handleOccupationChange(itemValue)}
                     >
                       {occupationOptions.map((option, index) => (
@@ -225,13 +268,13 @@ useEffect(() => {
                   </Picker>
                  </View>
                  <View style={styles.lineInput}>
-                    <Text style={styles.label}>{OccupationDetailLabel}:</Text>
+                    <Text style={styles.label}>{occupationDetailLabel}:</Text>
                     <Picker
                       style={styles.input}
-                      selectedValue={OccupationDropdownValue}
+                      selectedValue={occupationDropdownValue}
                       onValueChange={(itemValue) => setOccupationDropdownValue(itemValue)}
                     >
-                      {Occupation === 'Student'
+                      {occupation === 'Student'
                         ? yearOfStudyOptions.map((option, index) => (
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))
@@ -246,7 +289,7 @@ useEffect(() => {
                 <Text style={styles.label}>Do You Smoke?</Text>
                 <Picker
                     style={[styles.input, styles.singleLineInput]}
-                    selectedValue={Smoke}
+                    selectedValue={smoke}
                     onValueChange={(itemValue) => setSmoke(itemValue)}
                     >
                     {yesNO.map((option, index) => (
@@ -257,7 +300,12 @@ useEffect(() => {
             <View>
               <Text style={styles.label}>Upload Profile Picture</Text>
               <View style={styles.singleLineInputLong}>
-                <Button icon="camera-outline"  uppercase={false} mode="outlined" style={{width:120, marginRight: 20}}>
+                <Button 
+                  icon="camera-outline"  
+                  uppercase={false} 
+                  mode="outlined" 
+                  style={{width:120, marginRight: 20}}
+                  onPress={() => setProfilePicURL('placeholder')}>
                   Upload
                 </Button>
                 <View style={styles.profilePictureContainer}>
@@ -271,7 +319,11 @@ useEffect(() => {
             <View>
               <Text style={styles.label}>Upload Intro Video</Text>
               <View style={styles.singleLineInputLong}>
-                <Button icon="cloud-upload-outline" uppercase={false} mode="outlined" style={{width:120, marginRight: 20}}>
+                <Button 
+                  icon="cloud-upload-outline" 
+                  uppercase={false} mode="outlined" 
+                  style={{width:120, marginRight: 20}}
+                  onPress={() => setintoVideoURL('placeholder')}>
                   Upload
                 </Button>
               </View>
@@ -284,7 +336,7 @@ useEffect(() => {
 
             <Title style={styles.title}>Preferences</Title>
             <Text style={styles.label}>Share name on profile page:</Text>
-            <RadioButton.Group onValueChange={(value) => setShareName(value)} value={ShareName}>
+            <RadioButton.Group onValueChange={(value) => setShareName(value)} value={shareName}>
               <View style={styles.radioContainer}>
                 <RadioButton.Item label="Yes" value="1" />
                 <RadioButton.Item label="No" value= "0" />
@@ -292,7 +344,7 @@ useEffect(() => {
             </RadioButton.Group>
 
             <Text style={styles.label}>Consent to share your data:</Text>
-            <RadioButton.Group onValueChange={(value) => setShareData(value)} value={ShareData}>
+            <RadioButton.Group onValueChange={(value) => setShareData(value)} value={shareData}>
               <View style={styles.radioContainer}>
                 <RadioButton.Item label="Yes" value="1" />
                 <RadioButton.Item label="No" value= "0" />
@@ -308,7 +360,7 @@ useEffect(() => {
                     placeholder="What are you interested in:"
                     search
                     searchPlaceholder="Search"
-                    value={SelectedRentalPref}
+                    value={selectedRentalPref}
                     onChange={item => {
                     setSelectedRentalPref(item);
                         console.log('selected', item);
@@ -321,9 +373,7 @@ useEffect(() => {
                 color="#FF5733"
                 style={{marginVertical: 20, padding: 2}} 
                 labelStyle={styles.buttonLabel} 
-                onPress={() => navigation.navigate('RentalPreferences',{
-                  rentalPref: SelectedRentalPref,
-                })}>
+                onPress={() => createDataArray()}>
                 Next Page
               </Button>
          
