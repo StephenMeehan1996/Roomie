@@ -3,10 +3,8 @@ import { View, Text, StyleSheet,Platform,TextInput,Dimensions,TouchableOpacity,I
 import { Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButton  } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import { DatePickerModal } from 'react-native-paper-dates';
-import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Dropdown, MultiSelect } from 'react-native-element-dropdown';
-import DatePicker from 'react-native-date-picker';
+import { MultiSelect } from 'react-native-element-dropdown';
 
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -29,7 +27,6 @@ const SignupSchema = Yup.object().shape({
       .notOneOf([Yup.ref('Select an option')], 'Please select a gender')
       .required('Please select a gender'),
       dateBirth: Yup.string(),
-      //.required('Please select your date of birth'),
       password: Yup.string()
         .min(8, 'Password must be at least 8 characters long!')
         .required('Please enter your password.')
@@ -68,19 +65,7 @@ const SignUpForm = ({navigation}) => {
   const [age, setAge] = useState(''); // Calculated age
   const [dob, setDob] = useState('');
 
-
   const [open, setOpen] = React.useState(false); // var for calendar open/close 
-  
-  const handleOccupationChange = (value) => {
-    setOccupation(value);
-    if (value === '' || value === 'Working Professional') {
-      setOccupationDetailLabel('Working Hours');
-      setOccupationDropdownValue(workingHoursOptions[0]); 
-    } else if (value === 'Student') {
-      setOccupationDetailLabel('Year of Study');
-      setOccupationDropdownValue(yearOfStudyOptions[0]); 
-    }
-  };
   
   const onDismissSingle = React.useCallback(() => {
     setOpen(false);
@@ -96,7 +81,6 @@ const SignUpForm = ({navigation}) => {
     [setOpen, setDob]
   );
   
-  
   const calculateAge = () => {
     const birthDate = new Date(dob);
     const currentDate = new Date();
@@ -107,20 +91,15 @@ const SignUpForm = ({navigation}) => {
 
   function convertToShortDateString(dateString) {
     const date = new Date(dateString);
-
     if (isNaN(date)) {
       return 'Invalid Date';
     }
-  
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
-  
     const shortDateString = `${month}/${day}/${year}`;
-  
     return shortDateString;
   }
-
 
   const nextPage = (values) => {
     console.log(values);
@@ -137,25 +116,11 @@ const SignUpForm = ({navigation}) => {
         <Image style={styles.icon} source={require('../assets/Icons/twitter.png')} />
     </View>
     );
-};
+  };
 
-  const signUp = async () =>{
-    setLoading(true);
-    try{
-        const responce = await createUserWithEmailAndPassword(auth, email, password);
-        console.log(responce); 
-        alert('Check your emails!');
-     } catch (error){
-        console.log(error);
-        alert('Registration failed: ' + error.message);
-     } finally{
-        setLoading(false); 
-     }
-}
-
-useEffect(() => {
-  setAge(calculateAge(dob));
-}, [dob]);
+  useEffect(() => {
+    setAge(calculateAge(dob));
+  }, [dob]);
 
 const validateDob = async (value) => {
   try {
@@ -195,8 +160,7 @@ const validateDob = async (value) => {
                onSubmit={values => nextPage(values)
                }
               >
-        
-        {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit}) => (
+           {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit}) => (
             <View style={styles.container}>
             <Card elevation={5} style={styles.card}>
               <Card.Content>
@@ -476,13 +440,7 @@ const validateDob = async (value) => {
                           search
                           searchPlaceholder="Search"
                           disableSelect
-                          //onSelectionsChange={(selectedValues) => setFieldValue('selectedRentalPref', selectedValues)}
-                          // onSelectionsChange={(selectedValues) => {
-                          //   form.setFieldValue('selectedRentalPref', selectedValues);
-                          //   form.setFieldTouched('selectedRentalPref', true);
-                          // }}
                           value={values.selectedRentalPref}
-                          // value={selectedRentalPref}
                           onChange={item => {
                             setFieldValue('selectedRentalPref', item);
                               console.log('selected', item);
@@ -496,15 +454,12 @@ const validateDob = async (value) => {
                     <Button
                       mode="contained" 
                       color="#FF5733"
-                      //style={{marginVertical: 20, padding: 2, backgroundColor: isValid ? '#FF5733' : '#A5C9CA', color: '#FFF' }} 
                       style={{marginVertical: 20, padding: 2}} 
                       labelStyle={styles.buttonLabel} 
                       disabled={!isValid}
-                      //onPress={() => createDataArray()}>
                       onPress={handleSubmit}>
                       Next Page
                     </Button>
-              
           
                 </Card.Content>
               </Card>

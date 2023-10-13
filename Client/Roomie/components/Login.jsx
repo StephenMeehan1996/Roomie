@@ -25,20 +25,6 @@ const Login = ({navigation}) => {
         }
     }
 
-    const signUp = async () =>{
-        setLoading(true);
-        try{
-            const responce = await createUserWithEmailAndPassword(auth, email, password);
-            console.log(responce); 
-            alert('Check your emails!');
-         } catch (error){
-            console.log(error);
-            alert('Registration failed: ' + error.message);
-         } finally{
-            setLoading(false); 
-         }
-    }
-
   return (
     <View style={styles.container}>
         <KeyboardAvoidingView behavior='padding'>

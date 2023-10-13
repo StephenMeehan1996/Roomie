@@ -2,19 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet,Platform,TextInput,Dimensions,TouchableOpacity,Image,ScrollView, ActivityIndicator} from 'react-native';
 import { Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButton  } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
-import { DatePickerModal } from 'react-native-paper-dates';
 import { FIREBASE_AUTH } from '../FirebaseConfig';
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
-import { Ionicons } from '@expo/vector-icons';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
-
-import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference, priceRange, number, roomType, houseType, houseMatExpectations, environmentOptions, days } from '../data/formData';
+import { yesNO, priceRange, number, roomType, houseType, houseMatExpectations, environmentOptions, days } from '../data/formData';
 import  styles  from '../styles/formStyle.style';
 
 const RentalPreferencesForm = ({navigation, route}) => {
@@ -27,17 +21,17 @@ const RentalPreferencesForm = ({navigation, route}) => {
     const SignupSchema = Yup.object().shape({
       
       houseSharePriceRangeMin: Yup.string()
-      .notOneOf(['Select an option'], 'Please select a value')
-      .required('Please select a value'),
+      .notOneOf(['Select an option'], 'Please enter a minimum price')
+      .required('Please enter a minimum price'),
       houseSharePriceRangeMax: Yup.string()
-      .notOneOf(['Select an option'], 'Please select a value')
-      .required('Please select a value'),
+      .notOneOf(['Select an option'], 'Please enter a maximum price')
+      .required('Please enter a maximum price'),
       houseShareRoomType : Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
-      .required('Please select a value'),
+      .required('Please select a room type'),
       houseShareHouseType : Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
-      .required('Please select a value'),
+      .required('Please select a house type'),
       houseShareEnsuite: Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
       .required('Please select a value'),
@@ -49,33 +43,30 @@ const RentalPreferencesForm = ({navigation, route}) => {
       .required('Please select a value'),
 
       houseRentalPriceRangeMin: Yup.string()
-      .notOneOf(['Select an option'], 'Please select a value')
-      .required('Please select a value'),
+      .notOneOf(['Select an option'], 'Please enter a minimum price')
+      .required('Please enter a minimum price'),
       houseRentalPriceRangeMax: Yup.string()
-      .notOneOf(['Select an option'], 'Please select a value')
-      .required('Please select a value'),
-      houseRentalPriceRangeMin: Yup.string()
-      .notOneOf(['Select an option'], 'Please select a value')
-      .required('Please select a value'),
+      .notOneOf(['Select an option'], 'Please enter a maximum price')
+      .required('Please enter a maximum price'),
       numRooms: Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
-      .required('Please select a value'),
+      .required('Please select a number of rooms'),
       houseRentalHouseType: Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
-      .required('Please select a value'),
+      .required('Please select a house type'),
 
       digsPriceRangeMin: Yup.string()
-      .notOneOf(['Select an option'], 'Please select a value')
-      .required('Please select a value'),
+      .notOneOf(['Select an option'], 'Please enter a minimum price')
+      .required('Please enter a minimum price'),
       digsPriceRangeMax: Yup.string()
-      .notOneOf(['Select an option'], 'Please select a value')
-      .required('Please select a value'),
+      .notOneOf(['Select an option'], 'Please enter a maximum price')
+      .required('Please enter a maximum price'),
       digsRoomType: Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
-      .required('Please select a value'),
+      .required('Please select a room type'),
       digsHouseType: Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
-      .required('Please select a value'),
+      .required('Please select a house type'),
       digsDays: Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
       .required('Please select a value'),
@@ -83,22 +74,20 @@ const RentalPreferencesForm = ({navigation, route}) => {
       .notOneOf(['Select an option'], 'Please select a value')
       .required('Please select a value')
 
-});
+    });
+
     const isFormVisible = (value) => {
         return rentalPref.includes(value);
-      };
+    };
 
     const signUp = async (values) => {
        const formsToCombine = {...formData, ...values}
        setCompleteForm([formsToCombine]);
-       
-     
        setLoading(true);
        try{
-           const responce = await createUserWithEmailAndPassword(auth, completeForm[0].email, completeForm[0].password);
+           const responce = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
            console.log(responce); 
            console.log(completeForm);
-           console.log(completeForm[0].digsMealIncluded)
            alert('Check your emails!');
         } catch (error){
            console.log(error);
@@ -106,7 +95,6 @@ const RentalPreferencesForm = ({navigation, route}) => {
         } finally{
            setLoading(false); 
         }
-
     };
 
   return (
@@ -154,7 +142,7 @@ const RentalPreferencesForm = ({navigation, route}) => {
                 </View>
               </Card.Content>
             </Card>
-
+           
             <View>
                   {isFormVisible('House Share') && (
                   // Render this view when the title is in the array
@@ -289,6 +277,7 @@ const RentalPreferencesForm = ({navigation, route}) => {
               </Card>
               )}
             </View>
+           
 
             <View>
                   {isFormVisible('House Rental') && (
@@ -482,8 +471,9 @@ const RentalPreferencesForm = ({navigation, route}) => {
                         )}
                       </View>
                   </View>
-                  {loading ? <ActivityIndicator size="large" color="#0000ff"/>
+                  {loading ? <View style={styles.activityContainer}><ActivityIndicator size="large" color="#0000ff"/></View>
                   : <>
+                  </>}
                   <Button
                       mode="contained" 
                       color="#FF5733" 
@@ -492,7 +482,6 @@ const RentalPreferencesForm = ({navigation, route}) => {
                       onPress={handleSubmit}>
                       Create Account
                     </Button>
-                    </>}
                   </Card.Content>
                 </Card>
               )}

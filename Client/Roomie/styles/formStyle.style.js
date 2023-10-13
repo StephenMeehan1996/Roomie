@@ -140,6 +140,16 @@ const styles = StyleSheet.create({
   },
   errorMargin:{
     marginVertical: 5
+  },
+  activityContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute', // Apply absolute positioning
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0
   }
 
  
