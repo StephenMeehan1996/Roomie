@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet,Platform,TextInput,Dimensions,TouchableOpacity,Image,ScrollView} from 'react-native';
+import { View, Text, StyleSheet,Platform,TextInput,Dimensions,TouchableOpacity,Image,ScrollView, ActivityIndicator} from 'react-native';
 import { Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButton  } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import { DatePickerModal } from 'react-native-paper-dates';
@@ -7,6 +7,8 @@ import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
 import { Ionicons } from '@expo/vector-icons';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+
 
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -18,10 +20,12 @@ import  styles  from '../styles/formStyle.style';
 const RentalPreferencesForm = ({navigation, route}) => {
 
     const { rentalPref,formData } = route.params;
-    
+    const [loading, setLoading] = useState(false);
+    const [completeForm, setCompleteForm] = useState([]);
+    const auth = FIREBASE_AUTH;
+
     const SignupSchema = Yup.object().shape({
-     
-      //HouseShareHouseType
+      
       houseSharePriceRangeMin: Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
       .required('Please select a value'),
@@ -78,17 +82,32 @@ const RentalPreferencesForm = ({navigation, route}) => {
       digsMealIncluded: Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
       .required('Please select a value')
-});
-  
-   
 
+});
     const isFormVisible = (value) => {
         return rentalPref.includes(value);
       };
 
-      const signUp = (values) => {
-       console.log(values)
-      };
+    const signUp = async (values) => {
+       const formsToCombine = {...formData, ...values}
+       setCompleteForm([formsToCombine]);
+       
+     
+       setLoading(true);
+       try{
+           const responce = await createUserWithEmailAndPassword(auth, completeForm[0].email, completeForm[0].password);
+           console.log(responce); 
+           console.log(completeForm);
+           console.log(completeForm[0].digsMealIncluded)
+           alert('Check your emails!');
+        } catch (error){
+           console.log(error);
+           alert('Registration failed: ' + error.message);
+        } finally{
+           setLoading(false); 
+        }
+
+    };
 
   return (
     <ScrollView>
@@ -463,6 +482,8 @@ const RentalPreferencesForm = ({navigation, route}) => {
                         )}
                       </View>
                   </View>
+                  {loading ? <ActivityIndicator size="large" color="#0000ff"/>
+                  : <>
                   <Button
                       mode="contained" 
                       color="#FF5733" 
@@ -471,7 +492,7 @@ const RentalPreferencesForm = ({navigation, route}) => {
                       onPress={handleSubmit}>
                       Create Account
                     </Button>
-          
+                    </>}
                   </Card.Content>
                 </Card>
               )}

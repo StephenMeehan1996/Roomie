@@ -176,7 +176,7 @@ const validateDob = async (value) => {
               initialValues={{
                   firstName: 'Stephen',
                   lastName: 'Meehan',
-                  email: 'Meehan@gmail.com',
+                  email: 'donal.peter.peter@gmail.com',
                   //dob: new Date(),
                   gender: 'Male',
                   dateBirth: dob,
