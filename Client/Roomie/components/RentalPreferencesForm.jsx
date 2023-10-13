@@ -15,7 +15,6 @@ const RentalPreferencesForm = ({navigation, route}) => {
 
     const { rentalPref,formData } = route.params;
     const [loading, setLoading] = useState(false);
-    const [completeForm, setCompleteForm] = useState([]);
     const auth = FIREBASE_AUTH;
 
     const SignupSchema = Yup.object().shape({
@@ -80,45 +79,47 @@ const RentalPreferencesForm = ({navigation, route}) => {
         return rentalPref.includes(value);
     };
 
+
     const signUp = async (values) => {
-       const formsToCombine = {...formData, ...values}
-       setCompleteForm([formsToCombine]);
-       setLoading(true);
-       try{
-           const responce = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-           console.log(responce); 
-           console.log(completeForm);
-           alert('Check your emails!');
-        } catch (error){
-           console.log(error);
-           alert('Registration failed: ' + error.message);
-        } finally{
-           setLoading(false); 
-        }
-    };
+      const formsToCombine = {...formData, ...values}
+      setLoading(true);
+      try{
+          const responce = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+          console.log(responce); 
+          console.log(formsToCombine);
+          //Post data to DB from here
+          alert('Check your emails!');
+       } catch (error){
+          console.log(error);
+          alert('Registration failed: ' + error.message);
+       } finally{
+          setLoading(false); 
+       }
+   };
 
   return (
     <ScrollView>
       <Formik
               initialValues={{
-                houseSharePriceRangeMin : '',
-                houseSharePriceRangeMax : '',
-                houseShareRoomType : '',
-                houseShareHouseType : '',
-                houseShareEnsuite : '',
-                houseMateExpect : '',
-                environment : '',
+                houseSharePriceRangeMin : '700',
+                houseSharePriceRangeMax : '1200',
+                houseShareRoomType : 'Double',
+                houseShareHouseType : 'Apartment',
+                houseShareEnsuite : '1',
+                houseMateExpect : 'Friendly',
+                environment : 'Social',
       
-                houseRentalPriceRangeMin : '',
-                houseRentalPriceRangeMax : '',
-                numRooms : '',
-                houseRentalHouseType : '',
+                houseRentalPriceRangeMin : '500',
+                houseRentalPriceRangeMax : '1200',
+                numRooms : '3',
+                houseRentalHouseType : 'Apartment',
       
-                digsPriceRangeMin : '',
-                digsPriceRangeMax: '',
-                digsRoomType: '',
-                digsDays : '',
-                digsMealIncluded: ''
+                digsPriceRangeMin : '200',
+                digsPriceRangeMax: '600',
+                digsRoomType: 'Double',
+                digsHouseType: 'Apartment',
+                digsDays : 'Mon-Friday',
+                digsMealIncluded: '1'
               }}
                validationSchema={SignupSchema}
                onSubmit={values => signUp(values)}

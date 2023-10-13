@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Profile from '../components/Profile';
 import Search from '../components/Search';
 import Login from './Login';
+import CreateAdd from './CreateAdd';
 import { Avatar, Card, Title, Paragraph, Button,IconButton } from 'react-native-paper';
 
 const Tab = createBottomTabNavigator();
@@ -35,8 +36,8 @@ const HomePage = ({navigation}) => {
                 } else if (route.name === 'Search') {
                 iconName = focused ? 'search-outline' : 'search-outline';
                 }
-                else if (route.name === 'Logout') {
-                    iconName = focused ? 'log-out-outline' : 'log-out-outline';
+                else if (route.name === 'Create Add') {
+                    iconName = focused ? 'add-circle-outline' : 'add-circle-outline';
                 }
                 // You can return any component that you like here!
                 return <Ionicons name={iconName} size={size} color={color} />;
@@ -46,6 +47,7 @@ const HomePage = ({navigation}) => {
             })}
         > 
         <Tab.Screen name="Profile" component={Profile} />
+        <Tab.Screen name="Create Add" component={CreateAdd} />
         <Tab.Screen name="Search" component={Search} />
       </Tab.Navigator>
    </View>

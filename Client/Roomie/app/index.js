@@ -12,6 +12,7 @@ import Profile from '../components/Profile';
 import Search from '../components/Search';
 import SignUpForm from '../components/SignupForm';
 import RentalPreferencesForm from '../components/RentalPreferencesForm';
+import CreateAdd from '../components/CreateAdd';
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
@@ -20,9 +21,10 @@ const OutsideStack = createNativeStackNavigator();
 const InsideLayout = () =>{
    return(
     <InsideStack.Navigator initialRouteName='Home' screenOptions={{headerShown: false}}>
-        <InsideStack.Screen name = "HomePage" component={HomePage} screenOptions={{headerShown: false}}/>
-        <InsideStack.Screen name = "Profile" component={Profile} screenOptions={{headerShown: false}}/>
-        <InsideStack.Screen name = "Search" component={Search} screenOptions={{headerShown: false}}/>
+        <InsideStack.Screen name = "HomePage" component={HomePage}/>
+        <InsideStack.Screen name = "Profile" component={Profile}/>
+        <InsideStack.Screen name = "Search" component={Search}/>
+        <InsideStack.Screen name = "CreateAdd" component={CreateAdd}/>
     </InsideStack.Navigator>
     )
 }
@@ -38,6 +40,7 @@ const OutsideLayout = () =>{
 }
 
 const Home =  () =>{
+
     const auth = FIREBASE_AUTH;
     const [selectedOption, setselectedOption] = useState(null);
     const [user, setUser] = useState(null);
@@ -58,8 +61,8 @@ const Home =  () =>{
     return (
         <SafeAreaView style={{flex: 1}}>
             <NavigationContainer  independent={true}>
-                <Stack.Navigator initialRouteName='Home'>
-                    {user ? <Stack.Screen name='Inside' component={InsideLayout} options={{headerShown: false}}/> : <Stack.Screen name='OutsideLayout' component={OutsideLayout} options={{headerShown: false}}/> }
+                <Stack.Navigator initialRouteName='Home' screenOptions={{headerShown: false}} >
+                    {user ? <Stack.Screen name='Inside' component={InsideLayout}/> : <Stack.Screen name='OutsideLayout' component={OutsideLayout}/> }
                 </Stack.Navigator>
             </NavigationContainer>
         </SafeAreaView>
