@@ -122,10 +122,11 @@ const SignUpForm = ({navigation}) => {
   }
 
 
-  const createDataArray = () => {
+  const nextPage = (values) => {
+    console.log(values);
     navigation.navigate('RentalPreferences', { 
-      //rentalPref: selectedRentalPref, 
-      //formData: formData 
+       rentalPref: values.selectedRentalPref, 
+       formData: values 
     });
   };
   
@@ -191,7 +192,8 @@ const validateDob = async (value) => {
                   selectedRentalPref: ['House Share', 'House Rental', 'Digs'],
               }}
                validationSchema={SignupSchema}
-               onSubmit={values => console.log(values)}
+               onSubmit={values => nextPage(values)
+               }
               >
         
         {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit}) => (

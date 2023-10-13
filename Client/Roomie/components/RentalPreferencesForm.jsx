@@ -21,14 +21,17 @@ const RentalPreferencesForm = ({navigation, route}) => {
     
     const SignupSchema = Yup.object().shape({
      
-      
+      //HouseShareHouseType
       HouseSharePriceRangeMin: Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
       .required('Please select a value'),
       HouseSharePriceRangeMax: Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
       .required('Please select a value'),
-      HouseShareRoomType: Yup.string()
+      HouseShareRoomType : Yup.string()
+      .notOneOf(['Select an option'], 'Please select a value')
+      .required('Please select a value'),
+      HouseShareHouseType : Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
       .required('Please select a value'),
       HouseShareEnsuite: Yup.string()
@@ -37,7 +40,7 @@ const RentalPreferencesForm = ({navigation, route}) => {
       HouseMateExpect: Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
       .required('Please select a value'),
-      environment: Yup.string()
+      Environment: Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
       .required('Please select a value'),
 
@@ -50,7 +53,7 @@ const RentalPreferencesForm = ({navigation, route}) => {
       HouseRentalPriceRangeMin: Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
       .required('Please select a value'),
-      numRooms: Yup.string()
+      NumRooms: Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
       .required('Please select a value'),
       HouseRentalHouseType: Yup.string()
@@ -108,31 +111,7 @@ const RentalPreferencesForm = ({navigation, route}) => {
       };
 
       const createDataArray = () => {
-        const formObj = {
-          HouseSharePriceRangeMin : houseSharePriceRangeMin,
-          HouseSharePriceRangeMax : houseSharePriceRangeMax,
-          HouseShareRoomType : houseShareRoomType,
-          HouseShareHouseType : houseShareHouseType,
-          HouseShareEnsuite : houseShareEnsuite,
-          HouseMateExpect : houseMateExpect,
-          Environment : environment,
-
-          HouseRentalPriceRangeMin : houseRentalPriceRangeMin,
-          HouseRentalPriceRangeMax : houseRentalPriceRangeMax,
-          NumRooms : numRooms,
-          HouseRentalHouseType : houseRentalHouseType,
-
-          DigsPriceRangeMin : digsPriceRangeMin,
-          DigsPriceRangeMax: digsPriceRangeMax,
-          DigsRoomType: digsRoomType,
-          DigsDays : digsDays,
-          DigsMealIncluded: digsMealIncluded
-        };
-    
-        setFormData2([formObj]);
-        
-        console.log(formData);
-        console.log(formData2);
+       
        
        
       };
@@ -198,26 +177,34 @@ const RentalPreferencesForm = ({navigation, route}) => {
                       <View style={styles.lineInput}>
                       <Text style={styles.label}>Min:</Text>
                       <Picker
-                          selectedValue={houseSharePriceRangeMin}
                           style={styles.input}
-                          onValueChange={(itemValue) => setHouseSharePriceRangeMin(itemValue)}  
+                          selectedValue={values.HouseSharePriceRangeMin}
+                          onValueChange={handleChange('HouseSharePriceRangeMin')}
+                          onBlur={() => setFieldTouched('HouseSharePriceRangeMin')}
                       >
                           {priceRange.map((option, index) => (
                               <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                       </Picker>
+                      {touched.HouseSharePriceRangeMin && errors.HouseSharePriceRangeMin &&(
+                          <Text style={styles.errorTxt}>{errors.HouseSharePriceRangeMin}</Text>
+                      )}
                     </View>
                     <View style={styles.lineInput}>
                       <Text style={styles.label}>Max:</Text>
                           <Picker
-                              selectedValue={houseSharePriceRangeMax}
                               style={styles.input}
-                              onValueChange={(itemValue) => setHouseSharePriceRangeMax(itemValue)}  
+                              selectedValue={values.HouseSharePriceRangeMax}
+                              onValueChange={handleChange('HouseSharePriceRangeMax')}
+                              onBlur={() => setFieldTouched('HouseSharePriceRangeMax')}
                           >
                               {priceRange.map((option, index) => (
                               <Picker.Item key={index} label={option.label} value={option.value} />
                               ))}
                           </Picker>
+                          {touched.HouseSharePriceRangeMax && errors.HouseSharePriceRangeMax &&(
+                          <Text style={styles.errorTxt}>{errors.HouseSharePriceRangeMax}</Text>
+                          )}
                       </View>
                   </View>
 
@@ -225,26 +212,34 @@ const RentalPreferencesForm = ({navigation, route}) => {
                       <View style={styles.lineInput}>
                         <Text style={styles.label}>Room Type:</Text>
                         <Picker
-                          selectedValue={houseShareRoomType}
                           style={styles.input}
-                          onValueChange={(itemValue) => setHouseShareRoomType(itemValue)}  
+                          selectedValue={values.HouseShareRoomType}
+                          onValueChange={handleChange('HouseShareRoomType')}
+                          onBlur={() => setFieldTouched('HouseShareRoomType')}
                         >
                           {roomType.map((option, index) => (
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                         </Picker>
+                        {touched.HouseShareRoomType && errors.HouseShareRoomType &&(
+                          <Text style={styles.errorTxt}>{errors.HouseShareRoomType}</Text>
+                        )}
                       </View>
                       <View style={styles.lineInput}>
                           <Text style={styles.label}>House Type:</Text>
                           <Picker
-                          selectedValue={houseShareHouseType}
                           style={styles.input}
-                          onValueChange={(itemValue) => setHouseShareHouseType(itemValue)}  
+                          selectedValue={values.HouseShareHouseType}
+                          onValueChange={handleChange('HouseShareHouseType')}
+                          onBlur={() => setFieldTouched('HouseShareHouseType')}
                         >
                           {houseType.map((option, index) => (
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                         </Picker>
+                        {touched.HouseShareHouseType && errors.HouseShareHouseType &&(
+                          <Text style={styles.errorTxt}>{errors.HouseShareHouseType}</Text>
+                        )}
                       </View>
                   </View>
 
@@ -252,39 +247,51 @@ const RentalPreferencesForm = ({navigation, route}) => {
                       <Text style={styles.label}>Ensuite</Text>
                       <Picker
                           style={[styles.input, styles.singleLineInput]}
-                          selectedValue={houseShareEnsuite}
-                          onValueChange={(itemValue) => setHouseShareEnsuite(itemValue)}
+                          selectedValue={values.HouseShareEnsuite}
+                          onValueChange={handleChange('HouseShareEnsuite')}
+                          onBlur={() => setFieldTouched('HouseShareEnsuite')}
                           >
                           {yesNO.map((option, index) => (
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                       </Picker>
+                      {touched.HouseShareEnsuite && errors.HouseShareEnsuite &&(
+                          <Text style={styles.errorTxt}>{errors.HouseShareEnsuite}</Text>
+                      )}
                   </View>
 
                   <View style={styles.sameLineContainer}>
                       <View style={styles.lineInput}>
                         <Text style={styles.label}>House Expectations:</Text>
                         <Picker
-                          selectedValue={houseMateExpect}
                           style={styles.input}
-                          onValueChange={(itemValue) => setHouseMateExpect(itemValue)}  
+                          selectedValue={values.HouseMateExpect}
+                          onValueChange={handleChange('HouseMateExpect')}
+                          onBlur={() => setFieldTouched('HouseMateExpect')} 
                         >
                           {houseMatExpectations.map((option, index) => (
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                         </Picker>
+                        {touched.HouseMateExpect && errors.HouseMateExpect&&(
+                          <Text style={styles.errorTxt}>{errors.HouseMateExpect}</Text>
+                        )}
                       </View>
                       <View style={styles.lineInput}>
                           <Text style={styles.label}>Environment:</Text>
                           <Picker
-                          selectedValue={environment}
                           style={styles.input}
-                          onValueChange={(itemValue) => setEnvironment(itemValue)}  
+                          selectedValue={values.Environment}
+                          onValueChange={handleChange('Environment')}
+                          onBlur={() => setFieldTouched('Environment')} 
                         >
                           {environmentOptions.map((option, index) => (
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                         </Picker>
+                        {touched.Environment && errors.Environment&&(
+                          <Text style={styles.errorTxt}>{errors.Environment}</Text>
+                        )}
                       </View>
                   </View>
                   
@@ -304,26 +311,34 @@ const RentalPreferencesForm = ({navigation, route}) => {
                       <View style={styles.lineInput}>
                       <Text style={styles.label}>Min:</Text>
                       <Picker
-                          selectedValue={houseRentalPriceRangeMin}
                           style={styles.input}
-                          onValueChange={(itemValue) => setHouseRentalPriceRangeMin(itemValue)}  
+                          selectedValue={values.HouseRentalPriceRangeMin}
+                          onValueChange={handleChange('HouseRentalPriceRangeMin')}
+                          onBlur={() => setFieldTouched('HouseRentalPriceRangeMin')}  
                       >
                           {priceRange.map((option, index) => (
                               <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                       </Picker>
+                      {touched.HouseRentalPriceRangeMin && errors.HouseRentalPriceRangeMin&&(
+                          <Text style={styles.errorTxt}>{errors.HouseRentalPriceRangeMin}</Text>
+                      )}
                     </View>
                     <View style={styles.lineInput}>
                       <Text style={styles.label}>Max:</Text>
                           <Picker
-                              selectedValue={houseRentalPriceRangeMax}
                               style={styles.input}
-                              onValueChange={(itemValue) => setHouseRentalPriceRangeMax(itemValue)}  
+                              selectedValue={values.HouseRentalPriceRangeMax}
+                              onValueChange={handleChange('HouseRentalPriceRangeMax')}
+                              onBlur={() => setFieldTouched('HouseRentalPriceRangeMax')}  
                           >
                               {priceRange.map((option, index) => (
                               <Picker.Item key={index} label={option.label} value={option.value} />
                               ))}
                           </Picker>
+                          {touched.HouseRentalPriceRangeMax && errors.HouseRentalPriceRangeMax&&(
+                            <Text style={styles.errorTxt}>{errors.HouseRentalPriceRangeMax}</Text>
+                          )}
                       </View>
                   </View>
 
@@ -331,26 +346,34 @@ const RentalPreferencesForm = ({navigation, route}) => {
                       <View style={styles.lineInput}>
                       <Text style={styles.label}>Num Rooms:</Text>
                       <Picker
-                          selectedValue={numRooms}
                           style={styles.input}
-                          onValueChange={(itemValue) => setNumRooms(itemValue)}  
+                          selectedValue={values.NumRooms}
+                          onValueChange={handleChange('NumRooms')}
+                          onBlur={() => setFieldTouched('NumRooms')}   
                       >
                           {number.map((option, index) => (
                               <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                       </Picker>
+                      {touched.NumRooms && errors.NumRooms&&(
+                          <Text style={styles.errorTxt}>{errors.NumRooms}</Text>
+                      )}
                     </View>
                     <View style={styles.lineInput}>
                       <Text style={styles.label}>House Type:</Text>
                           <Picker
-                              selectedValue={houseRentalHouseType}
                               style={styles.input}
-                              onValueChange={(itemValue) => setHouseRentalHouseType(itemValue)}  
+                              selectedValue={values.NumRooms}
+                              onValueChange={handleChange('HouseRentalHouseType')}
+                              onBlur={() => setFieldTouched('HouseRentalHouseType')} 
                           >
                               {houseType.map((option, index) => (
                               <Picker.Item key={index} label={option.label} value={option.value} />
                               ))}
                           </Picker>
+                          {touched.HouseRentalHouseType && errors.HouseRentalHouseType&&(
+                            <Text style={styles.errorTxt}>{errors.HouseRentalHouseType}</Text>
+                          )}
                       </View>
                   </View>
                   </Card.Content>
@@ -369,26 +392,34 @@ const RentalPreferencesForm = ({navigation, route}) => {
                       <View style={styles.lineInput}>
                       <Text style={styles.label}>Min:</Text>
                       <Picker
-                          selectedValue={digsPriceRangeMin}
                           style={styles.input}
-                          onValueChange={(itemValue) => setDigsPriceRangeMin(itemValue)}  
+                          selectedValue={values.DigsPriceRangeMin}
+                          onValueChange={handleChange('DigsPriceRangeMin')}
+                          onBlur={() => setFieldTouched('DigsPriceRangeMin')}  
                       >
                           {priceRange.map((option, index) => (
                               <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                       </Picker>
+                      {touched.DigsPriceRangeMin && errors.DigsPriceRangeMin&&(
+                        <Text style={styles.errorTxt}>{errors.DigsPriceRangeMin}</Text>
+                      )}
                     </View>
                     <View style={styles.lineInput}>
                       <Text style={styles.label}>Max:</Text>
                           <Picker
-                              selectedValue={digsPriceRangeMax}
                               style={styles.input}
-                              onValueChange={(itemValue) => setDigsPriceRangeMax(itemValue)}  
+                              selectedValue={values.DigsPriceRangeMax}
+                              onValueChange={handleChange('DigsPriceRangeMax')}
+                              onBlur={() => setFieldTouched('DigsPriceRangeMax')}  
                           >
                               {priceRange.map((option, index) => (
                               <Picker.Item key={index} label={option.label} value={option.value} />
                               ))}
                           </Picker>
+                          {touched.DigsPriceRangeMax && errors.DigsPriceRangeMax&&(
+                            <Text style={styles.errorTxt}>{errors.DigsPriceRangeMax}</Text>
+                          )}
                       </View>
                   </View>
 
@@ -396,26 +427,34 @@ const RentalPreferencesForm = ({navigation, route}) => {
                       <View style={styles.lineInput}>
                         <Text style={styles.label}>Room Type:</Text>
                         <Picker
-                          selectedValue={digsRoomType}
                           style={styles.input}
-                          onValueChange={(itemValue) => setDigsRoomType(itemValue)}  
+                          selectedValue={values.DigsRoomType}
+                          onValueChange={handleChange('DigsRoomType')}
+                          onBlur={() => setFieldTouched('DigsRoomType')} 
                         >
                           {roomType.map((option, index) => (
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                         </Picker>
+                        {touched.DigsRoomType && errors.DigsRoomType&&(
+                          <Text style={styles.errorTxt}>{errors.DigsRoomType}</Text>
+                        )}
                       </View>
                       <View style={styles.lineInput}>
                           <Text style={styles.label}>House Type:</Text>
                           <Picker
-                          selectedValue={digsHouseType}
                           style={styles.input}
-                          onValueChange={(itemValue) => setDigsHouseType(itemValue)}  
+                          selectedValue={values.DigsHouseType}
+                          onValueChange={handleChange('DigsHouseType')}
+                          onBlur={() => setFieldTouched('DigsHouseType')}
                         >
                           {houseType.map((option, index) => (
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                         </Picker>
+                        {touched.DigsHouseType && errors.DigsHouseType&&(
+                          <Text style={styles.errorTxt}>{errors.DigsHouseType}</Text>
+                        )}
                       </View>
                   </View>
 
@@ -423,32 +462,41 @@ const RentalPreferencesForm = ({navigation, route}) => {
                       <View style={styles.lineInput}>
                         <Text style={styles.label}>Days:</Text>
                         <Picker
-                          selectedValue={digsDays}
                           style={styles.input}
-                          onValueChange={(itemValue) => setDigsDays(itemValue)}  
+                          selectedValue={values.DigsDays}
+                          onValueChange={handleChange('DigsDays')}
+                          onBlur={() => setFieldTouched('DigsDays')}  
                         >
                           {days.map((option, index) => (
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                         </Picker>
+                        {touched.DigsDays && errors.DigsDays&&(
+                          <Text style={styles.errorTxt}>{errors.DigsDays}</Text>
+                        )}
                       </View>
                       <View style={styles.lineInput}>
                           <Text style={styles.label}>Meals Included:</Text>
                           <Picker
-                          selectedValue={digsMealIncluded}
                           style={styles.input}
-                          onValueChange={(itemValue) => setDigsMealIncluded(itemValue)}  
+                          selectedValue={values.DigsMealIncluded}
+                          onValueChange={handleChange('DigsMealIncluded')}
+                          onBlur={() => setFieldTouched('DigsMealIncluded')} 
                         >
                           {yesNO.map((option, index) => (
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                         </Picker>
+                        {touched.DigsMealIncluded && errors.DigsMealIncluded&&(
+                          <Text style={styles.errorTxt}>{errors.DigsDays}</Text>
+                        )}
                       </View>
                   </View>
                   <Button
                       mode="contained" 
                       color="#FF5733" 
                       labelStyle={styles.buttonLabel}
+                      disabled={!isValid}
                       onPress={() => createDataArray()}>
                       Create Account
                     </Button>

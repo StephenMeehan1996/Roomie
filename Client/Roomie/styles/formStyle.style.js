@@ -135,7 +135,8 @@ const styles = StyleSheet.create({
   },
   errorTxt:{
     fontSize: 12,
-    color: '#FF0D10'
+    color: '#FF0D10',
+    marginBottom: 8
   },
   errorMargin:{
     marginVertical: 5
