@@ -29,10 +29,12 @@ const CreateAdd = ({navigation}) => {
         );
       };
 
-     
       const nextPage = (values) => {
         console.log(values);
-      }
+        navigation.navigate('AddImage', {  
+           formData: values 
+        });
+      };
 
       const HouseShareSchema = Yup.object().shape({
         addType : Yup.string(),
@@ -183,7 +185,16 @@ const CreateAdd = ({navigation}) => {
             <>
                 <Card elevation={5} style={styles.card}>
                     <Card.Content>
-                        <Title style={styles.title}>Add Type:</Title>
+                        <View style={styles.header}>
+                            <Title style={styles.title}>Add Type:</Title>
+                            <IconButton
+                                icon="arrow-left"
+                                mode="text"
+                                size={30}
+                                style={{flex:1,alignItems: 'flex-end'}}
+                                onPress={() => navigation.goBack()}>
+                            </IconButton>
+                        </View>
                         <View style={styles.btnContainer}>
                             <TouchableOpacity
                                 style={[
@@ -254,7 +265,8 @@ const CreateAdd = ({navigation}) => {
                   <View>
                     <Card elevation={5} style={styles.card}>
                         <Card.Content>
-                            <Title style={styles.title}>Address:</Title>
+                            <Title style={styles.title}>House Share</Title>
+                            <Title style={styles.title2}>Address:</Title>
                             <View >
                                 <Text style={styles.label}>Address Line 1:</Text>
                                 <TextInput
@@ -343,9 +355,8 @@ const CreateAdd = ({navigation}) => {
 
                     <Card elevation={5} style={styles.card}>
                      <Card.Content>
-                        <Title style={styles.title}>Room Details:</Title>
+                        <Title style={styles.title2}>Room Details:</Title>
                             
-
                             <View style={styles.sameLineContainer}>
                                 <View style={styles.lineInput}>
                                     <Text style={styles.label}>Room Type:</Text>
@@ -483,7 +494,7 @@ const CreateAdd = ({navigation}) => {
 
                     <Card elevation={5} style={styles.card}>
                         <Card.Content>
-                        <Title style={styles.title}>Roomie Details:</Title>
+                        <Title style={styles.title2}>Roomie Details:</Title>
                         <Text style={styles.label}>What are you looking for in a Roomie:</Text>
                         <RadioButton.Group onValueChange={(newValue) => setFieldValue('houseMateDetailOption', newValue)} value={values.houseMateDetailOption}>
                             <View style={styles.radioContainerStart}>

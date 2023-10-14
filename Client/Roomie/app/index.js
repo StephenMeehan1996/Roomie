@@ -13,6 +13,7 @@ import Search from '../components/Search';
 import SignUpForm from '../components/SignupForm';
 import RentalPreferencesForm from '../components/RentalPreferencesForm';
 import CreateAdd from '../components/CreateAdd';
+import AddImage from '../components/AddImage';
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
@@ -25,6 +26,7 @@ const InsideLayout = () =>{
         <InsideStack.Screen name = "Profile" component={Profile}/>
         <InsideStack.Screen name = "Search" component={Search}/>
         <InsideStack.Screen name = "CreateAdd" component={CreateAdd}/>
+        <InsideStack.Screen name = "AddImage" component={AddImage}/>
     </InsideStack.Navigator>
     )
 }
