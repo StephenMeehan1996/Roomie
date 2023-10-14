@@ -20,63 +20,128 @@ const CreateAdd = ({navigation}) => {
         });
       }, [navigation]);
 
-      const SignupSchema = Yup.object().shape({
-      
-        houseSharePriceRangeMin: Yup.string()
-        .notOneOf(['Select an option'], 'Please enter a minimum price')
-        .required('Please enter a minimum price'),
-        houseSharePriceRangeMax: Yup.string()
-        .notOneOf(['Select an option'], 'Please enter a maximum price')
-        .required('Please enter a maximum price'),
+      const HouseShareSchema = Yup.object().shape({
+        addType : Yup.string(),
+        addressLine1: Yup.string()
+        .required('Please enter the first line of the address'),
+        addressLine2: Yup.string()
+        .required('Please enter the second line of the address'),
+        city: Yup.string()
+        .required('Please enter the city for the address'),
+        county: Yup.string()
+        .required('Please enter the county for the address'),
+        zip: Yup.string(),
+        numOccupants: Yup.string()
+        .required('Please enter the city for the address'),
+        houseShareHouseType : Yup.string()
+        .required('Please select a house type'),
+        houseSharePrice : Yup.string()
+        .required('Please select a price'),
         houseShareRoomType : Yup.string()
-        .notOneOf(['Select an option'], 'Please select a value')
         .required('Please select a room type'),
         houseShareHouseType : Yup.string()
-        .notOneOf(['Select an option'], 'Please select a value')
         .required('Please select a house type'),
         houseShareEnsuite: Yup.string()
-        .notOneOf(['Select an option'], 'Please select a value')
         .required('Please select a value'),
+        bio : Yup.string(),
+        referenceRequired: Yup.string()
+        .required('Please select an option'),
+        deposit: Yup.string()
+        .required('Please select a value'),
+
+        houseMateDetailOption : Yup.string()
+        .required('Please select a option'),
+        houseMateGender : Yup.string()
+        .required('Please select a gender'),
+        houseMateAge : Yup.string()
+        .required('Please select a age'),
+        houseMateOccupation : Yup.string()
+        .required('Please select an occupation'),
+        occupationDropdownValue: Yup.string()
+       .required('Please select a value'),
+        houseMateSmoking : Yup.string()
+        .required('Please select an option'),
         houseMateExpect: Yup.string()
         .notOneOf(['Select an option'], 'Please select a value')
         .required('Please select a value'),
         environment: Yup.string()
         .notOneOf(['Select an option'], 'Please select a value')
-        .required('Please select a value'),
-  
-        houseRentalPriceRangeMin: Yup.string()
-        .notOneOf(['Select an option'], 'Please enter a minimum price')
-        .required('Please enter a minimum price'),
-        houseRentalPriceRangeMax: Yup.string()
-        .notOneOf(['Select an option'], 'Please enter a maximum price')
-        .required('Please enter a maximum price'),
+        .required('Please select a value')
+      });
+
+      const HouseRentalSchema = Yup.object().shape({
+        addType : Yup.string(),
+        addressLine1: Yup.string()
+        .required('Please enter the first line of the address'),
+        addressLine2: Yup.string()
+        .required('Please enter the second line of the address'),
+        city: Yup.string()
+        .required('Please enter the city for the address'),
+        county: Yup.string()
+        .required('Please enter the county for the address'),
+        zip: Yup.string(),
         numRooms: Yup.string()
-        .notOneOf(['Select an option'], 'Please select a value')
-        .required('Please select a number of rooms'),
-        houseRentalHouseType: Yup.string()
-        .notOneOf(['Select an option'], 'Please select a value')
+        .required('Please enter the city for the address'),
+        houseRentalHouseType : Yup.string()
         .required('Please select a house type'),
-  
-        digsPriceRangeMin: Yup.string()
-        .notOneOf(['Select an option'], 'Please enter a minimum price')
-        .required('Please enter a minimum price'),
-        digsPriceRangeMax: Yup.string()
-        .notOneOf(['Select an option'], 'Please enter a maximum price')
-        .required('Please enter a maximum price'),
-        digsRoomType: Yup.string()
-        .notOneOf(['Select an option'], 'Please select a value')
-        .required('Please select a room type'),
-        digsHouseType: Yup.string()
-        .notOneOf(['Select an option'], 'Please select a value')
+        houseRentalPrice : Yup.string()
+        .required('Please select a price'),
+        bio : Yup.string(),
+
+        tenantDetailOption : Yup.string()
+        .required('Please select an option'),
+        tenantMateGender : Yup.string()
+        .required('Please select a gender'),
+        tenantMateOccupation : Yup.string()
+        .required('Please select a occupation'),
+        houseMateSmoking : Yup.string()
+        .required('Please select an option'),
+        referenceRequired: Yup.string()
+        .required('Please select an option'),
+        deposit: Yup.string()
+        .required('Please select a value')
+      });
+
+      const DigsSchema = Yup.object().shape({
+        addType : Yup.string(),
+        addressLine1: Yup.string()
+        .required('Please enter the first line of the address'),
+        addressLine2: Yup.string()
+        .required('Please enter the second line of the address'),
+        city: Yup.string()
+        .required('Please enter the city for the address'),
+        county: Yup.string()
+        .required('Please enter the county for the address'),
+        zip: Yup.string(),
+        numOccupants: Yup.string()
+        .required('Please enter the city for the address'),
+        digsHouseType : Yup.string()
         .required('Please select a house type'),
+        digsPrice : Yup.string()
+        .required('Please select a price'),
         digsDays: Yup.string()
-        .notOneOf(['Select an option'], 'Please select a value')
         .required('Please select a value'),
         digsMealIncluded: Yup.string()
-        .notOneOf(['Select an option'], 'Please select a value')
-        .required('Please select a value')
-  
+        .required('Please select a value'),
+        referenceRequired: Yup.string()
+        .required('Please select an option'),
+        deposit: Yup.string()
+        .required('Please select a value'),
+        bio : Yup.string(),
+      
+        digsDetailOption : Yup.string()
+        .required('Please select an option'),
+        digsGender : Yup.string()
+        .required('Please select a gender'),
+        digsAge : Yup.string()
+        .required('Please select a age'),
+        tenantMateOccupation : Yup.string()
+        .required('Please select a occupation'),
+        houseMateSmoking : Yup.string()
+        .required('Please select an option'),
+      
       });
+
       const [selectedButton, setSelectedButton] = useState(null);
       const [showForm, setShowForm] = useState(null);
       const isButtonSelected = (buttonId) => selectedButton === buttonId;
