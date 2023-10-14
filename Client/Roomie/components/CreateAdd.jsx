@@ -77,6 +77,18 @@ const CreateAdd = ({navigation}) => {
         .required('Please select a value')
   
       });
+      const [selectedButton, setSelectedButton] = useState(null);
+      const [showForm, setShowForm] = useState(null);
+      const isButtonSelected = (buttonId) => selectedButton === buttonId;
+
+      const handleButtonPress = (buttonId) => {
+        setSelectedButton(buttonId);
+        setShowForm(buttonId);
+      };
+    
+     
+
+    
       
   return (
     <ScrollView>
@@ -107,9 +119,68 @@ const CreateAdd = ({navigation}) => {
             <View style={styles.container}>
                 <Card elevation={5} style={styles.card}>
                     <Card.Content>
-                        <Title style={styles.title}>Add Type</Title>
+                        <Title style={styles.title}>Add Type:</Title>
+                        <View style={styles.btnContainer}>
+                            <TouchableOpacity
+                                style={[
+                                styles.button,
+                                isButtonSelected(1) && styles.selectedButton,
+                                ]}
+                                onPress={() => handleButtonPress(1)}
+                            >
+                                <Text style={[styles.buttonText, isButtonSelected(1) && styles.selectedButtonText]}>House share</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={[
+                                styles.button,
+                                isButtonSelected(2) && styles.selectedButton,
+                                ]}
+                                onPress={() => handleButtonPress(2)}
+                            >
+                                <Text style={[styles.buttonText, isButtonSelected(2) && styles.selectedButtonText]}>House Rental</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={[
+                                styles.button,
+                                isButtonSelected(3) && styles.selectedButton
+                                ]}
+                                onPress={() => handleButtonPress(3)}
+                            >
+                                <Text style={[styles.buttonText, isButtonSelected(3) && styles.selectedButtonText]}>Digs</Text>
+                            </TouchableOpacity>
+                        </View>
                     </Card.Content>
                 </Card>
+                  {/* House Share Form*/}
+                  {showForm === 1 && (
+                    <Card elevation={5} style={styles.card}>
+                        <Card.Content>
+                            <Title style={styles.title}>House Share:</Title>
+                        
+                        </Card.Content>
+                    </Card>
+                  )}
+                {/* House Rental Form */}
+                {showForm === 2 && (
+                <Card elevation={5} style={styles.card}>
+                    <Card.Content>
+                        <Title style={styles.title}>House Rental:</Title>
+                     
+                    </Card.Content>
+                </Card>
+                )}
+                {/* Digs Form */}
+                {showForm === 3 && (
+                <Card elevation={5} style={styles.card}>
+                    <Card.Content>
+                        <Title style={styles.title}>Digs:</Title>
+                     
+                    </Card.Content>
+                </Card>
+                )}
+
             </View>
         </Formik>
     </ScrollView>

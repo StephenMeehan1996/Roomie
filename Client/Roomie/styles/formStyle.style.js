@@ -150,6 +150,32 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0
+  },
+  btnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  button: {
+    backgroundColor: '#FFFFFF', 
+    padding: 8,
+    borderRadius: 10,
+    minWidth: 80,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#6200EE'
+  },
+  selectedButton: {
+    backgroundColor: '#6200EE'
+  },
+  buttonText: {
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  selectedButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   }
 
  
