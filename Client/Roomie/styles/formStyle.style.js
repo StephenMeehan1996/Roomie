@@ -46,9 +46,6 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       marginBottom: 10
     },
-    datePickerContainer: {
-    
-    },
     resultText: {
       fontSize: 18,
       marginVertical: 10,
@@ -92,6 +89,11 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'flex-end',
       alignItems: 'center',
+    },
+    radioContainerStart: {
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      justifyContent: 'space-between'
     },
   
     dropdown: {

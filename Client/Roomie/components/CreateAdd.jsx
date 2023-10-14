@@ -9,7 +9,7 @@ import { MultiSelect, Dropdown } from 'react-native-element-dropdown';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
-import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference,irishCounties, number, houseType, priceRange, days } from '../data/formData';
+import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference, environmentOptions, houseMatExpectations ,irishCounties, number, houseType, priceRange, days, roomType } from '../data/formData';
 import  styles  from '../styles/formStyle.style';
 
 const CreateAdd = ({navigation}) => {
@@ -28,6 +28,11 @@ const CreateAdd = ({navigation}) => {
         </View>
         );
       };
+
+     
+      const nextPage = (values) => {
+        console.log(values);
+      }
 
       const HouseShareSchema = Yup.object().shape({
         addType : Yup.string(),
@@ -71,9 +76,9 @@ const CreateAdd = ({navigation}) => {
         houseMateSmoking : Yup.string()
         .required('Please select an option'),
         houseMateExpect: Yup.string()
-        .required('Please select a value'),
+        .required('Please select an option'),
         environment: Yup.string()
-        .required('Please select a value')
+        .required('Please select an option')
       });
 
       const HouseRentalSchema = Yup.object().shape({
@@ -212,37 +217,37 @@ const CreateAdd = ({navigation}) => {
                 {showForm === 1 && (
                 <Formik  initialValues={{
                     addType : '1',
-                    addressLine1: '',
-                    addressLine2: '',
-                    city: '',
-                    county: '',
-                    numOccupants: '',
-                    houseShareHouseType : '',
-                    houseSharePrice : '',
-                    houseShareRoomType : '',
-                    houseShareHouseType : '',
-                    houseShareEnsuite: '',
-                    bio : '',
-                    referenceRequired: '',
-                    deposit: '',
+                    addressLine1: 'Kilgarve, Keadue',
+                    addressLine2: 'Boyle',
+                    city: 'Roscommon',
+                    county: 'Roscommon',
+                    zip: 'F91 XY32',
+                    numOccupants: '3',
+                    houseShareHouseType : 'Apartment',
+                    houseSharePrice : '600',
+                    houseShareRoomType : 'Double',
+                    houseShareEnsuite: '1',
+                    bio : 'Test Test',
+                    referenceRequired: '1',
+                    deposit: '1 Month',
             
-                    houseMateDetailOption : '',
-                    houseMateGender : '',
-                    houseMateAge : '',
-                    houseMateOccupation : '',
-                    occupationDropdownValue: '',
-                    houseMateSmoking : '',
-                    houseMateExpect: '',
-                    environment: ''
+                    houseMateDetailOption : '1',
+                    houseMateGender : 'Male',
+                    houseMateAge : '2',
+                    houseMateOccupation : 'Working Professional',
+                    occupationDropdownValue: '9-5',
+                    houseMateSmoking : '1',
+                    houseMateExpect: 'Friendly',
+                    environment: 'Social'
                 }}
                  validationSchema={HouseShareSchema}
-                 onSubmit={values => signUp(values)}
+                 onSubmit={values => nextPage(values)}
                 >
                 {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit}) => (
-                  
+                  <View>
                     <Card elevation={5} style={styles.card}>
                         <Card.Content>
-                            <Title style={styles.title}>House Share:</Title>
+                            <Title style={styles.title}>Address:</Title>
                             <View >
                                 <Text style={styles.label}>Address Line 1:</Text>
                                 <TextInput
@@ -255,7 +260,7 @@ const CreateAdd = ({navigation}) => {
                                     />
                                     {touched.addressLine1 && errors.addressLine1 &&(
                                     <View >
-                                    <Text style={styles.errorTxt}>{errors.addressLine1}</Text>
+                                        <Text style={styles.errorTxt}>{errors.addressLine1}</Text>
                                     </View>
                                     )}
                              </View>
@@ -326,6 +331,67 @@ const CreateAdd = ({navigation}) => {
                                     onBlur={() => setFieldTouched('zip')} 
                                     />
                             </View>
+                            </Card.Content>
+                            </Card>
+
+
+         
+                    <Card elevation={5} style={styles.card}>
+                        <Card.Content>
+                        <Title style={styles.title}>Room Details:</Title>
+                            
+
+                            <View style={styles.sameLineContainer}>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Room Type:</Text>
+                                    <Picker
+                                        style={styles.input}
+                                        selectedValue={values.houseShareRoomType}
+                                        onValueChange={handleChange('houseShareRoomType')}
+                                        onBlur={() => setFieldTouched('houseShareRoomType')}
+                                        >
+                                            {roomType.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.houseShareRoomType && errors.houseShareRoomType &&(
+                                        <Text style={styles.errorTxt}>{errors.houseShareRoomType}</Text>
+                                    )}
+                                </View>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Ensuite:</Text>
+                                    <Picker 
+                                        style={styles.input}
+                                        selectedValue={values.houseShareEnsuite}
+                                         onValueChange={handleChange('houseShareEnsuite')}
+                                        onBlur={() => setFieldTouched('houseShareEnsuite')}
+                                        >
+                                            {yesNO.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.houseShareEnsuite && errors.houseShareEnsuite &&(
+                                        <Text style={styles.errorTxt}>{errors.houseShareEnsuite}</Text>
+                                    )}
+                                </View>
+                            </View>
+
+                            <View>
+                                <Text style={styles.label}>Price Per Month:</Text>
+                                <Picker
+                                    style={[styles.input, styles.singleLineInput]}
+                                    selectedValue={values.houseSharePrice}
+                                    onValueChange={handleChange('houseSharePrice')}
+                                    onBlur={() => setFieldTouched('houseSharePrice')}
+                                >
+                                    {priceRange.map((option, index) => (
+                                        <Picker.Item key={index} label={option.label} value={option.value} />
+                                    ))}
+                                </Picker>
+                                {touched.houseSharePrice && errors.houseSharePrice &&(
+                                    <Text style={styles.errorTxt}>{errors.houseSharePrice}</Text>
+                                )}
+                            </View>
 
                             <View style={styles.sameLineContainer}>
                                 <View style={styles.lineInput}>
@@ -363,23 +429,6 @@ const CreateAdd = ({navigation}) => {
                             </View>
 
                             <View>
-                                <Text style={styles.label}>Price Per Month:</Text>
-                                <Picker
-                                    style={[styles.input, styles.singleLineInput]}
-                                    selectedValue={values.houseSharePrice}
-                                    onValueChange={handleChange('houseSharePrice')}
-                                    onBlur={() => setFieldTouched('houseSharePrice')}
-                                >
-                                    {priceRange.map((option, index) => (
-                                        <Picker.Item key={index} label={option.label} value={option.value} />
-                                    ))}
-                                </Picker>
-                                {touched.houseSharePrice && errors.houseSharePrice &&(
-                                    <Text style={styles.errorTxt}>{errors.houseSharePrice}</Text>
-                                )}
-                            </View>
-
-                            <View>
                                 <Text style={styles.label}>Room Description:</Text>
                                 <TextInput
                                     style={styles.input}
@@ -397,7 +446,7 @@ const CreateAdd = ({navigation}) => {
                                     <Text style={styles.label}>References Required:</Text>
                                     <Picker
                                         style={styles.input}
-                                        selectedValue={values.numOccupants}
+                                        selectedValue={values.referenceRequired}
                                         onValueChange={handleChange('referenceRequired')}
                                         onBlur={() => setFieldTouched('referenceRequired')}
                                         >
@@ -426,7 +475,172 @@ const CreateAdd = ({navigation}) => {
                         
                         </Card.Content>
                     </Card>
-                  
+
+                    <Card elevation={5} style={styles.card}>
+                        <Card.Content>
+                        <Title style={styles.title}>Roomie Details:</Title>
+                        <Text style={styles.label}>What are you looking for in a Roomie:</Text>
+                        <RadioButton.Group onValueChange={(newValue) => setFieldValue('houseMateDetailOption', newValue)} value={values.houseMateDetailOption}>
+                            <View style={styles.radioContainerStart}>
+                                <RadioButton.Item label="Be Specific" value="1" />
+                                <RadioButton.Item label="Flexible" value= "0" />
+                            </View>
+                        </RadioButton.Group>
+
+                        {values.houseMateDetailOption === "1" && (
+
+                            <View>
+                                <View style={styles.sameLineContainer}>
+                                    <View style={styles.lineInput}>
+                                        <Text style={styles.label}>Gender:</Text>
+                                        <Picker
+                                            style={styles.input}
+                                            selectedValue={values.houseMateGender}
+                                            onValueChange={handleChange('houseMateGender')}
+                                            onBlur={() => setFieldTouched('houseMateGender')}
+                                            >
+                                            {genderOptions.map((option, index) => (
+                                                <Picker.Item key={index} label={option.label} value={option.value} />
+                                            ))}
+                                        </Picker>
+                                        {touched.houseMateGender && errors.houseMateGender &&(
+                                            <Text style={styles.errorTxt}>{errors.houseMateGender}</Text>
+                                        )}
+                                    </View>
+                                    <View style={styles.lineInput}>
+                                        <Text style={styles.label}>Age Bracket:</Text>
+                                        <Picker //occupationDropdownValue
+                                        style={styles.input}
+                                        selectedValue={values.houseMateAge}
+                                        onValueChange={handleChange('houseMateAge')}
+                                        onBlur={() => setFieldTouched('houseMateAge')}
+                                        >
+                                        {number.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                        </Picker>
+                                        {touched.houseMateAge && errors.houseMateAge &&(
+                                         <Text style={styles.errorTxt}>{errors.houseMateAge}</Text>
+                                        )}
+                                    </View>
+                                </View>
+                            
+                            
+                                <View style={styles.sameLineContainer}>
+                                    <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Occupation:</Text>
+                                    <Picker
+                                        style={styles.input}
+                                        selectedValue={values.houseMateOccupation}
+                                        onValueChange={handleChange('houseMateOccupation')}
+                                        onBlur={() => setFieldTouched('houseMateOccupation')}
+                                        >
+                                        {occupationOptions.map((option, index) => (
+                                        <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.houseMateOccupation && errors.houseMateOccupation &&(
+                                        <Text style={styles.errorTxt}>{errors.houseMateOccupation}</Text>
+                                    )}
+                                    </View>
+
+                                    <View style={styles.lineInput}>
+                                        
+                                        {values.houseMateOccupation === 'Working Professional' ?(
+                                        <Text style={styles.label}>Working Hours:</Text>
+                                        ):
+                                        (
+                                            <Text style={styles.label}>Year Of Study:</Text>
+                                        )}
+                                        <Picker
+                                            style={styles.input}
+                                            selectedValue={values.occupationDropdownValue}
+                                            onValueChange={handleChange('occupationDropdownValue')}
+                                            onBlur={() => setFieldTouched('occupationDropdownValue')}
+                                        >
+                                        {values.houseMateOccupation === 'Student'
+                                            ? yearOfStudyOptions.map((option, index) => (
+                                                <Picker.Item key={index} label={option.label} value={option.value} />
+                                            ))
+                                            : workingHoursOptions.map((option, index) => (
+                                                <Picker.Item key={index} label={option.label} value={option.value} />
+                                            ))}
+                                        </Picker>
+                                        {touched.occupationDropdownValue && errors.occupationDropdownValue &&(
+                                         <Text style={styles.errorTxt}>{errors.occupationDropdownValue}</Text>
+                                        )}
+                                    </View>
+                                 </View>
+                                 <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Smoking Permitted:</Text>
+                                    <Picker
+                                        style={[styles.input, styles.singleLineInput]}
+                                        selectedValue={values.houseMateSmoking}
+                                            onValueChange={handleChange('houseMateSmoking')}
+                                            onBlur={() => setFieldTouched('houseMateSmoking')}
+                                        >
+                                        {yesNO.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.houseMateSmoking && errors.houseMateSmoking &&(
+                                        <Text style={styles.errorTxt}>{errors.houseMateSmoking}</Text>
+                                    )}
+                                 </View>
+
+                                    <View style={styles.sameLineContainer}>
+                                        <View style={styles.lineInput}>
+                                            <Text style={styles.label}>House Expectations:</Text>
+                                            <Picker
+                                            style={styles.input}
+                                            selectedValue={values.houseMateExpect}
+                                            onValueChange={handleChange('houseMateExpect')}
+                                            onBlur={() => setFieldTouched('houseMateExpect')} 
+                                            >
+                                            {houseMatExpectations.map((option, index) => (
+                                                <Picker.Item key={index} label={option.label} value={option.value} />
+                                            ))}
+                                            </Picker>
+                                            {touched.houseMateExpect && errors.houseMateExpect&&(
+                                            <Text style={styles.errorTxt}>{errors.houseMateExpect}</Text>
+                                            )}
+                                        </View>
+                                        <View style={styles.lineInput}>
+                                            <Text style={styles.label}>Environment:</Text>
+                                            <Picker
+                                            style={[styles.input, {marginTop: 21}]}
+                                            selectedValue={values.environment}
+                                            onValueChange={handleChange('environment')}
+                                            onBlur={() => setFieldTouched('environment')} 
+                                            >
+                                            {environmentOptions.map((option, index) => (
+                                                <Picker.Item key={index} label={option.label} value={option.value} />
+                                            ))}
+                                            </Picker>
+                                            {touched.environment && errors.environment&&(
+                                            <Text style={styles.errorTxt}>{errors.environment}</Text>
+                                            )}
+                                        </View>
+                                    </View>
+
+                               
+                                <Button
+                                    mode="contained" 
+                                    color="#FF5733"
+                                    style={{marginVertical: 20, padding: 2}} 
+                                    labelStyle={styles.buttonLabel} 
+                                    disabled={!isValid}
+                                    onPress={handleSubmit}>
+                                    Next Page
+                                </Button>
+                            </View>
+
+                            
+                        )}
+
+                        </Card.Content>
+                    </Card>
+                 </View>
                   )}
                 </Formik>
                 )}
