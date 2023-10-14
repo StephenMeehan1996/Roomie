@@ -4,12 +4,12 @@ import { Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButto
 import { Picker } from '@react-native-picker/picker';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { MultiSelect } from 'react-native-element-dropdown';
+import { MultiSelect, Dropdown } from 'react-native-element-dropdown';
 
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
-import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference } from '../data/formData';
+import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference,irishCounties, number, houseType, priceRange, days } from '../data/formData';
 import  styles  from '../styles/formStyle.style';
 
 const CreateAdd = ({navigation}) => {
@@ -19,6 +19,15 @@ const CreateAdd = ({navigation}) => {
           headerShown: false, 
         });
       }, [navigation]);
+
+      const _renderItem = item => {
+        return (
+        <View style={styles.item}>
+            <Text style={styles.textItem}>{item.label}</Text>
+            <Image style={styles.icon} source={require('../assets/Icons/twitter.png')} />
+        </View>
+        );
+      };
 
       const HouseShareSchema = Yup.object().shape({
         addType : Yup.string(),
@@ -32,9 +41,9 @@ const CreateAdd = ({navigation}) => {
         .required('Please enter the county for the address'),
         zip: Yup.string(),
         numOccupants: Yup.string()
-        .required('Please enter the city for the address'),
+        .required('Please select the current number of occupants'),
         houseShareHouseType : Yup.string()
-        .required('Please select a house type'),
+        .required('Please select a property type'),
         houseSharePrice : Yup.string()
         .required('Please select a price'),
         houseShareRoomType : Yup.string()
@@ -47,7 +56,7 @@ const CreateAdd = ({navigation}) => {
         referenceRequired: Yup.string()
         .required('Please select an option'),
         deposit: Yup.string()
-        .required('Please select a value'),
+        .required('Please enter deposit detail'),
 
         houseMateDetailOption : Yup.string()
         .required('Please select a option'),
@@ -97,7 +106,7 @@ const CreateAdd = ({navigation}) => {
         referenceRequired: Yup.string()
         .required('Please select an option'),
         deposit: Yup.string()
-        .required('Please select a value')
+        .required('Please deposit details')
       });
 
       const DigsSchema = Yup.object().shape({
@@ -155,8 +164,11 @@ const CreateAdd = ({navigation}) => {
       
   return (
     <ScrollView>
-                //#region Buttons
+               
             <View style={styles.container}>
+             {/* Region Buttons */}
+             {/*  Are you sure you want to change add type current process will be deleted */}
+            <>
                 <Card elevation={5} style={styles.card}>
                     <Card.Content>
                         <Title style={styles.title}>Add Type:</Title>
@@ -193,9 +205,10 @@ const CreateAdd = ({navigation}) => {
                         </View>
                     </Card.Content>
                 </Card>
-                //#endregion
-
-                //#region House Share Form
+            </>
+            
+             {/* Region House Share */}
+            <>
                 {showForm === 1 && (
                 <Formik  initialValues={{
                     addType : '1',
@@ -210,6 +223,7 @@ const CreateAdd = ({navigation}) => {
                     houseShareHouseType : '',
                     houseShareEnsuite: '',
                     bio : '',
+                    referenceRequired: '',
                     deposit: '',
             
                     houseMateDetailOption : '',
@@ -229,6 +243,186 @@ const CreateAdd = ({navigation}) => {
                     <Card elevation={5} style={styles.card}>
                         <Card.Content>
                             <Title style={styles.title}>House Share:</Title>
+                            <View >
+                                <Text style={styles.label}>Address Line 1:</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter address line 1"
+                                    onChangeText={handleChange('addressLine1')}
+                                    value={values.addressLine1}
+                                    onBlur={() => setFieldTouched('addressLine1')} 
+                                    
+                                    />
+                                    {touched.addressLine1 && errors.addressLine1 &&(
+                                    <View >
+                                    <Text style={styles.errorTxt}>{errors.addressLine1}</Text>
+                                    </View>
+                                    )}
+                             </View>
+
+                            <View >
+                                <Text style={styles.label}>Address Line 2:</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter address line 2"
+                                    onChangeText={handleChange('addressLine2')}
+                                    value={values.addressLine2}
+                                    onBlur={() => setFieldTouched('addressLine2')} 
+                                    />
+                                    {touched.addressLine2 && errors.addressLine2 &&(
+                                    <View>
+                                        <Text style={styles.errorTxt}>{errors.addressLine2}</Text>
+                                    </View>
+                                    )}
+                            </View>
+
+                            <View style={styles.sameLineContainer}>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>City:</Text>
+                                    <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter city"
+                                    onChangeText={handleChange('city')}
+                                    value={values.city}
+                                    onBlur={() => setFieldTouched('city')} 
+                                    />
+                                    {touched.city && errors.city &&(
+                                    <View>
+                                        <Text style={styles.errorTxt}>{errors.city}</Text>
+                                    </View>
+                                    )}
+                                </View>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>County:</Text>
+                                    <Dropdown
+                                        style={styles.dropdown}
+                                        data={irishCounties}
+                                        labelField="label"
+                                        valueField="value"
+                                        search
+                                        searchPlaceholder="Search"
+                                        disableSelect
+                                        value={values.county}
+                                        onBlur={() => setFieldTouched('county')}
+                                        onChange={item => {
+                                            setFieldValue('county', item.value);
+                                            console.log('selected', item);
+                                        }}
+                                        renderItem={item => _renderItem(item)}
+                                    />
+                                    {touched.county && errors.county &&(
+                                        <Text style={[styles.errorTxt, {marginTop: 18, marginBottom: 0}]}>{errors.county}</Text>
+                                    )}
+                               </View>
+                            </View>
+
+                            <View style={styles.lineInput}>
+                                <Text style={styles.label}>Eircode</Text>
+                                <TextInput
+                                    style={[styles.input, styles.singleLineInput]}
+                                    placeholder="Enter eircode"
+                                    onChangeText={handleChange('zip')}
+                                    value={values.zip}
+                                    onBlur={() => setFieldTouched('zip')} 
+                                    />
+                            </View>
+
+                            <View style={styles.sameLineContainer}>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Current Occupants:</Text>
+                                    <Picker
+                                        style={styles.input}
+                                        selectedValue={values.numOccupants}
+                                        onValueChange={handleChange('numOccupants')}
+                                        onBlur={() => setFieldTouched('numOccupants')}
+                                        >
+                                            {number.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.numOccupants && errors.numOccupants &&(
+                                        <Text style={styles.errorTxt}>{errors.numOccupants}</Text>
+                                    )}
+                                </View>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Property Type:</Text>
+                                    <Picker 
+                                        style={styles.input}
+                                        selectedValue={values.houseShareHouseType}
+                                         onValueChange={handleChange('houseShareHouseType')}
+                                        onBlur={() => setFieldTouched('houseShareHouseType')}
+                                        >
+                                            {houseType.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.houseShareHouseType && errors.houseShareHouseType &&(
+                                        <Text style={styles.errorTxt}>{errors.houseShareHouseType}</Text>
+                                    )}
+                                </View>
+                            </View>
+
+                            <View>
+                                <Text style={styles.label}>Price Per Month:</Text>
+                                <Picker
+                                    style={[styles.input, styles.singleLineInput]}
+                                    selectedValue={values.houseSharePrice}
+                                    onValueChange={handleChange('houseSharePrice')}
+                                    onBlur={() => setFieldTouched('houseSharePrice')}
+                                >
+                                    {priceRange.map((option, index) => (
+                                        <Picker.Item key={index} label={option.label} value={option.value} />
+                                    ))}
+                                </Picker>
+                                {touched.houseSharePrice && errors.houseSharePrice &&(
+                                    <Text style={styles.errorTxt}>{errors.houseSharePrice}</Text>
+                                )}
+                            </View>
+
+                            <View>
+                                <Text style={styles.label}>Room Description:</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    multiline
+                                    numberOfLines={3}   
+                                    placeholder="Type description here..."
+                                    onChangeText={handleChange('bio')}
+                                    value={values.bio}
+                                    onBlur={() => setFieldTouched('bio')} 
+                                />
+                            </View>
+
+                            <View style={styles.sameLineContainer}>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>References Required:</Text>
+                                    <Picker
+                                        style={styles.input}
+                                        selectedValue={values.numOccupants}
+                                        onValueChange={handleChange('referenceRequired')}
+                                        onBlur={() => setFieldTouched('referenceRequired')}
+                                        >
+                                            {yesNO.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.referenceRequired && errors.referenceRequired &&(
+                                        <Text style={styles.errorTxt}>{errors.referenceRequired}</Text>
+                                    )}
+                                </View>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Deposit:</Text>
+                                    <TextInput
+                                        style={[styles.input, {marginTop: 21}]}
+                                        placeholder="Enter deposit detail"
+                                        onChangeText={handleChange('deposit')}
+                                        value={values.deposit}
+                                        onBlur={() => setFieldTouched('deposit')} 
+                                    />
+                                    {touched.deposit && errors.deposit &&(
+                                        <Text style={styles.errorTxt}>{errors.deposit}</Text>
+                                    )}
+                                </View>
+                            </View>
                         
                         </Card.Content>
                     </Card>
@@ -236,10 +430,9 @@ const CreateAdd = ({navigation}) => {
                   )}
                 </Formik>
                 )}
-                //#endregion
-
-                //#region House Rental Form
-                {/* House Rental Form */}
+            </>
+            {/* Region House Rental */}
+            <>
                 {showForm === 2 && (
                     <Formik  initialValues={{
                         addType : '2',
@@ -252,13 +445,14 @@ const CreateAdd = ({navigation}) => {
                         houseRentalHouseType : '',
                         houseRentalPrice : '',
                         bio : '',
+                        referenceRequired: '',
+                        deposit: '',
 
                         tenantDetailOption : '',
                         tenantMateGender : '',
                         tenantMateOccupation : '',
-                        houseMateSmoking : '',
-                        referenceRequired: '',
-                        deposit: ''
+                        houseMateSmoking : ''
+                        
                     }}
                      validationSchema={HouseRentalSchema}
                      onSubmit={values => signUp(values)}
@@ -267,15 +461,195 @@ const CreateAdd = ({navigation}) => {
                 <Card elevation={5} style={styles.card}>
                     <Card.Content>
                         <Title style={styles.title}>House Rental:</Title>
+                        <View >
+                                <Text style={styles.label}>Address Line 1:</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter address line 1"
+                                    onChangeText={handleChange('addressLine1')}
+                                    value={values.addressLine1}
+                                    onBlur={() => setFieldTouched('addressLine1')} 
+                                    
+                                    />
+                                    {touched.addressLine1 && errors.addressLine1 &&(
+                                    <View >
+                                    <Text style={styles.errorTxt}>{errors.addressLine1}</Text>
+                                    </View>
+                                    )}
+                             </View>
+
+                            <View >
+                                <Text style={styles.label}>Address Line 2:</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter address line 2"
+                                    onChangeText={handleChange('addressLine2')}
+                                    value={values.addressLine2}
+                                    onBlur={() => setFieldTouched('addressLine2')} 
+                                    />
+                                    {touched.addressLine2 && errors.addressLine2 &&(
+                                    <View>
+                                        <Text style={styles.errorTxt}>{errors.addressLine2}</Text>
+                                    </View>
+                                    )}
+                            </View>
+
+                            <View style={styles.sameLineContainer}>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>City:</Text>
+                                    <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter city"
+                                    onChangeText={handleChange('city')}
+                                    value={values.city}
+                                    onBlur={() => setFieldTouched('city')} 
+                                    />
+                                    {touched.city && errors.city &&(
+                                    <View>
+                                        <Text style={styles.errorTxt}>{errors.city}</Text>
+                                    </View>
+                                    )}
+                                </View>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>County:</Text>
+                                    <Dropdown
+                                        style={styles.dropdown}
+                                        data={irishCounties}
+                                        labelField="label"
+                                        valueField="value"
+                                        search
+                                        searchPlaceholder="Search"
+                                        disableSelect
+                                        value={values.county}
+                                        onBlur={() => setFieldTouched('county')}
+                                        onChange={item => {
+                                            setFieldValue('county', item.value);
+                                            console.log('selected', item);
+                                        }}
+                                        renderItem={item => _renderItem(item)}
+                                    />
+                                    {touched.county && errors.county &&(
+                                        <Text style={[styles.errorTxt, {marginTop: 18, marginBottom: 0}]}>{errors.county}</Text>
+                                    )}
+                               </View>
+                            </View>
+
+                            <View style={styles.lineInput}>
+                                <Text style={styles.label}>Eircode</Text>
+                                <TextInput
+                                    style={[styles.input, styles.singleLineInput]}
+                                    placeholder="Enter eircode"
+                                    onChangeText={handleChange('zip')}
+                                    value={values.zip}
+                                    onBlur={() => setFieldTouched('zip')} 
+                                    />
+                            </View>
+
+                            <View style={styles.sameLineContainer}>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Num of Bedrooms:</Text>
+                                    <Picker
+                                        style={styles.input}
+                                        selectedValue={values.numOccupants}
+                                        onValueChange={handleChange('numRooms')}
+                                        onBlur={() => setFieldTouched('numRooms')}
+                                        >
+                                            {number.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.numRooms && errors.numRooms &&(
+                                        <Text style={styles.errorTxt}>{errors.numRooms}</Text>
+                                    )}
+                                </View>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Property Type:</Text>
+                                    <Picker 
+                                        style={styles.input}
+                                        selectedValue={values.houseRentalHouseType}
+                                        onValueChange={handleChange('houseRentalHouseType')}
+                                        onBlur={() => setFieldTouched('houseRentalHouseType')}
+                                        >
+                                            {houseType.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.houseRentalHouseType && errors.houseRentalHouseType &&(
+                                        <Text style={styles.errorTxt}>{errors.houseRentalHouseType}</Text>
+                                    )}
+                                </View>
+                            </View>
+
+                            <View>
+                                <Text style={styles.label}>Price Per Month:</Text>
+                                <Picker
+                                    style={[styles.input, styles.singleLineInput]}
+                                    selectedValue={values.houseSharePrice}
+                                    onValueChange={handleChange('houseRentalPrice')}
+                                    onBlur={() => setFieldTouched('houseRentalPrice')}
+                                >
+                                    {priceRange.map((option, index) => (
+                                        <Picker.Item key={index} label={option.label} value={option.value} />
+                                    ))}
+                                </Picker>
+                                {touched.houseRentalPrice && errors.houseRentalPrice &&(
+                                    <Text style={styles.errorTxt}>{errors.houseRentalPrice}</Text>
+                                )}
+                            </View>
+
+                            <View>
+                                <Text style={styles.label}>Property Description:</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    multiline
+                                    numberOfLines={3}   
+                                    placeholder="Type description here..."
+                                    onChangeText={handleChange('bio')}
+                                    value={values.bio}
+                                    onBlur={() => setFieldTouched('bio')} 
+                                />
+                            </View>
+
+                            <View style={styles.sameLineContainer}>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>References Required:</Text>
+                                    <Picker
+                                        style={styles.input}
+                                        selectedValue={values.numOccupants}
+                                        onValueChange={handleChange('referenceRequired')}
+                                        onBlur={() => setFieldTouched('referenceRequired')}
+                                        >
+                                            {yesNO.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.referenceRequired && errors.referenceRequired &&(
+                                        <Text style={styles.errorTxt}>{errors.referenceRequired}</Text>
+                                    )}
+                                </View>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Deposit:</Text>
+                                    <TextInput
+                                        style={[styles.input, {marginTop: 21}]}
+                                        placeholder="Enter deposit detail"
+                                        onChangeText={handleChange('deposit')}
+                                        value={values.deposit}
+                                        onBlur={() => setFieldTouched('deposit')} 
+                                    />
+                                    {touched.deposit && errors.deposit &&(
+                                        <Text style={styles.errorTxt}>{errors.deposit}</Text>
+                                    )}
+                                </View>
+                            </View>
                      
                     </Card.Content>
                 </Card>
                  )}
                  </Formik>
                  )}
-               //#endregion
-
-                 //#region Digs Form
+            </>
+             {/* Region Digs */}
+            <>
                 {/* Digs Form */}
                 {showForm === 3 && (
                     <Formik  initialValues={{
@@ -288,11 +662,12 @@ const CreateAdd = ({navigation}) => {
                         numOccupants: '',
                         digsHouseType : '',
                         digsPrice : '',
+                        bio : '',
                         digsDays: '',
                         digsMealIncluded: '',
                         referenceRequired: '',
                         deposit: '',
-                        bio : '',
+                        
                       
                         digsDetailOption : '',
                         digsGender : '',
@@ -307,13 +682,229 @@ const CreateAdd = ({navigation}) => {
                 <Card elevation={5} style={styles.card}>
                     <Card.Content>
                         <Title style={styles.title}>Digs:</Title>
+                         <View >
+                                <Text style={styles.label}>Address Line 1:</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter address line 1"
+                                    onChangeText={handleChange('addressLine1')}
+                                    value={values.addressLine1}
+                                    onBlur={() => setFieldTouched('addressLine1')} 
+                                    
+                                    />
+                                    {touched.addressLine1 && errors.addressLine1 &&(
+                                    <View >
+                                    <Text style={styles.errorTxt}>{errors.addressLine1}</Text>
+                                    </View>
+                                    )}
+                             </View>
+
+                            <View >
+                                <Text style={styles.label}>Address Line 2:</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter address line 2"
+                                    onChangeText={handleChange('addressLine2')}
+                                    value={values.addressLine2}
+                                    onBlur={() => setFieldTouched('addressLine2')} 
+                                    />
+                                    {touched.addressLine2 && errors.addressLine2 &&(
+                                    <View>
+                                        <Text style={styles.errorTxt}>{errors.addressLine2}</Text>
+                                    </View>
+                                    )}
+                            </View>
+
+                            <View style={styles.sameLineContainer}>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>City:</Text>
+                                    <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter city"
+                                    onChangeText={handleChange('city')}
+                                    value={values.city}
+                                    onBlur={() => setFieldTouched('city')} 
+                                    />
+                                    {touched.city && errors.city &&(
+                                    <View>
+                                        <Text style={styles.errorTxt}>{errors.city}</Text>
+                                    </View>
+                                    )}
+                                </View>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>County:</Text>
+                                    <Dropdown
+                                        style={styles.dropdown}
+                                        data={irishCounties}
+                                        labelField="label"
+                                        valueField="value"
+                                        search
+                                        searchPlaceholder="Search"
+                                        disableSelect
+                                        value={values.county}
+                                        onBlur={() => setFieldTouched('county')}
+                                        onChange={item => {
+                                            setFieldValue('county', item.value);
+                                            console.log('selected', item);
+                                        }}
+                                        renderItem={item => _renderItem(item)}
+                                    />
+                                    {touched.county && errors.county &&(
+                                        <Text style={[styles.errorTxt, {marginTop: 18, marginBottom: 0}]}>{errors.county}</Text>
+                                    )}
+                               </View>
+                            </View>
+
+                            <View style={styles.lineInput}>
+                                <Text style={styles.label}>Eircode</Text>
+                                <TextInput
+                                    style={[styles.input, styles.singleLineInput]}
+                                    placeholder="Enter eircode"
+                                    onChangeText={handleChange('zip')}
+                                    value={values.zip}
+                                    onBlur={() => setFieldTouched('zip')} 
+                                    />
+                            </View>
+
+                            <View style={styles.sameLineContainer}>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Num of Occupants:</Text>
+                                    <Picker
+                                        style={styles.input}
+                                        selectedValue={values.numOccupants}
+                                        onValueChange={handleChange('numOccupants')}
+                                        onBlur={() => setFieldTouched('numOccupants')}
+                                        >
+                                            {number.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.numOccupants && errors.numOccupants &&(
+                                        <Text style={styles.errorTxt}>{errors.numOccupants}</Text>
+                                    )}
+                                </View>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Property Type:</Text>
+                                    <Picker 
+                                        style={styles.input}
+                                        selectedValue={values.digsHouseType}
+                                        onValueChange={handleChange('digsHouseType')}
+                                        onBlur={() => setFieldTouched('digsHouseType')}
+                                        >
+                                            {houseType.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.digsHouseType && errors.digsHouseType &&(
+                                        <Text style={styles.errorTxt}>{errors.digsHouseType}</Text>
+                                    )}
+                                </View>
+                            </View>
+
+                            <View>
+                                <Text style={styles.label}>Price Per Month:</Text>
+                                <Picker
+                                    style={[styles.input, styles.singleLineInput]}
+                                    selectedValue={values.digsPrice}
+                                    onValueChange={handleChange('digsPrice')}
+                                    onBlur={() => setFieldTouched('digsPrice')}
+                                >
+                                    {priceRange.map((option, index) => (
+                                        <Picker.Item key={index} label={option.label} value={option.value} />
+                                    ))}
+                                </Picker>
+                                {touched.digsPrice && errors.digsPrice &&(
+                                    <Text style={styles.errorTxt}>{errors.digsPrice}</Text>
+                                )}
+                            </View>
+
+                            <View>
+                                <Text style={styles.label}>Property Description:</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    multiline
+                                    numberOfLines={3}   
+                                    placeholder="Type description here..."
+                                    onChangeText={handleChange('bio')}
+                                    value={values.bio}
+                                    onBlur={() => setFieldTouched('bio')} 
+                                />
+                            </View>
+
+                            <View style={styles.sameLineContainer}>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Meals Provided:</Text>
+                                    <Picker
+                                        style={styles.input}
+                                        selectedValue={values.digsMealIncluded}
+                                        onValueChange={handleChange('digsMealIncluded')}
+                                        onBlur={() => setFieldTouched('digsMealIncluded')}
+                                        >
+                                            {yesNO.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.digsMealIncluded && errors.digsMealIncluded &&(
+                                        <Text style={styles.errorTxt}>{errors.digsMealIncluded}</Text>
+                                    )}
+                                </View>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Days Available:</Text>
+                                    <Picker
+                                        style={styles.input}
+                                        selectedValue={values.digsDays}
+                                        onValueChange={handleChange('digsDays')}
+                                        onBlur={() => setFieldTouched('digsDays')}
+                                        >
+                                            {yesNO.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.digsDays && errors.digsDays &&(
+                                        <Text style={styles.errorTxt}>{errors.digsDays}</Text>
+                                    )}
+                               </View>
+                            </View>
+
+                            <View style={styles.sameLineContainer}>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>References Required:</Text>
+                                    <Picker
+                                        style={styles.input}
+                                        selectedValue={values.referenceRequired}
+                                        onValueChange={handleChange('referenceRequired')}
+                                        onBlur={() => setFieldTouched('referenceRequired')}
+                                        >
+                                            {yesNO.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.referenceRequired && errors.referenceRequired &&(
+                                        <Text style={styles.errorTxt}>{errors.referenceRequired}</Text>
+                                    )}
+                                </View>
+
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Deposit:</Text>
+                                    <TextInput
+                                        style={[styles.input, {marginTop: 21}]}
+                                        placeholder="Enter deposit detail"
+                                        onChangeText={handleChange('deposit')}
+                                        value={values.deposit}
+                                        onBlur={() => setFieldTouched('deposit')} 
+                                    />
+                                    {touched.deposit && errors.deposit &&(
+                                        <Text style={styles.errorTxt}>{errors.deposit}</Text>
+                                    )}
+                                </View>
+                            </View>
                      
                     </Card.Content>
                 </Card>
                  )}
                  </Formik>
                  )}
-                 //#endregion
+            </>
             </View>
         
     </ScrollView>

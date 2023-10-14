@@ -98,7 +98,10 @@ const styles = StyleSheet.create({
       backgroundColor: 'white',
       borderBottomColor: 'gray',
       borderBottomWidth: 0.5,
-      marginTop: 20,
+      fontSize: 16,
+      marginTop: -6,
+      padding: 5,
+      paddingTop: 0
   },
   icon: {
       marginRight: 5,

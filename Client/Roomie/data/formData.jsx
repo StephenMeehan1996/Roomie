@@ -100,4 +100,55 @@ const genderOptions = [
     { label: 'Full Week', value: 'Full Week' }
   ];
 
-  export {genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference,priceRange, number, roomType, houseType, houseMatExpectations, environmentOptions, days};
+  const irishCounties = [
+    { label:'Select county', value: '' },
+    { label: 'Antrim', value: 'Antrim' },
+    { label: 'Armagh', value: 'Armagh' },
+    { label: 'Carlow', value: 'Carlow' },
+    { label: 'Cavan',  value: 'Cavan' },
+    { label: 'Clare', value: 'Clare' },
+    { label: 'Cork', value: 'Cork' },
+    { label: 'Derry', value: 'Derry' },
+    { label: 'Donegal', value: 'Donegal' },
+    { label: 'Down', value: 'Down' },
+    { label: 'Dublin', value: 'Dublin' },
+    { label: 'Fermanagh', value: 'Fermanagh' },
+    { label: 'Galway', value: 'Galway' },
+    { label: 'Kerry', value: 'Kerry' },
+    { label: 'Kildare', value: 'Kildare' },
+    { label: 'Kilkenny', value: 'Kilkenny' },
+    { label: 'Laois', value: 'Laois' },
+    { label: 'Leitrim', value: 'Leitrim' },
+    { label: 'Limerick', value: 'Limerick' },
+    { label: 'Longford', value: 'Longford' },
+    { label: 'Louth', value: 'Louth' },
+    { label: 'Mayo', value: 'Mayo' },
+    { label: 'Meath', value: 'Meath' },
+    { label: 'Monaghan', value: 'Monaghan' },
+    { label: 'Offaly', value: 'Offaly' },
+    { label: 'Roscommon', value: 'Roscommon' },
+    { label: 'Sligo', value: 'Sligo' },
+    { label: 'Tipperary', value: 'Tipperary' },
+    { label: 'Tyrone', value: 'Tyrone' },
+    { label: 'Waterford', value: 'Waterford' },
+    { label: 'Westmeath', value: 'Westmeath' },
+    { label: 'Wexford', value: 'Wexford' },
+    { label: 'Wicklow', value: 'Wicklow' },
+  ];
+
+  export {
+          genderOptions,
+          workingHoursOptions,
+          occupationOptions,
+          yearOfStudyOptions,
+          yesNO,
+          rentalPreference,
+          priceRange,
+          number,
+          roomType,
+          houseType,
+          houseMatExpectations,
+          environmentOptions,
+          days,
+          irishCounties
+        };

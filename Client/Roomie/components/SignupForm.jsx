@@ -243,7 +243,7 @@ const validateDob = async (value) => {
                       </View>
                     </View>
 
-                    <View >
+                  <View >
                       <Text style={styles.label}>Password:</Text>
                       <TextInput
                           style={styles.input}
@@ -441,13 +441,14 @@ const validateDob = async (value) => {
                           searchPlaceholder="Search"
                           disableSelect
                           value={values.selectedRentalPref}
+                          onBlur={() => setFieldTouched('selectedRentalPref')}
                           onChange={item => {
                             setFieldValue('selectedRentalPref', item);
                               console.log('selected', item);
                           }}
                           renderItem={item => _renderItem(item)}
                       />
-                      { errors.selectedRentalPref &&(
+                      { touched.selectedRentalPref && errors.selectedRentalPref &&(
                         <Text style={[styles.errorTxt]}>{errors.selectedRentalPref}</Text>
                       )}
 
