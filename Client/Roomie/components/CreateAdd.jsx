@@ -137,13 +137,13 @@ const CreateAdd = ({navigation}) => {
         digsPrice : Yup.string()
         .required('Please select a price'),
         digsDays: Yup.string()
-        .required('Please select a value'),
+        .required('Please select an option'),
         digsMealIncluded: Yup.string()
-        .required('Please select a value'),
+        .required('Please select an option'),
         referenceRequired: Yup.string()
         .required('Please select an option'),
         deposit: Yup.string()
-        .required('Please select a value'),
+        .required('Please enter deposit detail'),
         bio : Yup.string(),
       
         digsDetailOption : Yup.string()
@@ -152,9 +152,11 @@ const CreateAdd = ({navigation}) => {
         .required('Please select a gender'),
         digsAge : Yup.string()
         .required('Please select a age'),
-        tenantMateOccupation : Yup.string()
+        digsOccupation : Yup.string()
         .required('Please select a occupation'),
-        houseMateSmoking : Yup.string()
+        occupationDropdownValue: Yup.string()
+        .required('Please select an option'),
+        digsSmoking : Yup.string()
         .required('Please select an option')
       
       });
@@ -336,13 +338,11 @@ const CreateAdd = ({navigation}) => {
                                     onBlur={() => setFieldTouched('zip')} 
                                     />
                             </View>
-                            </Card.Content>
-                            </Card>
+                         </Card.Content>
+                     </Card>
 
-
-         
                     <Card elevation={5} style={styles.card}>
-                        <Card.Content>
+                     <Card.Content>
                         <Title style={styles.title}>Room Details:</Title>
                             
 
@@ -639,8 +639,6 @@ const CreateAdd = ({navigation}) => {
                                     Next Page
                                 </Button>
                             </View>
-
-                            
                         )}
 
                         </Card.Content>
@@ -1009,30 +1007,31 @@ const CreateAdd = ({navigation}) => {
                 {/* Digs Form */}
                 {showForm === 3 && (
                     <Formik  initialValues={{
-                        addType : '',
-                        addressLine1: '',
-                        addressLine2: '',
-                        city: '',
-                        county: '',
-                        zip: '',
-                        numOccupants: '',
-                        digsHouseType : '',
-                        digsPrice : '',
-                        bio : '',
-                        digsDays: '',
-                        digsMealIncluded: '',
-                        referenceRequired: '',
-                        deposit: '',
+                        addType : '3',
+                        addressLine1: '84 Wellpark Grove',
+                        addressLine2: 'Galway',
+                        city: 'Galway City',
+                        county: 'Galway',
+                        zip: 'F99 HXV3',
+                        numOccupants: '4',
+                        digsHouseType : 'Apartment',
+                        digsPrice : '500',
+                        bio : 'Test Test',
+                        digsDays: 'Mon-Friday',
+                        digsMealIncluded: '1',
+                        referenceRequired: '1',
+                        deposit: '3 Months',
                         
                       
-                        digsDetailOption : '',
-                        digsGender : '',
-                        digsAge : '',
-                        tenantMateOccupation : '',
-                        houseMateSmoking : ''
+                        digsDetailOption : '1',
+                        digsGender : 'Male',
+                        digsAge : '3',
+                        digsOccupation : 'Student',
+                        occupationDropdownValue: 'PHD',
+                        digsSmoking : '1'
                     }}
                      validationSchema={DigsSchema}
-                     onSubmit={values => signUp(values)}
+                     onSubmit={values => nextPage(values)}
                     >
                     {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit}) => (
                  <View>    
@@ -1265,10 +1264,133 @@ const CreateAdd = ({navigation}) => {
                      
                     </Card.Content>
                   </Card>
+
+                  <Card elevation={5} style={styles.card}>
+                        <Card.Content>
+                        <Title style={styles.title2}>Tenant Details:</Title>
+                        <Text style={styles.label}>What Are You Looking For In A Tenant:</Text>
+                        <RadioButton.Group onValueChange={(newValue) => setFieldValue('digsDetailOption', newValue)} value={values.digsDetailOption}>
+                            <View style={styles.radioContainerStart}>
+                                <RadioButton.Item label="Be Specific" value="1" />
+                                <RadioButton.Item label="Flexible" value= "0" />
+                            </View>
+                        </RadioButton.Group>
+
+                        {values.digsDetailOption === "1" && (
+
+                            <View>
+                                <View style={styles.sameLineContainer}>
+                                    <View style={styles.lineInput}>
+                                        <Text style={styles.label}>Gender:</Text>
+                                        <Picker
+                                            style={styles.input}
+                                            selectedValue={values.digsGender}
+                                            onValueChange={handleChange('digsGender')}
+                                            onBlur={() => setFieldTouched('digsGender')}
+                                            >
+                                            {genderOptions.map((option, index) => (
+                                                <Picker.Item key={index} label={option.label} value={option.value} />
+                                            ))}
+                                        </Picker>
+                                        {touched.digsGender && errors.digsGender &&(
+                                            <Text style={styles.errorTxt}>{errors.digsGender}</Text>
+                                        )}
+                                    </View>
+                                    <View style={styles.lineInput}>
+                                        <Text style={styles.label}>Age Bracket:</Text>
+                                        <Picker //occupationDropdownValue
+                                        style={styles.input}
+                                        selectedValue={values.digsAge}
+                                        onValueChange={handleChange('digsAge')}
+                                        onBlur={() => setFieldTouched('digsAge')}
+                                        >
+                                        {number.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                        </Picker>
+                                        {touched.digsAge && errors.digsAge &&(
+                                         <Text style={styles.errorTxt}>{errors.digsAge}</Text>
+                                        )}
+                                    </View>
+                                </View>
+                            
+                            
+                                <View style={styles.sameLineContainer}>
+                                    <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Occupation:</Text>
+                                    <Picker
+                                        style={styles.input}
+                                        selectedValue={values.digsOccupation}
+                                        onValueChange={handleChange('digsOccupation')}
+                                        onBlur={() => setFieldTouched('digsOccupation')}
+                                        >
+                                        {occupationOptions.map((option, index) => (
+                                        <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.digsOccupation && errors.digsOccupation &&(
+                                        <Text style={styles.errorTxt}>{errors.digsOccupation}</Text>
+                                    )}
+                                    </View>
+
+                                    <View style={styles.lineInput}>
+                                        
+                                        {values.digsOccupation === 'Working Professional' ?(
+                                        <Text style={styles.label}>Working Hours:</Text>
+                                        ):
+                                        (
+                                            <Text style={styles.label}>Year Of Study:</Text>
+                                        )}
+                                        <Picker
+                                            style={styles.input}
+                                            selectedValue={values.occupationDropdownValue}
+                                            onValueChange={handleChange('occupationDropdownValue')}
+                                            onBlur={() => setFieldTouched('occupationDropdownValue')}
+                                        >
+                                        {values.digsOccupation === 'Student'
+                                            ? yearOfStudyOptions.map((option, index) => (
+                                                <Picker.Item key={index} label={option.label} value={option.value} />
+                                            ))
+                                            : workingHoursOptions.map((option, index) => (
+                                                <Picker.Item key={index} label={option.label} value={option.value} />
+                                            ))}
+                                        </Picker>
+                                        {touched.occupationDropdownValue && errors.occupationDropdownValue &&(
+                                         <Text style={styles.errorTxt}>{errors.occupationDropdownValue}</Text>
+                                        )}
+                                    </View>
+                                 </View>
+                                 <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Smoking Permitted:</Text>
+                                    <Picker
+                                        style={[styles.input, styles.singleLineInput]}
+                                        selectedValue={values.digsSmoking}
+                                            onValueChange={handleChange('digsSmoking')}
+                                            onBlur={() => setFieldTouched('digsSmoking')}
+                                        >
+                                        {yesNO.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.digsSmoking && errors.digsSmoking &&(
+                                        <Text style={styles.errorTxt}>{errors.digsSmoking}</Text>
+                                    )}
+                                 </View>
+                                <Button
+                                    mode="contained" 
+                                    color="#FF5733"
+                                    style={{marginVertical: 20, padding: 2}} 
+                                    labelStyle={styles.buttonLabel} 
+                                    disabled={!isValid}
+                                    onPress={handleSubmit}>
+                                    Next Page
+                                </Button>
+                            </View>
+                        )}
+                        </Card.Content>
+                    </Card>
                 </View>   
-                
                  )}
-                 
                  </Formik>
                  )}
             </>
