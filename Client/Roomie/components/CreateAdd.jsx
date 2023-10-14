@@ -102,11 +102,15 @@ const CreateAdd = ({navigation}) => {
 
         tenantDetailOption : Yup.string()
         .required('Please select an option'),
-        tenantMateGender : Yup.string()
+        tenantGender : Yup.string()
         .required('Please select a gender'),
-        tenantMateOccupation : Yup.string()
+        tenantAgeBracket : Yup.string()
+        .required('Please select an age bracket'), 
+        tenantOccupation : Yup.string()
         .required('Please select a occupation'),
-        houseMateSmoking : Yup.string()
+        occupationDropdownValue: Yup.string()
+        .required('Please select a value'),
+        tenantSmoking : Yup.string()
         .required('Please select an option'),
         referenceRequired: Yup.string()
         .required('Please select an option'),
@@ -125,6 +129,7 @@ const CreateAdd = ({navigation}) => {
         county: Yup.string()
         .required('Please enter the county for the address'),
         zip: Yup.string(),
+
         numOccupants: Yup.string()
         .required('Please enter the city for the address'),
         digsHouseType : Yup.string()
@@ -650,32 +655,36 @@ const CreateAdd = ({navigation}) => {
                 {showForm === 2 && (
                     <Formik  initialValues={{
                         addType : '2',
-                        addressLine1: '',
-                        addressLine2: '',
-                        city: '',
-                        county: '',
-                        zip: '',
-                        numRooms: '',
-                        houseRentalHouseType : '',
-                        houseRentalPrice : '',
-                        bio : '',
-                        referenceRequired: '',
-                        deposit: '',
+                        addressLine1: 'Church Hill Road',
+                        addressLine2: 'The Showgrounds',
+                        city: 'Sligo',
+                        county: 'Sligo',
+                        zip: 'F91 XH11',
 
-                        tenantDetailOption : '',
-                        tenantMateGender : '',
-                        tenantMateOccupation : '',
-                        houseMateSmoking : ''
+                        numRooms: '2',
+                        houseRentalHouseType : 'Apartment',
+                        houseRentalPrice : '1300',
+                        bio : 'Test test',
+                        referenceRequired: '1',
+                        deposit: '2 months rent',
+
+                        tenantDetailOption : '1',
+                        tenantGender : 'Female',
+                        tenantAgeBracket: '3',
+                        tenantOccupation : 'Student',
+                        occupationDropdownValue: '1st',
+                        tenantSmoking : '1'
                         
                     }}
                      validationSchema={HouseRentalSchema}
-                     onSubmit={values => signUp(values)}
+                     onSubmit={values => nextPage(values)}
                     >
                     {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit}) => (
-                <Card elevation={5} style={styles.card}>
-                    <Card.Content>
-                        <Title style={styles.title}>House Rental:</Title>
-                        <View >
+                <View>
+                    <Card elevation={5} style={styles.card}>
+                        <Card.Content>
+                             <Title style={styles.title}>House Rental:</Title>
+                             <View >
                                 <Text style={styles.label}>Address Line 1:</Text>
                                 <TextInput
                                     style={styles.input}
@@ -758,13 +767,19 @@ const CreateAdd = ({navigation}) => {
                                     onBlur={() => setFieldTouched('zip')} 
                                     />
                             </View>
+                        </Card.Content>
+                     </Card>
+               
 
+                    <Card elevation={5} style={styles.card}>
+                    <Card.Content>
+                            <Title style={styles.title}>Property Detail:</Title>
                             <View style={styles.sameLineContainer}>
                                 <View style={styles.lineInput}>
                                     <Text style={styles.label}>Num of Bedrooms:</Text>
                                     <Picker
                                         style={styles.input}
-                                        selectedValue={values.numOccupants}
+                                        selectedValue={values.numRooms}
                                         onValueChange={handleChange('numRooms')}
                                         onBlur={() => setFieldTouched('numRooms')}
                                         >
@@ -798,7 +813,7 @@ const CreateAdd = ({navigation}) => {
                                 <Text style={styles.label}>Price Per Month:</Text>
                                 <Picker
                                     style={[styles.input, styles.singleLineInput]}
-                                    selectedValue={values.houseSharePrice}
+                                    selectedValue={values.houseRentalPrice}
                                     onValueChange={handleChange('houseRentalPrice')}
                                     onBlur={() => setFieldTouched('houseRentalPrice')}
                                 >
@@ -829,7 +844,7 @@ const CreateAdd = ({navigation}) => {
                                     <Text style={styles.label}>References Required:</Text>
                                     <Picker
                                         style={styles.input}
-                                        selectedValue={values.numOccupants}
+                                        selectedValue={values.referenceRequired}
                                         onValueChange={handleChange('referenceRequired')}
                                         onBlur={() => setFieldTouched('referenceRequired')}
                                         >
@@ -855,9 +870,136 @@ const CreateAdd = ({navigation}) => {
                                     )}
                                 </View>
                             </View>
-                     
-                    </Card.Content>
-                </Card>
+                        </Card.Content>
+                    </Card>
+
+                    <Card elevation={5} style={styles.card}>
+                        <Card.Content>
+                        <Title style={styles.title}>Tenant Details:</Title>
+                        <Text style={styles.label}>What Are You Looking For In a Tenant:</Text>
+                        <RadioButton.Group onValueChange={(newValue) => setFieldValue('tenantDetailOption', newValue)} value={values.tenantDetailOption}>
+                            <View style={styles.radioContainerStart}>
+                                <RadioButton.Item label="Be Specific" value="1" />
+                                <RadioButton.Item label="Flexible" value= "0" />
+                            </View>
+                        </RadioButton.Group>
+
+                        {values.tenantDetailOption === "1" && (
+
+                            <View>
+                                <View style={styles.sameLineContainer}>
+                                    <View style={styles.lineInput}>
+                                        <Text style={styles.label}>Gender:</Text>
+                                        <Picker
+                                            style={styles.input}
+                                            selectedValue={values.tenantGender}
+                                            onValueChange={handleChange('tenantGender')}
+                                            onBlur={() => setFieldTouched('tenantGender')}
+                                            >
+                                            {genderOptions.map((option, index) => (
+                                                <Picker.Item key={index} label={option.label} value={option.value} />
+                                            ))}
+                                        </Picker>
+                                        {touched.tenantGender && errors.tenantGender &&(
+                                            <Text style={styles.errorTxt}>{errors.tenantGender}</Text>
+                                        )}
+                                    </View>
+                                    <View style={styles.lineInput}>
+                                        <Text style={styles.label}>Age Bracket:</Text>
+                                        <Picker //occupationDropdownValue
+                                        style={styles.input}
+                                        selectedValue={values.tenantAgeBracket}
+                                        onValueChange={handleChange('tenantAgeBracket')}
+                                        onBlur={() => setFieldTouched('tenantAgeBracket')}
+                                        >
+                                        {number.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                        </Picker>
+                                        {touched.tenantAgeBracket && errors.tenantAgeBracket &&(
+                                         <Text style={styles.errorTxt}>{errors.tenantAgeBracket}</Text>
+                                        )}
+                                    </View>
+                                </View>
+                            
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Smoking Permitted:</Text>
+                                    <Picker
+                                        style={[styles.input, styles.singleLineInput]}
+                                        selectedValue={values.tenantSmoking}
+                                            onValueChange={handleChange('tenantSmoking')}
+                                            onBlur={() => setFieldTouched('tenantSmoking')}
+                                        >
+                                        {yesNO.map((option, index) => (
+                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.tenantSmoking && errors.tenantSmoking &&(
+                                        <Text style={styles.errorTxt}>{errors.tenantSmoking}</Text>
+                                    )}
+                                 </View>
+                            
+                                <View style={styles.sameLineContainer}>
+                                    <View style={styles.lineInput}>
+                                    <Text style={styles.label}>Occupation:</Text>
+                                    <Picker
+                                        style={styles.input}
+                                        selectedValue={values.tenantOccupation}
+                                        onValueChange={handleChange('tenantOccupation')}
+                                        onBlur={() => setFieldTouched('tenantOccupation')}
+                                        >
+                                        {occupationOptions.map((option, index) => (
+                                        <Picker.Item key={index} label={option.label} value={option.value} />
+                                        ))}
+                                    </Picker>
+                                    {touched.tenantOccupation && errors.tenantOccupation &&(
+                                        <Text style={styles.errorTxt}>{errors.tenantOccupation}</Text>
+                                    )}
+                                    </View>
+
+                                    <View style={styles.lineInput}>
+                                        
+                                        {values.tenantOccupation === 'Working Professional' ?(
+                                        <Text style={styles.label}>Working Hours:</Text>
+                                        ):
+                                        (
+                                            <Text style={styles.label}>Year Of Study:</Text>
+                                        )}
+                                        <Picker
+                                            style={styles.input}
+                                            selectedValue={values.occupationDropdownValue}
+                                            onValueChange={handleChange('occupationDropdownValue')}
+                                            onBlur={() => setFieldTouched('occupationDropdownValue')}
+                                        >
+                                        {values.tenantOccupation === 'Student'
+                                            ? yearOfStudyOptions.map((option, index) => (
+                                                <Picker.Item key={index} label={option.label} value={option.value} />
+                                            ))
+                                            : workingHoursOptions.map((option, index) => (
+                                                <Picker.Item key={index} label={option.label} value={option.value} />
+                                            ))}
+                                        </Picker>
+                                        {touched.occupationDropdownValue && errors.occupationDropdownValue &&(
+                                         <Text style={styles.errorTxt}>{errors.occupationDropdownValue}</Text>
+                                        )}
+                                    </View>
+                                 </View>
+                              
+                                <Button
+                                    mode="contained" 
+                                    color="#FF5733"
+                                    style={{marginVertical: 20, padding: 2}} 
+                                    labelStyle={styles.buttonLabel} 
+                                    disabled={!isValid}
+                                    onPress={handleSubmit}>
+                                    Next Page
+                                </Button>
+                            </View>
+                        )}
+
+                        </Card.Content>
+                    </Card>
+                </View>
                  )}
                  </Formik>
                  )}
@@ -893,9 +1035,11 @@ const CreateAdd = ({navigation}) => {
                      onSubmit={values => signUp(values)}
                     >
                     {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit}) => (
-                <Card elevation={5} style={styles.card}>
+                 <View>    
+                   <Card elevation={5} style={styles.card}>
                     <Card.Content>
-                        <Title style={styles.title}>Digs:</Title>
+                        <Title style={styles.title}>Digs</Title>
+                        <Title style={styles.title2}>Property Address:</Title>
                          <View >
                                 <Text style={styles.label}>Address Line 1:</Text>
                                 <TextInput
@@ -979,7 +1123,13 @@ const CreateAdd = ({navigation}) => {
                                     onBlur={() => setFieldTouched('zip')} 
                                     />
                             </View>
+                         </Card.Content>
+                       </Card>
 
+                        <Card elevation={5} style={styles.card}>
+                          <Card.Content>
+                            
+                            <Title style={styles.title2}>Room Details:</Title>
                             <View style={styles.sameLineContainer}>
                                 <View style={styles.lineInput}>
                                     <Text style={styles.label}>Num of Occupants:</Text>
@@ -1114,8 +1264,11 @@ const CreateAdd = ({navigation}) => {
                             </View>
                      
                     </Card.Content>
-                </Card>
+                  </Card>
+                </View>   
+                
                  )}
+                 
                  </Formik>
                  )}
             </>
