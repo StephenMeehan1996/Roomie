@@ -62,10 +62,8 @@ const CreateAdd = ({navigation}) => {
         houseMateSmoking : Yup.string()
         .required('Please select an option'),
         houseMateExpect: Yup.string()
-        .notOneOf(['Select an option'], 'Please select a value')
         .required('Please select a value'),
         environment: Yup.string()
-        .notOneOf(['Select an option'], 'Please select a value')
         .required('Please select a value')
       });
 
@@ -138,7 +136,7 @@ const CreateAdd = ({navigation}) => {
         tenantMateOccupation : Yup.string()
         .required('Please select a occupation'),
         houseMateSmoking : Yup.string()
-        .required('Please select an option'),
+        .required('Please select an option')
       
       });
 
@@ -157,30 +155,7 @@ const CreateAdd = ({navigation}) => {
       
   return (
     <ScrollView>
-        <Formik  initialValues={{
-                houseSharePriceRangeMin : '700',
-                houseSharePriceRangeMax : '1200',
-                houseShareRoomType : 'Double',
-                houseShareHouseType : 'Apartment',
-                houseShareEnsuite : '1',
-                houseMateExpect : 'Friendly',
-                environment : 'Social',
-      
-                houseRentalPriceRangeMin : '500',
-                houseRentalPriceRangeMax : '1200',
-                numRooms : '3',
-                houseRentalHouseType : 'Apartment',
-      
-                digsPriceRangeMin : '200',
-                digsPriceRangeMax: '600',
-                digsRoomType: 'Double',
-                digsHouseType: 'Apartment',
-                digsDays : 'Mon-Friday',
-                digsMealIncluded: '1'
-              }}
-               validationSchema={SignupSchema}
-               onSubmit={values => signUp(values)}
-              >
+                //#region Buttons
             <View style={styles.container}>
                 <Card elevation={5} style={styles.card}>
                     <Card.Content>
@@ -218,36 +193,129 @@ const CreateAdd = ({navigation}) => {
                         </View>
                     </Card.Content>
                 </Card>
-                  {/* House Share Form*/}
-                  {showForm === 1 && (
+                //#endregion
+
+                //#region House Share Form
+                {showForm === 1 && (
+                <Formik  initialValues={{
+                    addType : '1',
+                    addressLine1: '',
+                    addressLine2: '',
+                    city: '',
+                    county: '',
+                    numOccupants: '',
+                    houseShareHouseType : '',
+                    houseSharePrice : '',
+                    houseShareRoomType : '',
+                    houseShareHouseType : '',
+                    houseShareEnsuite: '',
+                    bio : '',
+                    deposit: '',
+            
+                    houseMateDetailOption : '',
+                    houseMateGender : '',
+                    houseMateAge : '',
+                    houseMateOccupation : '',
+                    occupationDropdownValue: '',
+                    houseMateSmoking : '',
+                    houseMateExpect: '',
+                    environment: ''
+                }}
+                 validationSchema={HouseShareSchema}
+                 onSubmit={values => signUp(values)}
+                >
+                {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit}) => (
+                  
                     <Card elevation={5} style={styles.card}>
                         <Card.Content>
                             <Title style={styles.title}>House Share:</Title>
                         
                         </Card.Content>
                     </Card>
+                  
                   )}
+                </Formik>
+                )}
+                //#endregion
+
+                //#region House Rental Form
                 {/* House Rental Form */}
                 {showForm === 2 && (
+                    <Formik  initialValues={{
+                        addType : '2',
+                        addressLine1: '',
+                        addressLine2: '',
+                        city: '',
+                        county: '',
+                        zip: '',
+                        numRooms: '',
+                        houseRentalHouseType : '',
+                        houseRentalPrice : '',
+                        bio : '',
+
+                        tenantDetailOption : '',
+                        tenantMateGender : '',
+                        tenantMateOccupation : '',
+                        houseMateSmoking : '',
+                        referenceRequired: '',
+                        deposit: ''
+                    }}
+                     validationSchema={HouseRentalSchema}
+                     onSubmit={values => signUp(values)}
+                    >
+                    {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit}) => (
                 <Card elevation={5} style={styles.card}>
                     <Card.Content>
                         <Title style={styles.title}>House Rental:</Title>
                      
                     </Card.Content>
                 </Card>
-                )}
+                 )}
+                 </Formik>
+                 )}
+               //#endregion
+
+                 //#region Digs Form
                 {/* Digs Form */}
                 {showForm === 3 && (
+                    <Formik  initialValues={{
+                        addType : '',
+                        addressLine1: '',
+                        addressLine2: '',
+                        city: '',
+                        county: '',
+                        zip: '',
+                        numOccupants: '',
+                        digsHouseType : '',
+                        digsPrice : '',
+                        digsDays: '',
+                        digsMealIncluded: '',
+                        referenceRequired: '',
+                        deposit: '',
+                        bio : '',
+                      
+                        digsDetailOption : '',
+                        digsGender : '',
+                        digsAge : '',
+                        tenantMateOccupation : '',
+                        houseMateSmoking : ''
+                    }}
+                     validationSchema={DigsSchema}
+                     onSubmit={values => signUp(values)}
+                    >
+                    {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit}) => (
                 <Card elevation={5} style={styles.card}>
                     <Card.Content>
                         <Title style={styles.title}>Digs:</Title>
                      
                     </Card.Content>
                 </Card>
-                )}
-
+                 )}
+                 </Formik>
+                 )}
+                 //#endregion
             </View>
-        </Formik>
+        
     </ScrollView>
   )
 }
