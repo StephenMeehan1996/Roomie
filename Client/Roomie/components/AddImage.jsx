@@ -20,6 +20,9 @@ const AddImage = ({navigation}) => {
 
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [URI, setURI] = useState(false);
+  let uri = '';
+  let filename = '';
 
   const pickImage = async () =>{
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -32,55 +35,44 @@ const AddImage = ({navigation}) => {
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
-
   }
 
-  const uploadMedia = async = async () =>{
-    setUploading(true);
-
-  try{
-    const { uri } = await FileSystem.getInfoAsync(image);
-    const blob = await new Promise((resolve, reject) =>{
-      const xhr = new XMLHttpRequest();
-      xhr.onload = () =>{
-        resolve.apply(xhr.response);
-      };
-      xhr.onerror = (e) =>{
-        reject(new TypeError('Network request failed'))
-      };
-      xhr.responseType = 'blob';
-      xhr.open('GET', uri, true);
-      xhr.send(null);
-    });
-
-    // const blob = await FileSystem.readAsStringAsync(image, {
-    //   encoding: FileSystem.EncodingType.Base64,
-    // });
-
-    const metadata = {
-      contentType: 'image/jpeg',
-    };
-
-    const filename = image.substring(image.lastIndexOf('/') + 1);
-
-    const storage = FIREBASE_STORAGE;
-    const storageRef = ref(storage, 'images/' + filename);
-
-    // 'file' comes from the Blob or File API
-    uploadBytes(storageRef, blob, metadata).then((snapshot) => {
-      console.log('Uploaded a blob or file!');
-      console.log(getDownloadURL(storageRef));
-    });
-
- 
-  } catch (error){
-      console.error(error);
-      setUploading(false);
+  const takeImage = async () =>{
+    let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4,3],
+        quality: 1,
+        base64: false,
+    })
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
   }
-};
 
- 
+  const uploadFile = async () =>{
+      try{
+        if (image) {
+        const response = await fetch(image);
+        const blob = await response.blob();
 
+        const filename = image.substring(image.lastIndexOf('/') + 1);
+
+        const storage = FIREBASE_STORAGE;
+        const storageRef = ref(storage, 'images/' + filename);
+        
+        uploadBytes(storageRef, blob).then((snapshot) => {
+          console.log('Uploaded a blob or file!');
+          getDownloadURL(snapshot.ref).then( url => console.log(url));
+        });
+      } else{
+        console.log('No image selected for upload.');
+      }
+
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+  }
 
   return (
           <View style={styles.container}>
@@ -103,7 +95,10 @@ const AddImage = ({navigation}) => {
             <Card elevation={5} style={styles.card}>
               <Card.Content>
                   <TouchableOpacity onPress={pickImage} style={styles2.selectButton}>
-                    <Text style={styles.btnText}>Pick an Image</Text>
+                    <Text style={styles2.btnText}>Pick an Image</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={takeImage} style={styles2.selectButton}>
+                    <Text style={styles2.btnText}>Take Photo</Text>
                   </TouchableOpacity>
                   <View>
                     {image &&
@@ -113,7 +108,7 @@ const AddImage = ({navigation}) => {
                         >
                         </Image>
                     }
-                        <TouchableOpacity onPress={uploadMedia} style={styles2.selectButton}>
+                        <TouchableOpacity onPress={uploadFile} style={styles2.selectButton}>
                            <Text style={styles2.btnText}>upload Image</Text>
                       </TouchableOpacity>
 
