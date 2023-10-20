@@ -108,14 +108,14 @@ const AddImage = ({navigation}) => {
           console.error('Error uploading image:', error);
         }
       }
-      
+
     } else{
         console.log('No image selected for upload.');
     }
   }
 
   return (
-          <View style={styles.container}>
+          <View >
 
             <Card elevation={5} style={styles.card}>
               <Card.Content>

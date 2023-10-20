@@ -9,6 +9,7 @@ import Search from '../components/Search';
 import Login from './Login';
 import CreateAdd from './CreateAdd';
 import { Avatar, Card, Title, Paragraph, Button,IconButton } from 'react-native-paper';
+import AddImage from './AddImage';
 
 const Tab = createBottomTabNavigator();
 
@@ -48,7 +49,8 @@ const HomePage = ({navigation}) => {
         > 
         <Tab.Screen name="Profile" component={Profile} />
         <Tab.Screen name="Create Add" component={CreateAdd} />
-        <Tab.Screen name="Search" component={Search} />
+        <Tab.Screen name="Search" component={Search}/>
+        
       </Tab.Navigator>
    </View>
   )

@@ -14,6 +14,7 @@ import SignUpForm from '../components/SignupForm';
 import RentalPreferencesForm from '../components/RentalPreferencesForm';
 import CreateAdd from '../components/CreateAdd';
 import AddImage from '../components/AddImage';
+import AddDetail from '../components/AddDetail';
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
@@ -21,12 +22,14 @@ const OutsideStack = createNativeStackNavigator();
 
 const InsideLayout = () =>{
    return(
+    //add bottom nav here? 
     <InsideStack.Navigator initialRouteName='Home' screenOptions={{headerShown: false}}>
         <InsideStack.Screen name = "HomePage" component={HomePage}/>
         <InsideStack.Screen name = "Profile" component={Profile}/>
         <InsideStack.Screen name = "Search" component={Search}/>
         <InsideStack.Screen name = "CreateAdd" component={CreateAdd}/>
         <InsideStack.Screen name = "AddImage" component={AddImage}/>
+        <InsideStack.Screen name = "AddDetail" component={AddDetail}/>
     </InsideStack.Navigator>
     )
 }

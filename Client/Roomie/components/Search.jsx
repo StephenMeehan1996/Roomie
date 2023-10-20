@@ -2,10 +2,11 @@ import { View, Text, SafeAreaView, ScrollView, StyleSheet } from 'react-native'
 import React from 'react'
 import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
+import Ad from './Ad'
 
 
 
-const Search = ({navigation}) => {
+const Search = ({navigation, route}) => {
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -17,20 +18,9 @@ const Search = ({navigation}) => {
       <SafeAreaView style={styles.container}>
         <ScrollView>
 
-            <View style={styles.addContainer}>
-                <CarouselCards />
-                <AddDetail />
-            </View>
+           <Ad navigation={navigation} route={route}></Ad>
 
-            <View style={styles.addContainer}>
-                <CarouselCards />
-                <AddDetail />
-            </View>
-
-            <View style={styles.addContainer}>
-                <CarouselCards />
-                <AddDetail />
-            </View>
+           <Ad navigation={navigation} route={route}></Ad>
 
         </ScrollView>
     </SafeAreaView>
