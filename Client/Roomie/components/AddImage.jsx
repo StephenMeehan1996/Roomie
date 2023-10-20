@@ -42,6 +42,11 @@ const AddImage = ({navigation}) => {
     }
   }
 
+  const removeImage = (uri) => {
+    const updatedFiles = selectedFiles.filter((image) => image.uri !== uri);
+    setSelectedFiles(updatedFiles);
+  };
+
   const takeImage = async () =>{
     let result = await launchCameraAsync()
     if (!result.canceled) {
@@ -74,25 +79,36 @@ const AddImage = ({navigation}) => {
     
     if (selectedFiles) {
       const storage = getStorage();
-      const urls = [];
+      const imagesToPost = [];
       setUploading(true);
       for(const file of selectedFiles){
-       
+    
         try{
           const response = await fetch(file.uri);
           const blob = await response.blob();
           const storageRef = ref(storage, 'images/' + file.filename);
           
-          uploadBytes(storageRef, blob).then((snapshot) => {
+          uploadBytes(storageRef, blob).then(async (snapshot) => {
             console.log('Uploaded a blob or file!');
-            getDownloadURL(snapshot.ref).then( url => console.log(url));
+            const url= await getDownloadURL(snapshot.ref);
+            const imageObj ={
+              ImageType: '1',
+              UserID : 'test', 
+              Filename: file.filename, 
+              URL: url
+            }           
+            imagesToPost.push(imageObj);
+
             if(file === selectedFiles[selectedFiles.length-1])
               setUploading(false);
+              setSelectedFiles([]);
+              console.log(imagesToPost);
           });
         } catch (error) {
           console.error('Error uploading image:', error);
         }
       }
+      
     } else{
         console.log('No image selected for upload.');
     }
@@ -125,9 +141,23 @@ const AddImage = ({navigation}) => {
                   <FlatList
                       data={selectedFiles}
                       keyExtractor={(item, index) => index.toString()}
-                      horizontal
-                      renderItem={({ item }) => (
-                        <Image source={item} style={{ width: 100, height: 100, margin: 5 }} />
+                      horizontal={false}
+                      numColumns={3} // Set the number of columns
+                       contentContainerStyle={styles.listContainer}
+                      renderItem={({ item}) => (
+                        <View key={item.id}>
+                            <Image source={item} style={{ width: 100, height: 100, margin: 5 }} />
+                            
+
+                          <IconButton
+                            icon="trash-can-outline"
+                            size={30}
+                            iconColor="red"
+                            style={{position: 'absolute', top: -5, right: -5}}
+                            onPress={() => removeImage(item.uri)}>
+                        </IconButton>
+
+                       </View>
                   )}
                   />
                 </View>
@@ -187,7 +217,12 @@ const styles2 = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0
-  }
+  },
+  listContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
   });
 
 export default AddImage
