@@ -9,6 +9,7 @@ const AddDetail = ({navigation}) =>{
   const [isImageViewerVisible, setImageViewerVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const {selectedAdImages} = route?.params || [];
+  const [selectedImageIndex, setSelectedImageIndex] = useState(1);
 
   const openImageViewer = (image) => {
     console.log(image.uri)
@@ -26,6 +27,20 @@ const AddDetail = ({navigation}) =>{
       <Image source={{ uri: item.uri }} style={styles.smallImage} />
     </TouchableOpacity>
   );
+
+  const navigateImage = (step) => {
+    // Calculate the next image index
+    let newIndex = selectedImageIndex + step;
+    
+    // Ensure the index stays within bounds
+    if (newIndex < 0) {
+      newIndex = selectedAdImages.length - 1;
+    } else if (newIndex >= selectedAdImages.length) {
+      newIndex = 0;
+    }
+    
+    setSelectedImageIndex(newIndex);
+  };
 
   return (
   
@@ -45,6 +60,9 @@ const AddDetail = ({navigation}) =>{
             </Card>
     <Card elevation={5} style={styles.card}>
       <Card.Content>
+      <TouchableOpacity onPress={() => openImageViewer(selectedAdImages[1].uri)}>
+      <Image source={ selectedAdImages[0].uri} style={styles.largeImage} />
+      </TouchableOpacity>
       <FlatList
         data={selectedAdImages}
         renderItem={renderImageItem}
@@ -68,27 +86,85 @@ const AddDetail = ({navigation}) =>{
       <Modal 
           visible={isImageViewerVisible} 
           onDismiss={closeImageViewer}
-      
-          style={{backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
+   
+          style={styles.modal}
           >
+          
         <View style={styles.modalContainer}>
+        <View style={styles.closeButtonContainer}>
+        <IconButton
+                      icon="close-box-outline"
+                      mode="text"
+                      size={45}
+                      style={styles.closeButton}
+                      iconColor='red'
+                      onPress={closeImageViewer}>
+        </IconButton>
+        </View> 
         <View style={styles.imageViewer}>
-          <Image source={{ uri: selectedImage }}  style={[styles.fullScreenImage, { width: Dimensions.get('window').width -20, height: 300}]} />
+          {/* <Image source={{ uri: selectedImage }}  style={[styles.fullScreenImage, { width: Dimensions.get('window').width -20, height: 300}]} /> */}
+        
+          <Image source={{ uri: selectedAdImages[selectedImageIndex].uri }} style={[styles.fullScreenImage, { width: Dimensions.get('window').width -20, height: 300}]} />
 
-          <Button
-            icon="close"
-            color="white"
-            style={styles.closeButton}
-            onPress={closeImageViewer}
-          />
+          <View style={styles.buttonContainer}>
+          
+              {/* <Button title="Previous" onPress={() => navigateImage(-1)} />
+              <Button title="Next" onPress={() => navigateImage(1)} /> */}
+
+              <IconButton
+                      icon="chevron-left"
+                      mode="text"
+                      size={60}
+                      iconColor='white'
+                      onPress={() => navigateImage(-1)}>
+              </IconButton>
+              
+              <IconButton
+                      icon="chevron-right"
+                      mode="text"
+                      iconColor='white'
+                      size={60}
+                      
+                      onPress={() => navigateImage(1)}>
+              </IconButton>
+             
+            </View>
+
+       
+         
         </View>
-        </View>     
+        </View>
+        
       </Modal>
     </View>
 
   );
 }
 const styles = StyleSheet.create({
+  largeImage: {
+    width: '100%',
+    height: 200
+  },
+  modal:{
+   
+    flex: 1,
+    height: '100%'
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 10,
+    position: 'absolute',
+  },
+  closeButtonContainer: {
+    width: '100%',
+    height: 100,
+    alignSelf: 'flex-start',
+    zIndex: 3,
+    position: 'absolute',
+    top: -100
+  },
 
   header: {
     flexDirection: 'row',
@@ -106,6 +182,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
    
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
    
@@ -131,15 +208,27 @@ const styles = StyleSheet.create({
   },
   imageViewer: {
     flex: 1,
-    justifyContent: 'center', // Center content vertically
-    alignItems: 'center', // Center content horizontally
+    justifyContent: 'center', 
+    alignItems: 'center', 
 
   },
   closeButton: {
     position: 'absolute',
-    top: 0,
-    right: 0,
+    top: -30, 
+    right: -5
   },
+
+
+  container: {
+    flex: 1
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+ 
+  },
+  
 });
 
 export default AddDetail;
