@@ -50,7 +50,7 @@ const Ad = ({navigation, route}) => {
       );
     
       return (
-        <View style={styles.container}>
+        <View >
             <TouchableOpacity onPress={() => nextPage()}>
                 <Card style={styles.card}>
                     <Card.Content>
@@ -85,9 +85,7 @@ const Ad = ({navigation, route}) => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-    
-    },
+ 
     largeImage: {
       width: '100%',
       height: 200

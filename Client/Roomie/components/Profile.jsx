@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Collapsible from 'react-native-collapsible';
 import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
+import Ad from './Ad';
 
 const Profile = ({ navigation }) => {
 
@@ -63,15 +64,13 @@ const Profile = ({ navigation }) => {
     <Card elevation={5} style={styles.card}>
       <Card.Content>
         <Title style={styles.username}>Active adds</Title>
-        <View style={styles.addContainer}>
-                <CarouselCards />
-                <AddDetail />
-            </View>
+        <View >
+           <Ad navigation={navigation} ></Ad>
+        </View>
 
-            <View style={styles.addContainer}>
-                <CarouselCards />
-                <AddDetail />
-            </View>
+        <View >
+          <Ad navigation={navigation} ></Ad>
+        </View>
       </Card.Content>
     </Card>
    
