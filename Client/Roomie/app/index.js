@@ -15,6 +15,7 @@ import RentalPreferencesForm from '../components/RentalPreferencesForm';
 import CreateAdd from '../components/CreateAdd';
 import AddImage from '../components/AddImage';
 import AddDetail from '../components/AddDetail';
+import { Provider as PaperProvider } from 'react-native-paper';
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
@@ -64,6 +65,7 @@ const Home =  () =>{
    }, []);
 
     return (
+      <PaperProvider>
         <SafeAreaView style={{flex: 1}}>
             <NavigationContainer  independent={true}>
                 <Stack.Navigator initialRouteName='Home' screenOptions={{headerShown: false}} >
@@ -71,6 +73,7 @@ const Home =  () =>{
                 </Stack.Navigator>
             </NavigationContainer>
         </SafeAreaView>
+        </PaperProvider>
     )
 }
 

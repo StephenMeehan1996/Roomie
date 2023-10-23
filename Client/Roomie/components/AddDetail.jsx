@@ -96,7 +96,7 @@ const AddDetail = ({navigation}) =>{
                         <Avatar.Image size={80} source={require('../assets/Icons/images/kemal.jpg')} />
                       </View>
                       <Title>Joe Bloggs</Title>
-                      <Paragraph>Current occupants:</Paragraph>
+                      <Text style={styles.infoText}>Rating: <Text style={styles.greenText}>85% Positive</Text></Text>
                       <View style={styles.chipContainer}>
                         <Chip style={styles.chip}>Student</Chip>
                         <Chip style={styles.chip}>1st Year</Chip>
@@ -271,14 +271,22 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     backgroundColor: '#FFFFFF'
   },
+  infoText: {
+    fontSize: 16,
+
+    marginBottom: 5
+  },
+  greenText: {
+      color: 'green', // Set the color to green
+      fontWeight: 'bold', // Optional: You can apply additional styles as needed
+    },
   sameLineContainer: {
-    flexDirection: 'row', // Display first and last name fields horizontally
-    justifyContent: 'flex-start' // Add space between the two fields
+    flexDirection: 'row', 
+    justifyContent: 'flex-start' 
   },
   lineInput:{
     marginRight: 15
   },
-
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -306,7 +314,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     textAlign: 'right' // Right-align the icon within the container
   },
-
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -315,7 +322,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 0
   },
-
   card: {
     width: '100%',
     backgroundColor: '#FFF',
@@ -324,14 +330,10 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     borderRadius: 0
   },
-
   fullScreenImage: {
-  
     width: Dimensions.get('window').width + 20
   },
-
   imageViewer: {
- 
     justifyContent: 'center', 
     alignItems: 'center'
   },
@@ -352,11 +354,6 @@ const styles = StyleSheet.create({
   selectedTab: {
     borderColor: 'blue',
   },
-  tabContent: {
-
-
-  },
-  
 });
 
 export default AddDetail;
