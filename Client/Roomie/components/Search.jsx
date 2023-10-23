@@ -6,7 +6,7 @@ import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
 import Ad from './Ad'
 import { Picker } from '@react-native-picker/picker';
-import { yesNO, priceRange, number, roomType, houseType, houseMatExpectations, environmentOptions, days } from '../data/formData';
+import { yesNO, priceRange, number, roomType, houseType, houseMatExpectations, environmentOptions, days, irishCounties, rentalPreference, orderBy, radius } from '../data/formData';
 
 
 
@@ -19,13 +19,12 @@ const Search = ({navigation, route}) => {
       }, [navigation]);
 
       const [visible, setVisible] = useState(false);
-      const [selectedRadius, setSelectedRadius] = useState('5 miles');
-      const [selectedPriceRange, setSelectedPriceRange] = useState('$0-$50');
-      const [selectedOrderBy, setSelectedOrderBy] = useState('Relevance');
-      const [priceRangeMin, setPriceRangeMin] = useState('');
-      const [priceRangeMax, setPriceRangeMax] = useState('');
-      const [distanceRadius, setDistanceRadius] = useState('');
-      const [filterBy, setFilterBy] = useState('');
+     
+      const [priceRangeMin, setPriceRangeMin] = useState('500');
+      const [priceRangeMax, setPriceRangeMax] = useState('700');
+      const [distanceRadius, setDistanceRadius] = useState('0');
+      const [orderByValue, setOrderByValue] = useState('Match %');
+      const [location, setLocation] = useState('Sligo');
       
     
       const showDialog = () => setVisible(true);
@@ -41,25 +40,40 @@ const Search = ({navigation, route}) => {
       
         <View style={styles.pickerContainer}>
         <View style={{flexDirection: 'column',alignItems: 'flex-start', marginTop: 12}}>
-        <Paragraph>Location:</Paragraph>
+        <Paragraph>Rental Type:</Paragraph>
             <Picker
-              style={[styles.input, styles.width,{marginTop: 0}]}
+              style={[styles.input,{marginTop: 0}]}
               selectedValue={priceRangeMin}
               onValueChange={value =>{setPriceRangeMin(value)}}   
             >
-              {priceRange.map((option, index) => (
+              {rentalPreference.map((option, index) => (
+                <Picker.Item key={index} label={option.label} value={option.value} />
+              ))}
+              </Picker>
+              </View>
+              </View>
+
+              <View style={styles.pickerContainer}>
+        <View style={{flexDirection: 'column',alignItems: 'flex-start', marginTop: 12}}>
+        <Paragraph>Location:</Paragraph>
+            <Picker
+              style={[styles.input,{marginTop: 0}]}
+              selectedValue={location}
+              onValueChange={value =>{setLocation(value)}}   
+            >
+              {irishCounties.map((option, index) => (
                 <Picker.Item key={index} label={option.label} value={option.value} />
               ))}
               </Picker>
               </View>
               </View>
               
-              <View style={styles.pickerContainer}>
+              {/* <View style={styles.pickerContainer}>
                 <View style={{flexDirection: 'column',alignItems: 'flex-start'}}>
                 <Paragraph>Price Range:</Paragraph>
                  <Appbar.Content title={`€${priceRangeMin} - €${priceRangeMax}`} titleStyle={{ fontSize: 16 }} onPress={showDialog} />
               </View>
-              </View>
+              </View> */}
               <View style={[styles.pickerContainer, {justifyContent: 'flex-end'}]}>
                 <Appbar.Action icon="filter" onPress={showDialog}  />
            
@@ -87,7 +101,7 @@ const Search = ({navigation, route}) => {
                             onValueChange={value => {setDistanceRadius(value)}}
                           
                           >
-                          {yesNO.map((option, index) => (
+                          {radius.map((option, index) => (
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                       </Picker>
@@ -123,14 +137,13 @@ const Search = ({navigation, route}) => {
                       </View>
                   </View>
                   <View style={styles.lineInput}>
-                      <Text style={styles.label}>Distance Radius:</Text>
+                      <Text style={styles.label}>Orderby:</Text>
                       <Picker
                           style={[styles.input, styles.singleLineInput]}
-                          selectedValue={distanceRadius}
-                            onValueChange={value => {setDistanceRadius(value)}}
-                          
+                          selectedValue={orderByValue}
+                          onValueChange={value => {setOrderByValue(value)}}
                           >
-                          {yesNO.map((option, index) => (
+                          {orderBy.map((option, index) => (
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                       </Picker>

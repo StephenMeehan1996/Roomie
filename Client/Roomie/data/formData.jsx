@@ -35,9 +35,24 @@ const genderOptions = [
 
   const rentalPreference = [
     
-    { label: 'House Rental', value: 'House Rental',enabled : true },
-    { label: 'House Share', value: 'House Share',enabled : true },
+    { label: 'House Rental', value: 'House Rental'},
+    { label: 'House Share', value: 'House Share' },
     { label: 'Digs', value: 'Digs',enabled : true }
+  ];
+  const orderBy = [
+    
+    { label: 'Match %', value: 'Match %' },
+    { label: 'Price', value: 'Price' },
+    { label: 'Date', value: 'Date' },
+    { label: 'Add Poster Rating', value: 'Add Poster Rating'}
+  ];
+
+  const radius = [
+    { label: '0 km', value: '0' },
+    { label: '+1 km', value: '1' },
+    { label: '+2 km', value: '2' },
+    { label: '+3 km', value: '3' },
+    { label: '5+ km', value: '5'}
   ];
 
   const priceRange = [
@@ -150,5 +165,7 @@ const genderOptions = [
           houseMatExpectations,
           environmentOptions,
           days,
-          irishCounties
+          irishCounties,
+          orderBy,
+          radius
         };
