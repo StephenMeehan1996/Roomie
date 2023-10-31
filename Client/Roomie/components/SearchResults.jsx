@@ -25,7 +25,9 @@ const SearchResults = ({navigation, route}) => {
     
       const showDialog = () => setVisible(true);
       const hideDialog = () => setVisible(false);
-
+      const pickerItemStyle = {
+        fontSize: 10, // Adjust the font size as needed
+      };
       const nextPage = () => {
         	navigation.navigate('_AddDetail')
       };
@@ -47,9 +49,9 @@ const SearchResults = ({navigation, route}) => {
             <View style={{flexDirection: 'column',alignItems: 'flex-start'}}>
             <Paragraph>Rental Type:</Paragraph>
                 <Picker
-                  style={[styles.input,{marginTop: 0}]}
+                  style={[styles.input]}
                   selectedValue={rentalType}
-                  onValueChange={value =>{setRentalType(value)}}   
+                  onValueChange={value =>{setRentalType(value)}}
                 >
                   {rentalPreference.map((option, index) => (
                     <Picker.Item key={index} label={option.label} value={option.value} />
@@ -103,10 +105,10 @@ const SearchResults = ({navigation, route}) => {
                 </View>
                 <Text style={styles.label}>Price Range:</Text>
                 <View style={styles.sameLineContainer}>
-                    <View style={{}}>
+                    <View>
                         <Text style={styles.label}>Min:</Text>
                         <Picker
-                            style={[styles.input, {width: 150}]}
+                            style={[styles.input,{width: 130, marginRight: 10}]}
                             selectedValue={priceRangeMin}
                             onValueChange={value =>{setPriceRangeMin(value)}}
                         >
@@ -116,10 +118,10 @@ const SearchResults = ({navigation, route}) => {
                         </Picker>
                       
                     </View>
-                      <View style={{width: 100}}>
+                      <View >
                         <Text style={styles.label}>Max:</Text>
                             <Picker
-                                style={[styles.input, {width: 150}]}
+                                style={[styles.input,{width: 130}]}
                                 selectedValue={priceRangeMax}
                                 onValueChange={value =>{setPriceRangeMax(value)}}
                             >
@@ -179,9 +181,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10
   },
   popup:{
+    position: 'absolute',
+    right: -25,
     flex: 1,
-    width: '80%',
-    padding: 20,
+    width: '85%',
+    padding: 5,
     borderLeftWidth: 1,
     backgroundColor: '#fff',
     borderRadius: 0, 
@@ -237,13 +241,18 @@ const styles = StyleSheet.create({
         width: 100
       },
       sameLineContainer: {
-        flexDirection: 'row', // Display first and last name fields horizontally
-        justifyContent: 'space-between' // Add space between the two fields
+        flexDirection: 'row',
+       
+
       },
       lineInput: {
         flex: 1, // Take up equal space in the row
         marginRight: 8, // Add spacing between first and last name fields
       },
+
+      androidPickerText:{
+        fontSize: 10
+      }
   });
 
   
