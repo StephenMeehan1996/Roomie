@@ -17,11 +17,27 @@ const Tab = createBottomTabNavigator();
 
 const SecondTabStack = createNativeStackNavigator();
 
-function SecondTabStackScreens() {
+function searchTabStackScreens() {
   return (
     <SecondTabStack.Navigator initialRouteName='Search' screenOptions={{headerShown: false}}>
       <SecondTabStack.Screen name="Search" component={Search} />
       <SecondTabStack.Screen name="SearchResults" component={SearchResults} />
+    </SecondTabStack.Navigator>
+  );
+}
+
+function profileTabStackScreens() {
+  return (
+    <SecondTabStack.Navigator initialRouteName='Profile' screenOptions={{headerShown: false}}>
+      <SecondTabStack.Screen name="Profile" component={Profile} />
+    </SecondTabStack.Navigator>
+  );
+}
+function createTabStackScreens() {
+  return (
+    <SecondTabStack.Navigator initialRouteName='CreateAdd' screenOptions={{headerShown: false}}>
+      <SecondTabStack.Screen name="CreateAdd" component={CreateAdd} />
+      <SecondTabStack.Screen name="AddImage" component={AddImage} />
     </SecondTabStack.Navigator>
   );
 }
@@ -60,9 +76,9 @@ const HomePage = ({navigation}) => {
             tabBarInactiveTintColor: 'gray',
             })}
         > 
-        <Tab.Screen name="Profile" component={Profile} />
-        <Tab.Screen name="Create Add" component={CreateAdd} />
-        <Tab.Screen name="Search" component={SecondTabStackScreens} options={{ headerShown: false }}/>
+        <Tab.Screen name="Profile" component={profileTabStackScreens} options={{ headerShown: false }}/>
+        <Tab.Screen name="Create Add" component={createTabStackScreens} options={{ headerShown: false }} />
+        <Tab.Screen name="Search" component={searchTabStackScreens} options={{ headerShown: false }}/>
         
       </Tab.Navigator>
    </View>

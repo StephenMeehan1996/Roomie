@@ -14,12 +14,6 @@ import  styles  from '../styles/formStyle.style';
 
 const CreateAdd = ({navigation}) => {
 
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-          headerShown: false, 
-        });
-      }, [navigation]);
-
       const _renderItem = item => {
         return (
         <View style={styles.item}>
