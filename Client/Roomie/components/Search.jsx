@@ -37,7 +37,7 @@ const Search = ({navigation, route}) => {
             console.log(search);
 
            
-            navigation.navigate('Search', { 
+            navigation.navigate('SearchResults', { 
                    search: search 
             });
             

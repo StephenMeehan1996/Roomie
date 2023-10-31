@@ -10,8 +10,21 @@ import Login from './Login';
 import CreateAdd from './CreateAdd';
 import { Avatar, Card, Title, Paragraph, Button,IconButton } from 'react-native-paper';
 import AddImage from './AddImage';
+import SearchResults from './SearchResults';
+import { createNativeStackNavigator, Header } from '@react-navigation/native-stack';
 
 const Tab = createBottomTabNavigator();
+
+const SecondTabStack = createNativeStackNavigator();
+
+function SecondTabStackScreens() {
+  return (
+    <SecondTabStack.Navigator initialRouteName='Search' screenOptions={{headerShown: false}}>
+      <SecondTabStack.Screen name="Search" component={Search} />
+      <SecondTabStack.Screen name="SearchResults" component={SearchResults} />
+    </SecondTabStack.Navigator>
+  );
+}
 
 const HomePage = ({navigation}) => {
 
@@ -49,7 +62,7 @@ const HomePage = ({navigation}) => {
         > 
         <Tab.Screen name="Profile" component={Profile} />
         <Tab.Screen name="Create Add" component={CreateAdd} />
-        <Tab.Screen name="Search" component={Search}/>
+        <Tab.Screen name="Search" component={SecondTabStackScreens} options={{ headerShown: false }}/>
         
       </Tab.Navigator>
    </View>
