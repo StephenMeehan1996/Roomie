@@ -24,13 +24,8 @@ const OutsideStack = createNativeStackNavigator();
 const InsideLayout = () =>{
    return(
     //add bottom nav here? 
-    <InsideStack.Navigator initialRouteName='Home' screenOptions={{headerShown: false}}>
+    <InsideStack.Navigator initialRouteName='HomePage' screenOptions={{headerShown: false}}>
         <InsideStack.Screen name = "HomePage" component={HomePage}/>
-        <InsideStack.Screen name = "Profile" component={Profile}/>
-        <InsideStack.Screen name = "SearchResults" component={SearchResults}/>
-        <InsideStack.Screen name = "CreateAdd" component={CreateAdd}/>
-        <InsideStack.Screen name = "AddImage" component={AddImage}/>
-        <InsideStack.Screen name = "AddDetail" component={AddDetail}/>
     </InsideStack.Navigator>
     )
 }

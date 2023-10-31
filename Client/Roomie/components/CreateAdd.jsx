@@ -25,7 +25,7 @@ const CreateAdd = ({navigation}) => {
 
       const nextPage = (values) => {
         console.log(values);
-        navigation.navigate('AddImage', {  
+        navigation.navigate('_AddImage', {  
            formData: values 
         });
       };

@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Text, FlatList } from 'react-native';
 import { Searchbar,Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButton, Icon} from 'react-native-paper';
-
 import  styles  from '../styles/common.style';
 import { irishCounties} from '../data/formData';
-const Search = ({navigation, route}) => {
 
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-          headerShown: false, 
-        });
-      }, [navigation]);
+const Search = ({navigation, route}) => {
         const [searchQuery, setSearchQuery] = useState('');
       
         const onChangeSearch = (query) => {
@@ -28,22 +22,32 @@ const Search = ({navigation, route}) => {
 
         const search = (query) =>{
             setSearchQuery(query);
-         
+            let type ='';
+            switch (selectedButton) {
+                case 1:
+                    type = 'House Share'
+                    break;
+                case 2:
+                    type = 'House Rental'
+                    break;
+                case 3:
+                    type = 'Digs'
+                    break;
+                default:
+                    break;
+            }
             const search ={
-                "addType": selectedButton,
+                "rentalType": type,
                 "query": searchQuery
             }
-
             console.log(search);
-
-           
-            navigation.navigate('SearchResults', { 
-                   search: search 
+            navigation.navigate('_SearchResults', { 
+                search: search 
             });
             
         }
 
-        const [selectedButton, setSelectedButton] = useState(null);
+        const [selectedButton, setSelectedButton] = useState(1);
         const [autocompleteData, setAutocompleteData] = useState([]); // Array to store autocomplete suggestions
         const sampleData = ['Apple', 'Banana', 'Cherry', 'Date', 'Grape', 'Lemon', 'Orange', 'Pineapple'];
         const isButtonSelected = (buttonId) => selectedButton === buttonId;

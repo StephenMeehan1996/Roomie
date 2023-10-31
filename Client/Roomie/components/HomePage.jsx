@@ -12,32 +12,35 @@ import { Avatar, Card, Title, Paragraph, Button,IconButton } from 'react-native-
 import AddImage from './AddImage';
 import SearchResults from './SearchResults';
 import { createNativeStackNavigator, Header } from '@react-navigation/native-stack';
+import AddDetail from './AddDetail';
 
 const Tab = createBottomTabNavigator();
 
 const SecondTabStack = createNativeStackNavigator();
 
-function searchTabStackScreens() {
+function SearchTabStackScreens() {
   return (
-    <SecondTabStack.Navigator initialRouteName='Search' screenOptions={{headerShown: false}}>
-      <SecondTabStack.Screen name="Search" component={Search} />
-      <SecondTabStack.Screen name="SearchResults" component={SearchResults} />
+    <SecondTabStack.Navigator initialRouteName='_Search' screenOptions={{headerShown: false}}>
+      <SecondTabStack.Screen name="_Search" component={Search} />
+      <SecondTabStack.Screen name="_SearchResults" component={SearchResults} />
+      <SecondTabStack.Screen name="_AddDetail" component={AddDetail} />
     </SecondTabStack.Navigator>
   );
 }
 
-function profileTabStackScreens() {
+function ProfileTabStackScreens() {
   return (
-    <SecondTabStack.Navigator initialRouteName='Profile' screenOptions={{headerShown: false}}>
-      <SecondTabStack.Screen name="Profile" component={Profile} />
+    <SecondTabStack.Navigator initialRouteName='_Profile' screenOptions={{headerShown: false}}>
+      <SecondTabStack.Screen name="_Profile" component={Profile} />
+      <SecondTabStack.Screen name="_AddDetail" component={AddDetail} />
     </SecondTabStack.Navigator>
   );
 }
-function createTabStackScreens() {
+function CreateTabStackScreens() {
   return (
-    <SecondTabStack.Navigator initialRouteName='CreateAdd' screenOptions={{headerShown: false}}>
-      <SecondTabStack.Screen name="CreateAdd" component={CreateAdd} />
-      <SecondTabStack.Screen name="AddImage" component={AddImage} />
+    <SecondTabStack.Navigator initialRouteName='_CreateAdd' screenOptions={{headerShown: false}}>
+      <SecondTabStack.Screen name="_CreateAdd" component={CreateAdd} />
+      <SecondTabStack.Screen name="_AddImage" component={AddImage} />
     </SecondTabStack.Navigator>
   );
 }
@@ -57,7 +60,7 @@ const HomePage = ({navigation}) => {
             </IconButton>
         </View>
         <Tab.Navigator
-            initialRouteName='Home'
+            initialRouteName='HomePage'
             screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
                 let iconName;
@@ -66,7 +69,7 @@ const HomePage = ({navigation}) => {
                 } else if (route.name === 'Search') {
                 iconName = focused ? 'search-outline' : 'search-outline';
                 }
-                else if (route.name === 'Create Add') {
+                else if (route.name === 'CreateAdd') {
                     iconName = focused ? 'add-circle-outline' : 'add-circle-outline';
                 }
                 // You can return any component that you like here!
@@ -76,9 +79,9 @@ const HomePage = ({navigation}) => {
             tabBarInactiveTintColor: 'gray',
             })}
         > 
-        <Tab.Screen name="Profile" component={profileTabStackScreens} options={{ headerShown: false }}/>
-        <Tab.Screen name="Create Add" component={createTabStackScreens} options={{ headerShown: false }} />
-        <Tab.Screen name="Search" component={searchTabStackScreens} options={{ headerShown: false }}/>
+        <Tab.Screen name="Profile" component={ProfileTabStackScreens} options={{ headerShown: false }}/>
+        <Tab.Screen name="CreateAdd" component={CreateTabStackScreens} options={{ headerShown: false }} />
+        <Tab.Screen name="Search" component={SearchTabStackScreens} options={{ headerShown: false }}/>
         
       </Tab.Navigator>
    </View>

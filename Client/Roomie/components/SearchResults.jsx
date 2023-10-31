@@ -1,7 +1,7 @@
-import { View, SafeAreaView, ScrollView, StyleSheet,Dimensions } from 'react-native'
+import { View, SafeAreaView, ScrollView, StyleSheet,Dimensions, TouchableOpacity } from 'react-native'
 import {  Menu, IconButton, Divider, Paragraph } from 'react-native-paper';
 import { Appbar, Button, Portal, Dialog, Text, RadioButton, TextInput, Title } from 'react-native-paper';
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
 import Ad from './Ad'
@@ -12,38 +12,44 @@ import { yesNO, priceRange, number, roomType, houseType, houseMatExpectations, e
 
 const SearchResults = ({navigation, route}) => {
 
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-          headerShown: false, 
-        });
-      }, [navigation]);
-
+      const {search} = route.params;
+      console.log('next= ' +search.query);
       const [visible, setVisible] = useState(false);
      
       const [priceRangeMin, setPriceRangeMin] = useState('500');
       const [priceRangeMax, setPriceRangeMax] = useState('700');
       const [distanceRadius, setDistanceRadius] = useState('0');
       const [orderByValue, setOrderByValue] = useState('Match %');
-      const [location, setLocation] = useState('Sligo');
-      
+      const [location, setLocation] = useState(search.query);
+      const [rentalType, setRentalType] = useState(search.rentalType);
     
       const showDialog = () => setVisible(true);
       const hideDialog = () => setVisible(false);
 
+      const nextPage = () => {
+        	navigation.navigate('_AddDetail')
+      };
 
+      // useEffect(() => {
+      //   // Access the value from route.params and set the state
+      //   if (route && route.params) {
+      //     setLocation(route.params.search.query);
+      //     setRentalType(route.params.search.rentalType)
+      //   }
+      // }, [route]);
 
   return (
       <SafeAreaView style={styles.container}>  
        <View>
-        <Appbar.Header style={styles.header}>
+        <Appbar.Header style={[styles.header, {paddingVertical: 5}]}>
         
           <View style={styles.pickerContainer}>
-            <View style={{flexDirection: 'column',alignItems: 'flex-start', marginTop: 12}}>
+            <View style={{flexDirection: 'column',alignItems: 'flex-start'}}>
             <Paragraph>Rental Type:</Paragraph>
                 <Picker
                   style={[styles.input,{marginTop: 0}]}
-                  selectedValue={priceRangeMin}
-                  onValueChange={value =>{setPriceRangeMin(value)}}   
+                  selectedValue={rentalType}
+                  onValueChange={value =>{setRentalType(value)}}   
                 >
                   {rentalPreference.map((option, index) => (
                     <Picker.Item key={index} label={option.label} value={option.value} />
@@ -53,7 +59,7 @@ const SearchResults = ({navigation, route}) => {
           </View>
 
             <View style={styles.pickerContainer}>
-              <View style={{flexDirection: 'column',alignItems: 'flex-start', marginTop: 12}}>
+              <View style={{flexDirection: 'column',alignItems: 'flex-start'}}>
               <Paragraph>Location:</Paragraph>
                   <Picker
                     style={[styles.input,{marginTop: 0}]}
@@ -67,23 +73,23 @@ const SearchResults = ({navigation, route}) => {
               </View>
             </View>
                   
-            <View style={[styles.pickerContainer, {justifyContent: 'flex-end'}]}>
-              <Appbar.Action icon="filter" onPress={showDialog}  />
+            <View style={[,{flexDirection: 'row',justifyContent: 'flex-end', alignItems: 'center'}]}>
+              <Appbar.Action icon="filter" onPress={showDialog}   style={{marginLeft: -2}} />
               <IconButton
                 icon="arrow-left"
                 mode="text"
                 size={30}
-                style={{flex:1,alignItems: 'flex-end', marginLeft: -20, marginRight: -10}}
+                style={{marginLeft: -18}}
                 onPress={() => navigation.goBack()}>
                 </IconButton>
             </View>
           </Appbar.Header>
-
+        
           <Portal style={{ }}>
             <Dialog visible={visible} onDismiss={hideDialog} style={styles.popup}>
               <Dialog.Title>Filters</Dialog.Title>
               <Dialog.Content>
-                <View style={styles.lineInput}>
+                <View>
                   <Text style={styles.label}>Distance Radius:</Text>
                   <Picker
                     style={[styles.input, styles.singleLineInput]}
@@ -97,10 +103,10 @@ const SearchResults = ({navigation, route}) => {
                 </View>
                 <Text style={styles.label}>Price Range:</Text>
                 <View style={styles.sameLineContainer}>
-                    <View style={styles.lineInput}>
+                    <View style={{}}>
                         <Text style={styles.label}>Min:</Text>
                         <Picker
-                            style={styles.input}
+                            style={[styles.input, {width: 150}]}
                             selectedValue={priceRangeMin}
                             onValueChange={value =>{setPriceRangeMin(value)}}
                         >
@@ -110,10 +116,10 @@ const SearchResults = ({navigation, route}) => {
                         </Picker>
                       
                     </View>
-                      <View style={styles.lineInput}>
+                      <View style={{width: 100}}>
                         <Text style={styles.label}>Max:</Text>
                             <Picker
-                                style={styles.input}
+                                style={[styles.input, {width: 150}]}
                                 selectedValue={priceRangeMax}
                                 onValueChange={value =>{setPriceRangeMax(value)}}
                             >
@@ -143,12 +149,18 @@ const SearchResults = ({navigation, route}) => {
             </Dialog.Actions>
           </Dialog>
         </Portal>
+       
       </View>
       <ScrollView>
 
-        <Ad navigation={navigation} route={route}></Ad>
-        <Ad navigation={navigation} route={route}></Ad>
+       <TouchableOpacity onPress={nextPage}>
+          <Ad navigation={navigation}/>
+       </TouchableOpacity>
 
+       <TouchableOpacity onPress={nextPage}>
+          <Ad navigation={navigation}/>
+       </TouchableOpacity>
+     
       </ScrollView>
     </SafeAreaView>
   )
@@ -164,14 +176,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20
+    paddingHorizontal: 10
   },
   popup:{
+    flex: 1,
+    width: '80%',
+    padding: 20,
+    borderLeftWidth: 1,
     backgroundColor: '#fff',
     borderRadius: 0, 
-    marginTop: -65, 
-    alignSelf: 'flex-start', 
-    justifyContent: 'flex-end'
   },
     container: {
       flex: 1,
@@ -216,7 +229,9 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         paddingHorizontal: 12,
         marginBottom: 16,
-        backgroundColor: '#FFFFFF'
+        backgroundColor: '#FFFFFF',
+        width: 150,
+        Height: 20
       },
       width:{
         width: 100

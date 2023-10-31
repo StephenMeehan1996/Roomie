@@ -28,7 +28,7 @@ const Ad = ({navigation, route}) => {
       };
 
       const nextPage = () => {
-        navigation.navigate('AddDetail', {  
+        navigation.navigate('_AddDetail', {  
             selectedAdImages: propertyImages 
         });
       };
