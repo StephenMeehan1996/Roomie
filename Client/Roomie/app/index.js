@@ -9,7 +9,7 @@ import Login from '../components/Login';
 import HomePage from '../components/HomePage';
 import { FIREBASE_APP } from '../FirebaseConfig';
 import Profile from '../components/Profile';
-import Search from '../components/Search';
+import SearchResults from '../components/SearchResults';
 import SignUpForm from '../components/SignupForm';
 import RentalPreferencesForm from '../components/RentalPreferencesForm';
 import CreateAdd from '../components/CreateAdd';
@@ -27,7 +27,7 @@ const InsideLayout = () =>{
     <InsideStack.Navigator initialRouteName='Home' screenOptions={{headerShown: false}}>
         <InsideStack.Screen name = "HomePage" component={HomePage}/>
         <InsideStack.Screen name = "Profile" component={Profile}/>
-        <InsideStack.Screen name = "Search" component={Search}/>
+        <InsideStack.Screen name = "Search" component={SearchResults}/>
         <InsideStack.Screen name = "CreateAdd" component={CreateAdd}/>
         <InsideStack.Screen name = "AddImage" component={AddImage}/>
         <InsideStack.Screen name = "AddDetail" component={AddDetail}/>
