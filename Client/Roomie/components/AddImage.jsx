@@ -17,6 +17,7 @@ import * as Yup from 'yup';
 import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference, environmentOptions, houseMatExpectations ,irishCounties, number, houseType, priceRange, days, roomType } from '../data/formData';
 import  styles  from '../styles/formStyle.style';
 import fetchDataFromDatabase from '../functions/fetchDataFromDatabase';
+import postDataToDatabase from '../functions/postDataToDatabase';
 
 const AddImage = ({navigation}) => {
 
@@ -88,7 +89,7 @@ const AddImage = ({navigation}) => {
           const response = await fetch(file.uri);
           const blob = await response.blob();
           const storageRef = ref(storage, 'images/' + file.filename);
-          const postURL = 'https://39i98ph293.execute-api.eu-west-1.amazonaws.com/Images';
+          const postURL = 'https://loj7yuy5gf.execute-api.eu-west-1.amazonaws.com/dev/image';
 
           https://39i98ph293.execute-api.eu-west-1.amazonaws.com/Images?imageString='{"AddID": 17, "IsFirstImage": 1, "ImageURL": "https://firebasestorage.googleapis.com/v0/b/roomie-a0158.appspot.com/o/images%2FpFF0B5GMAAAAASUVORK5CYII%3D?alt=media&token=8785e5a7-dde0-493e-9c06-c7fec6d129d7"}' ::jsonb
           
@@ -96,33 +97,40 @@ const AddImage = ({navigation}) => {
             console.log('Uploaded a blob or file!');
             const url= await getDownloadURL(snapshot.ref);
             const imageObj ={
-              AddID: 17, 
-              //Filename: file.filename, 
-              IsFirstImage: 1,
-              ImageURL: url,
-            }           
+              AddID : 17,
+              ImageURL : 'test.com',
+              Filename : 'image99.jpg'
+             };          
             imagesToPost.push(imageObj);
 
             if(file === selectedFiles[selectedFiles.length-1])
+            
+              var values = [
+                [17, 'john22@gmail.com', '9999999922'],
+                [17, 'testv6940k@gmail.com', '88888888888']
+              ];
+
+              const arrayOfValues =  imagesToPost.map(item => Object.values(item));
+              console.log(arrayOfValues);
+
+              console.log(JSON.stringify(arrayOfValues));
+              console.log(JSON.parse(JSON.stringify(arrayOfValues)));
+
+
+              // const formattedArray = imagesToPost.map(item => `'{"AddID": ${item.AddID}, "IsFirstImage": ${item.IsFirstImage}, "ImageURL": "${item.ImageURL}"}'::jsonb`);
+              // console.log('Array '+formattedArray.toString());
+              //do it as post, passing the image string, appears to be correct, test from there
+
+              const data = await postDataToDatabase(values, JSON.stringify(arrayOfValues));
+              console.log(data);
               setUploading(false);
               setSelectedFiles([]);
-              console.log(imagesToPost);
-              const formattedArray = imagesToPost.map(item => `'{"AddID": ${item.AddID}, "IsFirstImage": ${item.IsFirstImage}, "ImageURL": "${item.ImageURL}"}'::jsonb`);
-              console.log('Array '+formattedArray.toString());
-                //do it as post, passing the image string, appears to be correct, test from there
-              const data = await fetchDataFromDatabase(postURL, formattedArray.toString());
-              // '{"AddID": 17, "IsFirstImage": 1, "ImageURL": "https://firebasestorage.g"}' ::jsonb
 
-            
-              // '{"AddID": 17, "IsFirstImage": 1, "ImageURL": "https://fic18fb"}'::jsonb,
-              // '{"AddID": 17, "IsFirstImage": 1, "ImageURL": "https://firebasestorage2c3eb67547"}' ::jsonb
-              // '{"AddID": 17, "IsFirstImage": 1, "ImageURL": "https://fireb24fe87e33ae5"}'::jsonb
           });
         } catch (error) {
           console.error('Error uploading image:', error);
         }
-      }//'{"AddID": 17, "IsFirstImage": 1, "ImageURL": "image1.jpg"}'::jsonb, '{"AddID": 17, "IsFirstImage": 1, "ImageURL": "image1.jpg"}'::jsonb, '{"AddID": 17, "IsFirstImage": 1, "ImageURL": "image1.jpg"}'::jsonb
-
+      }
     } else{
         console.log('No image selected for upload.');
     }

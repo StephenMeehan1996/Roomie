@@ -23,15 +23,28 @@ const CreateAdd = ({navigation}) => {
         );
       };
 
+    //   const nextPage = (values) => {
+    //     console.log(values);
+    //     navigation.navigate('_AddImage', {  
+    //        formData: values 
+    //     });
+    //   };
+
       const nextPage = (values) => {
         console.log(values);
-        navigation.navigate('_AddImage', {  
+        navigation.navigate('_TestAPI', {  
            formData: values 
         });
       };
 
+
+      const test = () => {
+       
+        navigation.navigate('_TestAPI')
+      };
+
       const HouseShareSchema = Yup.object().shape({
-        addType : Yup.string(),
+        addType : Yup.number().integer(),
         addressLine1: Yup.string()
         .required('Please enter the first line of the address'),
         addressLine2: Yup.string()
@@ -41,7 +54,7 @@ const CreateAdd = ({navigation}) => {
         county: Yup.string()
         .required('Please enter the county for the address'),
         zip: Yup.string(),
-        numOccupants: Yup.string()
+        numOccupants: Yup.number().integer()
         .required('Please select the current number of occupants'),
         houseShareHouseType : Yup.string()
         .required('Please select a property type'),
@@ -51,15 +64,15 @@ const CreateAdd = ({navigation}) => {
         .required('Please select a room type'),
         houseShareHouseType : Yup.string()
         .required('Please select a house type'),
-        houseShareEnsuite: Yup.string()
+        houseShareEnsuite: Yup.number().integer()
         .required('Please select a value'),
         bio : Yup.string(),
-        referenceRequired: Yup.string()
+        referenceRequired: Yup.number().integer()
         .required('Please select an option'),
         deposit: Yup.string()
         .required('Please enter deposit detail'),
 
-        houseMateDetailOption : Yup.string()
+        houseMateDetailOption : Yup.number().integer()
         .required('Please select a option'),
         houseMateGender : Yup.string()
         .required('Please select a gender'),
@@ -69,7 +82,7 @@ const CreateAdd = ({navigation}) => {
         .required('Please select an occupation'),
         occupationDropdownValue: Yup.string()
        .required('Please select a value'),
-        houseMateSmoking : Yup.string()
+        houseMateSmoking : Yup.number().integer()
         .required('Please select an option'),
         houseMateExpect: Yup.string()
         .required('Please select an option'),
@@ -177,6 +190,20 @@ const CreateAdd = ({navigation}) => {
              {/* Region Buttons */}
              {/*  Are you sure you want to change add type current process will be deleted */}
             <>
+            <Card elevation={5} style={styles.card}>
+                    <Card.Content>
+                    <View style={styles.header}>
+                        <IconButton
+                                icon="test-tube"
+                                mode="text"
+                                size={30}
+                                style={{flex:1,alignItems: 'flex-end'}}
+                                onPress={test}>
+                        </IconButton>
+                    </View>
+                   </Card.Content>  
+            </Card>
+            
                 <Card elevation={5} style={styles.card}>
                     <Card.Content>
                         <View style={styles.header}>
@@ -228,27 +255,27 @@ const CreateAdd = ({navigation}) => {
             <>
                 {showForm === 1 && (
                 <Formik  initialValues={{
-                    addType : '1',
+                    addType : 1,
                     addressLine1: 'Kilgarve, Keadue',
                     addressLine2: 'Boyle',
                     city: 'Roscommon',
                     county: 'Roscommon',
                     zip: 'F91 XY32',
-                    numOccupants: '3',
+                    numOccupants: 3,
                     houseShareHouseType : 'Apartment',
                     houseSharePrice : '600',
                     houseShareRoomType : 'Double',
-                    houseShareEnsuite: '1',
+                    houseShareEnsuite: 1,
                     bio : 'Test Test',
-                    referenceRequired: '1',
+                    referenceRequired: 1,
                     deposit: '1 Month',
             
-                    houseMateDetailOption : '1',
+                    houseMateDetailOption : 1,
                     houseMateGender : 'Male',
                     houseMateAge : '2',
                     houseMateOccupation : 'Working Professional',
                     occupationDropdownValue: '9-5',
-                    houseMateSmoking : '1',
+                    houseMateSmoking : 1,
                     houseMateExpect: 'Friendly',
                     environment: 'Social'
                 }}

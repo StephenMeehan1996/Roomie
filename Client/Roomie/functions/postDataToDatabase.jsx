@@ -5,7 +5,7 @@ const postDataToDatabase = async (data, url) => {
     const response = await axios.post(`${url}`, data);
 
     if (response.status === 200) {
-      console.log('Data posted successfully');
+      console.log(response);
       // Handle success here
     } else {
       console.log('Failed to post data');
