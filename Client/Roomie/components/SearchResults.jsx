@@ -34,20 +34,11 @@ const SearchResults = ({navigation, route}) => {
         	navigation.navigate('_AddDetail')
       };
 
-      // useEffect(() => {
-      //   // Access the value from route.params and set the state
-      //   if (route && route.params) {
-      //     setLocation(route.params.search.query);
-      //     setRentalType(route.params.search.rentalType)
-      //   }
-      // }, [route]);
-
       const renderItem = ({ item }) => {
         return (
           <View>
             <Text>ID: {item.addressline1}</Text>
             <Text>Name: {item.addressline2}</Text>
-            {/* Render other properties here */}
           </View>
         );
       };
@@ -167,19 +158,22 @@ const SearchResults = ({navigation, route}) => {
       </View>
       <ScrollView>
 
-       {/* <TouchableOpacity onPress={nextPage}>
+        <TouchableOpacity onPress={nextPage}>
           <Ad navigation={navigation}/>
        </TouchableOpacity>
 
        <TouchableOpacity onPress={nextPage}>
           <Ad navigation={navigation}/>
-       </TouchableOpacity> */}
+       </TouchableOpacity> 
 
   	  <FlatList
         data={data} // Assuming fetchedData is an array
         renderItem={renderItem}
         keyExtractor={(item) => item.addid.toString()} // Assuming 'id' is unique
       />
+
+
+      
 
     
      
