@@ -1,4 +1,4 @@
-import { View, SafeAreaView, ScrollView, StyleSheet,Dimensions, TouchableOpacity } from 'react-native'
+import { View, SafeAreaView, ScrollView, StyleSheet,Dimensions, TouchableOpacity,FlatList } from 'react-native'
 import {  Menu, IconButton, Divider, Paragraph } from 'react-native-paper';
 import { Appbar, Button, Portal, Dialog, Text, RadioButton, TextInput, Title } from 'react-native-paper';
 import React, { useState, useEffect } from 'react'
@@ -12,16 +12,18 @@ import { yesNO, priceRange, number, roomType, houseType, houseMatExpectations, e
 
 const SearchResults = ({navigation, route}) => {
 
-      const {search} = route.params;
-      console.log('next= ' +search.query);
+      const {searchValue, data} = route.params;
+
+      console.log('next= ' +JSON.stringify(data));
+      console.log('next= ' +searchValue);
       const [visible, setVisible] = useState(false);
      
       const [priceRangeMin, setPriceRangeMin] = useState('500');
       const [priceRangeMax, setPriceRangeMax] = useState('700');
       const [distanceRadius, setDistanceRadius] = useState('0');
       const [orderByValue, setOrderByValue] = useState('Match %');
-      const [location, setLocation] = useState(search.query);
-      const [rentalType, setRentalType] = useState(search.rentalType);
+      const [location, setLocation] = useState(searchValue.query);
+      const [rentalType, setRentalType] = useState(searchValue.rentalType);
     
       const showDialog = () => setVisible(true);
       const hideDialog = () => setVisible(false);
@@ -39,6 +41,16 @@ const SearchResults = ({navigation, route}) => {
       //     setRentalType(route.params.search.rentalType)
       //   }
       // }, [route]);
+
+      const renderItem = ({ item }) => {
+        return (
+          <View>
+            <Text>ID: {item.addressline1}</Text>
+            <Text>Name: {item.addressline2}</Text>
+            {/* Render other properties here */}
+          </View>
+        );
+      };
 
   return (
       <SafeAreaView style={styles.container}>  
@@ -155,13 +167,21 @@ const SearchResults = ({navigation, route}) => {
       </View>
       <ScrollView>
 
-       <TouchableOpacity onPress={nextPage}>
+       {/* <TouchableOpacity onPress={nextPage}>
           <Ad navigation={navigation}/>
        </TouchableOpacity>
 
        <TouchableOpacity onPress={nextPage}>
           <Ad navigation={navigation}/>
-       </TouchableOpacity>
+       </TouchableOpacity> */}
+
+  	  <FlatList
+        data={data} // Assuming fetchedData is an array
+        renderItem={renderItem}
+        keyExtractor={(item) => item.addid.toString()} // Assuming 'id' is unique
+      />
+
+    
      
       </ScrollView>
     </SafeAreaView>

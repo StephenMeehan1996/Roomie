@@ -26,4 +26,4 @@ callLambdaFunction(value)
     console.error('Error calling Lambda:', error);
   });
 
-  export default callLambdaFunction;
+export default callLambdaFunction;

@@ -4,20 +4,15 @@ import { Searchbar,Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, 
 import  styles  from '../styles/common.style';
 import { irishCounties} from '../data/formData';
 import useFetch from '../functions/GetAPI';
-
-
-//https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add
+import fetchData from '../functions/GetAPI';
+import axios from 'axios'
+import useFetchData from '../functions/GetAPI';
 
 const Search = ({navigation, route}) => {
         const [searchQuery, setSearchQuery] = useState('');
-        const [searchData, setSearchData] = useState(null);
-       // let apiUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add/?addType=1&loc=Roscommon';
-       let apiUrl = 'https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetHouseShare?addType=1&loc=Roscommon';
-    
-       const { data } = useFetch('https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetHouseShare?addType=1&loc=Roscommon', {
-        query: "React developer",
-        num_pages: "1",
-      });
+        const [searchResult, setSearchResult] = useState(null);
+
+        const fetchData = useFetchData();
 
         const onChangeSearch = (query) => {
           setSearchQuery(query);
@@ -29,17 +24,7 @@ const Search = ({navigation, route}) => {
           setAutocompleteData(filteredSuggestions);
           }
        
-        };
-
-        const fetchData = async () => {
-            try {
-              const result = await fetchDataFromApi(apiUrl);
-              setData(result);
-            } catch (error) {
-              // Handle errors here, e.g., show an error message
-              console.error('Error in fetching data:', error);
-            }
-          };
+        };  
 
         const search = (query) =>{
             setSearchQuery(query);
@@ -57,16 +42,26 @@ const Search = ({navigation, route}) => {
                 default:
                     break;
             }
-            const search ={
+            const searchValue ={
                 "rentalType": type,
                 "query": searchQuery
             }
 
-            // data  = useFetch('https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetHouseShare?addType=1&loc=Roscommon')
-            // console.log(data);
-
-         
+            if(searchQuery != ''){
+                let url = `https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetHouseShare?addType=${selectedButton}&loc=${searchValue.query}`;
+                handleSearch(url, searchValue);
+            }
         }
+
+        const handleSearch = async (url, searchValue) => {
+            try {
+              const data = await fetchData(url);
+              console.log(data);
+              navigation.navigate('_SearchResults', { searchValue: searchValue, data: data});
+            } catch (error) {
+              console.error(error); // Handle errors appropriately
+            }
+          };
 
         const [selectedButton, setSelectedButton] = useState(1);
         const [autocompleteData, setAutocompleteData] = useState([]); // Array to store autocomplete suggestions
