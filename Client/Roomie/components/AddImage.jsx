@@ -18,13 +18,15 @@ import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOption
 import  styles  from '../styles/formStyle.style';
 import fetchDataFromDatabase from '../functions/fetchDataFromDatabase';
 import postDataToDatabase from '../functions/postDataToDatabase';
+import callLambdaFunction from '../functions/PostAPI';
 
 const AddImage = ({navigation}) => {
 
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
-
   const [selectedFiles, setSelectedFiles] = useState([]);
+
+  let imageArray = [];
  
 
   const pickImage = async () =>{
@@ -38,7 +40,7 @@ const AddImage = ({navigation}) => {
     })
     if (!result.canceled) {
       let uri = result.assets[0].uri;
-      let filename = uri.substring(uri.lastIndexOf('/') + 1);
+      let filename = generateFilename();
       const newImage = {uri: uri, filename: filename };
       setSelectedFiles([...selectedFiles, newImage]);
     }
@@ -77,64 +79,73 @@ const AddImage = ({navigation}) => {
     //}
   }
 
-  const uploadFile = async () =>{
-    
+  function generateFilename() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+  function imagePosition(file){
+   if(file == selectedFiles[0]){
+    return 1;
+   } 
+   
+    return 0;
+  }
+  const uploadFile = async () => {
     if (selectedFiles) {
       const storage = getStorage();
       const imagesToPost = [];
       setUploading(true);
-      for(const file of selectedFiles){
-    
-        try{
+      const uploadPromises = []; // Array to hold upload promises
+  
+      for (const file of selectedFiles) {
+        try {
           const response = await fetch(file.uri);
           const blob = await response.blob();
           const storageRef = ref(storage, 'images/' + file.filename);
-          const postURL = 'https://loj7yuy5gf.execute-api.eu-west-1.amazonaws.com/dev/image';
-
-          https://39i98ph293.execute-api.eu-west-1.amazonaws.com/Images?imageString='{"AddID": 17, "IsFirstImage": 1, "ImageURL": "https://firebasestorage.googleapis.com/v0/b/roomie-a0158.appspot.com/o/images%2FpFF0B5GMAAAAASUVORK5CYII%3D?alt=media&token=8785e5a7-dde0-493e-9c06-c7fec6d129d7"}' ::jsonb
-          
-          uploadBytes(storageRef, blob).then(async (snapshot) => {
-            console.log('Uploaded a blob or file!');
-            const url= await getDownloadURL(snapshot.ref);
-            const imageObj ={
-              AddID : 17,
-              ImageURL : 'test.com',
-              Filename : 'image99.jpg'
-             };          
-            imagesToPost.push(imageObj);
-
-            if(file === selectedFiles[selectedFiles.length-1])
-            
-              var values = [
-                [17, 'john22@gmail.com', '9999999922'],
-                [17, 'testv6940k@gmail.com', '88888888888']
-              ];
-
-              const arrayOfValues =  imagesToPost.map(item => Object.values(item));
-              console.log(arrayOfValues);
-
-              console.log(JSON.stringify(arrayOfValues));
-              console.log(JSON.parse(JSON.stringify(arrayOfValues)));
-
-
-              // const formattedArray = imagesToPost.map(item => `'{"AddID": ${item.AddID}, "IsFirstImage": ${item.IsFirstImage}, "ImageURL": "${item.ImageURL}"}'::jsonb`);
-              // console.log('Array '+formattedArray.toString());
-              //do it as post, passing the image string, appears to be correct, test from there
-
-              const data = await postDataToDatabase(values, JSON.stringify(arrayOfValues));
-              console.log(data);
-              setUploading(false);
-              setSelectedFiles([]);
-
+  
+          const uploadPromise = new Promise((resolve, reject) => {
+            uploadBytes(storageRef, blob)
+              .then(async (snapshot) => {
+                console.log('Uploaded a blob or file!');
+                const url = await getDownloadURL(snapshot.ref);
+  
+                let imageObj = [47, url, file.filename, imagePosition(file)];
+                imageArray.push(imageObj);
+                resolve(); // Resolve the promise once the upload is done
+              })
+              .catch((error) => {
+                console.error('Error uploading image:', error);
+                reject(error); // Reject the promise in case of an error
+              });
           });
+  
+          uploadPromises.push(uploadPromise);
         } catch (error) {
           console.error('Error uploading image:', error);
         }
       }
-    } else{
-        console.log('No image selected for upload.');
+  
+      try {
+        // Wait for all upload promises to resolve
+        await Promise.all(uploadPromises);
+       // console.log('test');
+       // console.log(imageArray);
+        setUploading(false);
+        setSelectedFiles([]); 
+        let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/addimages'; // end point for form post
+        callLambdaFunction(imageArray, signUpUrl); // working 
+      } catch (error) {
+        console.error('Error occurred during file uploads:', error);
+      }
+    } else {
+      console.log('No image selected for upload.');
     }
-  }
+  };
+  
+ 
 
   return (
           <View >

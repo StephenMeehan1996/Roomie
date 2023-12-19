@@ -23,24 +23,11 @@ const CreateAdd = ({navigation}) => {
         );
       };
 
-    //   const nextPage = (values) => {
-    //     console.log(values);
-    //     navigation.navigate('_AddImage', {  
-    //        formData: values 
-    //     });
-    //   };
-
       const nextPage = (values) => {
         console.log(values);
         navigation.navigate('_TestAPI', {  
            formData: values 
         });
-      };
-
-
-      const test = () => {
-       
-        navigation.navigate('_TestAPI')
       };
 
       const HouseShareSchema = Yup.object().shape({
@@ -178,11 +165,7 @@ const CreateAdd = ({navigation}) => {
         setSelectedButton(buttonId);
         setShowForm(buttonId);
       };
-    
      
-
-    
-      
   return (
     <ScrollView>
                
@@ -190,20 +173,7 @@ const CreateAdd = ({navigation}) => {
              {/* Region Buttons */}
              {/*  Are you sure you want to change add type current process will be deleted */}
             <>
-            <Card elevation={5} style={styles.card}>
-                    <Card.Content>
-                    <View style={styles.header}>
-                        <IconButton
-                                icon="test-tube"
-                                mode="text"
-                                size={30}
-                                style={{flex:1,alignItems: 'flex-end'}}
-                                onPress={test}>
-                        </IconButton>
-                    </View>
-                   </Card.Content>  
-            </Card>
-            
+           
                 <Card elevation={5} style={styles.card}>
                     <Card.Content>
                         <View style={styles.header}>

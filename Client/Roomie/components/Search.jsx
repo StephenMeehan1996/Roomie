@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, TouchableOpacity, Text, FlatList } from 'react-native';
 import { Searchbar,Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButton, Icon} from 'react-native-paper';
 import  styles  from '../styles/common.style';
 import { irishCounties} from '../data/formData';
+import useFetch from '../functions/GetAPI';
+
+
+//https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add
 
 const Search = ({navigation, route}) => {
         const [searchQuery, setSearchQuery] = useState('');
-      
+        const [searchData, setSearchData] = useState(null);
+       // let apiUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add/?addType=1&loc=Roscommon';
+       let apiUrl = 'https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetHouseShare?addType=1&loc=Roscommon';
+    
+       const { data } = useFetch('https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetHouseShare?addType=1&loc=Roscommon', {
+        query: "React developer",
+        num_pages: "1",
+      });
+
         const onChangeSearch = (query) => {
           setSearchQuery(query);
           if(query.length > 2){
@@ -14,11 +26,20 @@ const Search = ({navigation, route}) => {
             const filteredSuggestions = location.filter((item) =>
             item.toLowerCase().includes(query.toLowerCase())
           );
-      
           setAutocompleteData(filteredSuggestions);
           }
        
         };
+
+        const fetchData = async () => {
+            try {
+              const result = await fetchDataFromApi(apiUrl);
+              setData(result);
+            } catch (error) {
+              // Handle errors here, e.g., show an error message
+              console.error('Error in fetching data:', error);
+            }
+          };
 
         const search = (query) =>{
             setSearchQuery(query);
@@ -40,11 +61,11 @@ const Search = ({navigation, route}) => {
                 "rentalType": type,
                 "query": searchQuery
             }
-            console.log(search);
-            navigation.navigate('_SearchResults', { 
-                search: search 
-            });
-            
+
+            // data  = useFetch('https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetHouseShare?addType=1&loc=Roscommon')
+            // console.log(data);
+
+         
         }
 
         const [selectedButton, setSelectedButton] = useState(1);
