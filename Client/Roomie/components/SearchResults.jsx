@@ -1,21 +1,21 @@
 import { View, SafeAreaView, ScrollView, StyleSheet,Dimensions, TouchableOpacity,FlatList } from 'react-native'
 import {  Menu, IconButton, Divider, Paragraph } from 'react-native-paper';
-import { Appbar, Button, Portal, Dialog, Text, RadioButton, TextInput, Title } from 'react-native-paper';
+import { Appbar, Button, Portal, Dialog, Text, RadioButton, TextInput, Title, Card } from 'react-native-paper';
 import React, { useState, useEffect } from 'react'
 import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
 import Ad from './Ad'
 import { Picker } from '@react-native-picker/picker';
 import { yesNO, priceRange, number, roomType, houseType, houseMatExpectations, environmentOptions, days, irishCounties, rentalPreference, orderBy, radius } from '../data/formData';
+import  formStyles  from '../styles/formStyle.style';
 
 
 
 const SearchResults = ({navigation, route}) => {
 
-      const {searchValue, data} = route.params;
+      const {searchValue, detail, images} = route.params;
 
-      console.log('next= ' +JSON.stringify(data));
-      console.log('next= ' +searchValue);
+
       const [visible, setVisible] = useState(false);
      
       const [priceRangeMin, setPriceRangeMin] = useState('500');
@@ -34,12 +34,14 @@ const SearchResults = ({navigation, route}) => {
         	navigation.navigate('_AddDetail')
       };
 
-      const renderItem = ({ item }) => {
+      const renderAds = ({ item: ad }) => {
+       
+        const adImages = images.filter((image) => image.AddID === ad.addid);
+
         return (
-          <View>
-            <Text>ID: {item.addressline1}</Text>
-            <Text>Name: {item.addressline2}</Text>
-          </View>
+          <TouchableOpacity key={ad.addid} onPress={() => nextPage(ad)}>
+            <Ad ad={ad} images={adImages} navigation={navigation} />
+          </TouchableOpacity>
         );
       };
 
@@ -156,33 +158,39 @@ const SearchResults = ({navigation, route}) => {
         </Portal>
        
       </View>
-      <ScrollView>
-
-        <TouchableOpacity onPress={nextPage}>
-          <Ad navigation={navigation}/>
-       </TouchableOpacity>
-
-       <TouchableOpacity onPress={nextPage}>
-          <Ad navigation={navigation}/>
-       </TouchableOpacity> 
-
-  	  <FlatList
-        data={data} // Assuming fetchedData is an array
-        renderItem={renderItem}
-        keyExtractor={(item) => item.addid.toString()} // Assuming 'id' is unique
-      />
-
-
-      
-
-    
-     
+        <ScrollView>
+          {detail.length === 0 ? (
+          <Card elevation={5} style={[formStyles.card, {marginTop: 30, paddingVertical: 40}]}>
+            <Card.Content>
+              <View style={styles.noResultsContainer}>
+                  <Text style= {styles.noResultsText}>No results found</Text>
+              </View>
+            </Card.Content>
+          </Card>
+          ) : (
+        <FlatList
+          data={detail}
+          renderItem={renderAds}
+          keyExtractor={(detail) => detail.addid.toString()}
+        />
+        )} 
       </ScrollView>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+
+  noResultsContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  noResultsText: {
+    fontSize: 18,
+    color: 'gray',
+    textAlign: 'center',
+  },
   lineInput: {
     flex: 1, // Take up equal space in the row
     marginRight: 8, // Add spacing between first and last name fields

@@ -10,8 +10,14 @@ import { DatePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { MultiSelect, Dropdown } from 'react-native-element-dropdown';
 
-const Ad = ({navigation, route}) => {
+const Ad = ({ad, images, navigation, route}) => {
   
+  if (!ad) {
+    return null; // Return null if the ad object or title property is undefined
+  }
+
+  console.log(images.length)
+
     const propertyImages = [
         { id: '1', uri: 'https://firebasestorage.googleapis.com/v0/b/roomie-a0158.appspot.com/o/stock_ad_images%2Fprop1.jpg?alt=media&token=2411eebd-9aad-417f-847e-f371237c639c&_gl=1*wiyu6g*_ga*MTgwMTY5Njg1My4xNjc4ODk3MTM5*_ga_CW55HF8NVT*MTY5Nzc5ODg3MS4xOC4xLjE2OTc4MDAyNDAuNjAuMC4w' },
         { id: '2', uri: 'https://firebasestorage.googleapis.com/v0/b/roomie-a0158.appspot.com/o/stock_ad_images%2Fprop2.jpg?alt=media&token=f15ff43e-7e84-4c34-9087-adf63cd33417&_gl=1*1tctnda*_ga*MTgwMTY5Njg1My4xNjc4ODk3MTM5*_ga_CW55HF8NVT*MTY5Nzc5ODg3MS4xOC4xLjE2OTc4MDAyMTkuOS4wLjA.' },
@@ -21,7 +27,7 @@ const Ad = ({navigation, route}) => {
         { id: '6', uri: 'https://firebasestorage.googleapis.com/v0/b/roomie-a0158.appspot.com/o/stock_ad_images%2Fprop6.jpg?alt=media&token=bffe612b-6f1d-4ea2-bff9-83a97a11fb37&_gl=1*ul43v2*_ga*MTgwMTY5Njg1My4xNjc4ODk3MTM5*_ga_CW55HF8NVT*MTY5Nzc5ODg3MS4xOC4xLjE2OTc3OTk4ODYuNDAuMC4w' },
       ];
     
-      const [currentImage, setCurrentImage] = useState(propertyImages[0]);
+      const [currentImage, setCurrentImage] = useState(images[0]);
     
       const handleImageSelect = (image) => {
         setCurrentImage(image);
@@ -43,10 +49,11 @@ const Ad = ({navigation, route}) => {
       const renderImageItem = ({ item }) => (
         <TouchableOpacity onPress={() => handleImageSelect(item)}>
         <Image
-          source={{ uri: item.uri }}
-          style={item.id === currentImage.id ? styles.largeImage : styles.smallImage}
+          source={{ uri: item.ImageURL }}
+          style={item.AddImageID === currentImage.AddImageID ? styles.largeImage : styles.smallImage}
         />
       </TouchableOpacity>
+      
       );
     
       return (
@@ -54,22 +61,32 @@ const Ad = ({navigation, route}) => {
             <TouchableOpacity onPress={() => nextPage()}>
                 <Card style={styles.card}>
                     <Card.Content>
-
-                        <Image source={{ uri: currentImage.uri }} style={styles.largeImage} />
-                
-                        <FlatList
-                            data={propertyImages}
-                            renderItem={renderImageItem}
-                            keyExtractor={(item) => item.id}
-                            horizontal
-                            contentContainerStyle={styles.imageList}
-                        />
+                          {images.length === 1 ? (
+                            <>
+                              <Image source={{ uri: currentImage.ImageURL }} style={styles.largeImage} />
+                           
+                            </>
+                          ) : images.length > 1  ? (
+                            <>
+                             <Image source={{ uri: currentImage.ImageURL }} style={styles.largeImage} />
+                             <FlatList
+                                data={images}
+                                renderItem={renderImageItem}
+                                keyExtractor={(item) => item.AddImageID}
+                                horizontal
+                                contentContainerStyle={styles.imageList}
+                              />
+                            </>
+                          ) :(
+                            <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
+                          )}
                         <Title>Beautiful Property</Title>
                         <Paragraph>2 Bedrooms | 2 Bathrooms | 1500 sqft</Paragraph>
                         <Paragraph>£1500</Paragraph>
-                        <Paragraph style={styles.addressText}>Church Hill Road</Paragraph>
-                        <Paragraph style={styles.addressText}>Sligo Town</Paragraph>
-                        <Paragraph style={styles.addressText}>County Sligo</Paragraph>
+                        <Paragraph style={styles.addressText}>AddID: {ad.addid}</Paragraph>
+                        <Paragraph style={styles.addressText}>{ad.addressline1}</Paragraph>
+                        <Paragraph style={styles.addressText}>{ad.addressline2}</Paragraph>
+                        <Paragraph style={styles.addressText}>{ad.county}</Paragraph>
                     
                 </Card.Content>
              </Card>

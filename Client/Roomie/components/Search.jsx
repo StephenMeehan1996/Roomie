@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { View, TouchableOpacity, Text, FlatList } from 'react-native';
+import { View, TouchableOpacity, Text, FlatList,ActivityIndicator } from 'react-native';
 import { Searchbar,Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButton, Icon} from 'react-native-paper';
 import  styles  from '../styles/common.style';
 import { irishCounties} from '../data/formData';
@@ -7,12 +7,14 @@ import useFetch from '../functions/GetAPI';
 import fetchData from '../functions/GetAPI';
 import axios from 'axios'
 import useFetchData from '../functions/GetAPI';
+import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 
 const Search = ({navigation, route}) => {
-        const [searchQuery, setSearchQuery] = useState('');
+        const [searchQuery, setSearchQuery] = useState('Roscommon');
         const [searchResult, setSearchResult] = useState(null);
+        const [uploading, setUploading] = useState(false);
 
-        const fetchData = useFetchData();
+        const fetchData = useFetchDataBoth();
 
         const onChangeSearch = (query) => {
           setSearchQuery(query);
@@ -27,6 +29,7 @@ const Search = ({navigation, route}) => {
         };  
 
         const search = (query) =>{
+            setUploading(true);
             setSearchQuery(query);
             let type ='';
             switch (selectedButton) {
@@ -56,8 +59,11 @@ const Search = ({navigation, route}) => {
         const handleSearch = async (url, searchValue) => {
             try {
               const data = await fetchData(url);
-              console.log(data);
-              navigation.navigate('_SearchResults', { searchValue: searchValue, data: data});
+              //console.log(data.images);
+              const images = data.images;
+              const detail = data.detail;
+              setUploading(false);
+              navigation.navigate('_SearchResults', { searchValue: searchValue, detail: detail, images: images});
             } catch (error) {
               console.error(error); // Handle errors appropriately
             }
@@ -125,6 +131,7 @@ const Search = ({navigation, route}) => {
                                 <Text style={[styles.buttonText, isButtonSelected(3) && styles.selectedButtonText]}>Digs</Text>
                             </TouchableOpacity>
                     </View>
+                  
                 <Searchbar
                     placeholder="Search"
                     onChangeText={onChangeSearch}
@@ -150,7 +157,9 @@ const Search = ({navigation, route}) => {
                
                 
                 />
-                     
+                  {uploading? <View ><ActivityIndicator size="large" color="#0000ff"/></View>
+                  : <>
+                  </>}   
                 {searchQuery.length >= 2 && autocompleteData.length > 0 && (
                  <FlatList
                     data={autocompleteData}
