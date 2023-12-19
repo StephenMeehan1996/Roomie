@@ -25,7 +25,7 @@ const CreateAdd = ({navigation}) => {
 
       const nextPage = (values) => {
         console.log(values);
-        navigation.navigate('_TestAPI', {  
+        navigation.navigate('_AddImage', {  
            formData: values 
         });
       };
@@ -638,7 +638,7 @@ const CreateAdd = ({navigation}) => {
                                     labelStyle={styles.buttonLabel} 
                                     disabled={!isValid}
                                     onPress={handleSubmit}>
-                                    Next Page
+                                    Add Images
                                 </Button>
                             </View>
                         )}
@@ -992,7 +992,7 @@ const CreateAdd = ({navigation}) => {
                                     labelStyle={styles.buttonLabel} 
                                     disabled={!isValid}
                                     onPress={handleSubmit}>
-                                    Next Page
+                                    Add Images
                                 </Button>
                             </View>
                         )}
@@ -1385,7 +1385,7 @@ const CreateAdd = ({navigation}) => {
                                     labelStyle={styles.buttonLabel} 
                                     disabled={!isValid}
                                     onPress={handleSubmit}>
-                                    Next Page
+                                    Add Images
                                 </Button>
                             </View>
                         )}

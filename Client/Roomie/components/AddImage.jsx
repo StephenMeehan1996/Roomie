@@ -20,14 +20,22 @@ import fetchDataFromDatabase from '../functions/fetchDataFromDatabase';
 import postDataToDatabase from '../functions/postDataToDatabase';
 import callLambdaFunction from '../functions/PostAPI';
 
-const AddImage = ({navigation}) => {
+const AddImage = ({navigation, route}) => {
 
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [hasPostedAdd, setHasPostedAdd] = useState(false);
+  const [addID, setAddID] = useState(0);
+  const [receivedID, setReceivedID] = useState(null);
+  const {formData} = route.params;
 
   let imageArray = [];
- 
+  id = 0;
+  //let addID = 0;
+
+
+  const addTypeString = getAddTypeString(formData.addType);
 
   const pickImage = async () =>{
     
@@ -78,6 +86,36 @@ const AddImage = ({navigation}) => {
       }
     //}
   }
+//{"v_add_id":78}
+  const postAdd = async () => {
+    let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add'; // end point for form post
+    setUploading(true);
+    let res = await callLambdaFunction(formData, signUpUrl); // working 
+    console.log(res);
+    res = res.body;
+    try {
+      const parsedRes = JSON.parse(res); // Parse the string to a JSON object
+      const newAddID = parsedRes.v_add_id; // Extract the number from the object
+      console.log(newAddID)
+      // Check if newAddID is a number
+      if (!isNaN(newAddID)) {
+        setAddID(newAddID); // Set the newAddID as addID state value
+        id = newAddID;
+        console.log(addID);
+      } else {
+        console.error('Invalid addID value:', newAddID);
+      }
+    } catch (error) {
+      console.error('Error parsing the string:', error);
+    }
+
+    setAddID(parseInt(res,10));
+    setHasPostedAdd(true);
+    console.log(addID);
+    setUploading(false);
+  };
+
+
 
   function generateFilename() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -90,15 +128,18 @@ const AddImage = ({navigation}) => {
    if(file == selectedFiles[0]){
     return 1;
    } 
-   
     return 0;
   }
+
   const uploadFile = async () => {
     if (selectedFiles) {
       const storage = getStorage();
       const imagesToPost = [];
       setUploading(true);
-      const uploadPromises = []; // Array to hold upload promises
+      const uploadPromises = [];
+
+        console.log('Count changed:', addID);
+    
   
       for (const file of selectedFiles) {
         try {
@@ -112,13 +153,14 @@ const AddImage = ({navigation}) => {
                 console.log('Uploaded a blob or file!');
                 const url = await getDownloadURL(snapshot.ref);
   
-                let imageObj = [47, url, file.filename, imagePosition(file)];
+                let imageObj = [id, url, file.filename, imagePosition(file)];
+                console.log(imageObj);
                 imageArray.push(imageObj);
-                resolve(); // Resolve the promise once the upload is done
+                resolve(); 
               })
               .catch((error) => {
                 console.error('Error uploading image:', error);
-                reject(error); // Reject the promise in case of an error
+                reject(error); 
               });
           });
   
@@ -129,10 +171,7 @@ const AddImage = ({navigation}) => {
       }
   
       try {
-        // Wait for all upload promises to resolve
         await Promise.all(uploadPromises);
-       // console.log('test');
-       // console.log(imageArray);
         setUploading(false);
         setSelectedFiles([]); 
         let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/addimages'; // end point for form post
@@ -148,8 +187,7 @@ const AddImage = ({navigation}) => {
  
 
   return (
-          <View >
-
+          <View>
             <Card elevation={5} style={styles.card}>
               <Card.Content>
                 <View style={styles.header}>
@@ -165,7 +203,39 @@ const AddImage = ({navigation}) => {
               </Card.Content>
             </Card>
 
-            <Card elevation={5} style={styles.card}>
+            {hasPostedAdd === false ? (
+             <>
+              <Card elevation={5} style={styles.card}>
+              <Card.Content>
+                <View>
+                <Title style={styles.title}>Confirm Add Details</Title>
+                <Text style={styles2.username}>Add Type: {addTypeString}</Text>
+                <Text style={styles2.username}>Price: £1,300</Text>
+                <Text style={[styles2.username, {fontWeight: 'bold'}]}>Address: </Text>
+                <Text style={styles2.username}>{formData.addressLine1}</Text>
+                <Text style={styles2.username}>{formData.addressLine2}</Text>
+                <Text style={styles2.username}>{formData.county}, {formData.city}</Text>
+                </View>
+                <View>
+                  <View style={{ flexDirection: 'row', marginVertical: 10, justifyContent: 'center'}}>
+                  </View>
+                  {uploading? <View style={{marginBottom: 15}} ><ActivityIndicator size="large" color="#0000ff"/></View>
+                  : <>
+                  </>}
+                  <Button
+                      mode="contained" // Use "outlined" for an outlined button
+                      color="#FF5733" // Set your desired button color
+                      labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
+                      onPress={() => postAdd()}>
+                      Confirm and Post Add
+                  </Button>
+                </View>
+              </Card.Content>
+             </Card>
+             
+             </>
+             ):(
+              <Card elevation={5} style={styles.card}>
               <Card.Content>
                 <View>
                  {uploading? <View ><ActivityIndicator size="large" color="#0000ff"/></View>
@@ -179,9 +249,7 @@ const AddImage = ({navigation}) => {
                        contentContainerStyle={styles.listContainer}
                       renderItem={({ item}) => (
                         <View key={item.id}>
-                            <Image source={item} style={{ width: 100, height: 100, margin: 5 }} />
-                            
-
+                          <Image source={item} style={{ width: 100, height: 100, margin: 5 }} />
                           <IconButton
                             icon="trash-can-outline"
                             size={30}
@@ -223,6 +291,10 @@ const AddImage = ({navigation}) => {
                 </View>
               </Card.Content>
             </Card>
+            )}
+
+            
+           
           </View>
   )
 }
@@ -256,6 +328,23 @@ const styles2 = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
+  username: {
+    fontSize: 18,
+    marginTop: 10
+  }
   });
+
+  const getAddTypeString = (addType) => {
+    switch (addType) {
+      case 1:
+        return "House Share";
+      case 2:
+        return "House Rental";
+      case 3:
+        return "Digs";
+      default:
+        return "Unknown";
+    }
+  };
 
 export default AddImage
