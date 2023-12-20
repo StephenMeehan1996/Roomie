@@ -4,12 +4,13 @@ import { Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButto
 import { Picker } from '@react-native-picker/picker';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { MultiSelect } from 'react-native-element-dropdown';
+import { MultiSelect, Dropdown } from 'react-native-element-dropdown';
+
 
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
-import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference } from '../data/formData';
+import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference, irishCounties } from '../data/formData';
 import  styles  from '../styles/formStyle.style';
 
 const SignupSchema = Yup.object().shape({
@@ -56,7 +57,16 @@ const SignupSchema = Yup.object().shape({
     // selectedRentalPref:  Yup.array().required('Please select at least one option')
     selectedRentalPref: Yup.array().of(Yup.string())
     .required('Please select at least one option')
-    .min(1, 'Please select at least one option')
+    .min(1, 'Please select at least one option'),
+    addressLine1: Yup.string()
+    .required('Please enter the first line of the address'),
+    addressLine2: Yup.string()
+    .required('Please enter the second line of the address'),
+    city: Yup.string()
+    .required('Please enter the city for the address'),
+    county: Yup.string()
+    .required('Please enter the county for the address'),
+    zip: Yup.string(),
 });
 
 const SignUpForm = ({navigation}) => {
@@ -139,22 +149,30 @@ const validateDob = async (value) => {
     <ScrollView>
        <Formik
               initialValues={{
-                  firstName: '',
-                  lastName: '',
-                  email: '',
+                  firstName: 'John',
+                  lastName: 'Connor',
+                  email: 'cdsmeehan@gmail.com',
                   //dob: new Date(),
-                  gender: '',
+                  gender: 'Male',
                   dateBirth: dob,
-                  password:'',
-                  confirmPassword : '',
-                  occupation: '',
-                  occupationDropdownValue: '',
-                  smoke: '',
+                  password:'Roomie##2',
+                  confirmPassword : 'Roomie##2',
+                  bio: 'test test test',
+                  occupation: 'Student',
+                  occupationDropdownValue: '1st',
+                  smoke: 1,
+                  userIdentifier: '',
                   profilePicURL: '',
                   intoVideoURL: '',
-                  shareName: '',
-                  shareData: '',
+                  shareName: 1,
+                  shareData: 1,
                   selectedRentalPref: ['House Share', 'House Rental', 'Digs'],
+                  //added address
+                  addressLine1: 'Kilgarve, Keadue',
+                  addressLine2: 'Boyle',
+                  city: 'Roscommon',
+                  county: 'Roscommon',
+                  zip: 'F91 XY32',
               }}
                validationSchema={SignupSchema}
                onSubmit={values => nextPage(values)
@@ -200,7 +218,6 @@ const validateDob = async (value) => {
                       style={styles.input}
                       placeholder="Enter your email"
                       keyboardType="email-address"
-                      autoCapitalize={false}
                       value={values.email}
                       onChangeText={handleChange('email')}
                       onBlur={() => setFieldTouched('email')}
@@ -249,7 +266,6 @@ const validateDob = async (value) => {
                           style={styles.input}
                           placeholder="Enter password"
                           onChangeText={handleChange('password')}
-                          autoCapitalize={false}
                           value={values.password}
                           onBlur={() => setFieldTouched('password')} 
                           
@@ -267,7 +283,6 @@ const validateDob = async (value) => {
                           style={styles.input}
                           placeholder="Confirm password"
                           onChangeText={handleChange('confirmPassword')}
-                          autoCapitalize={false}
                           value={values.confirmPassword}
                           onBlur={() => setFieldTouched('confirmPassword')} 
                         />
@@ -296,6 +311,96 @@ const validateDob = async (value) => {
             </Card>
 
             <Card elevation={5} style={styles.card}>
+                        <Card.Content>
+                          
+                            <Title style={styles.title}>Address:</Title>
+                            <View >
+                                <Text style={styles.label}>Address Line 1:</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter address line 1"
+                                    onChangeText={handleChange('addressLine1')}
+                                    value={values.addressLine1}
+                                    onBlur={() => setFieldTouched('addressLine1')} 
+                                    
+                                    />
+                                    {touched.addressLine1 && errors.addressLine1 &&(
+                                    <View >
+                                        <Text style={styles.errorTxt}>{errors.addressLine1}</Text>
+                                    </View>
+                                    )}
+                             </View>
+
+                            <View >
+                                <Text style={styles.label}>Address Line 2:</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter address line 2"
+                                    onChangeText={handleChange('addressLine2')}
+                                    value={values.addressLine2}
+                                    onBlur={() => setFieldTouched('addressLine2')} 
+                                    />
+                                    {touched.addressLine2 && errors.addressLine2 &&(
+                                    <View>
+                                        <Text style={styles.errorTxt}>{errors.addressLine2}</Text>
+                                    </View>
+                                    )}
+                            </View>
+
+                            <View style={styles.sameLineContainer}>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>City:</Text>
+                                    <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter city"
+                                    onChangeText={handleChange('city')}
+                                    value={values.city}
+                                    onBlur={() => setFieldTouched('city')} 
+                                    />
+                                    {touched.city && errors.city &&(
+                                    <View>
+                                        <Text style={styles.errorTxt}>{errors.city}</Text>
+                                    </View>
+                                    )}
+                                </View>
+                                <View style={styles.lineInput}>
+                                    <Text style={styles.label}>County:</Text>
+                                    <Dropdown
+                                        style={styles.dropdown}
+                                        data={irishCounties}
+                                        labelField="label"
+                                        valueField="value"
+                                        search
+                                        searchPlaceholder="Search"
+                                        disableSelect
+                                        value={values.county}
+                                        onBlur={() => setFieldTouched('county')}
+                                        onChange={item => {
+                                            setFieldValue('county', item.value);
+                                            console.log('selected', item);
+                                        }}
+                                        renderItem={item => _renderItem(item)}
+                                    />
+                                    {touched.county && errors.county &&(
+                                        <Text style={[styles.errorTxt, {marginTop: 18, marginBottom: 0}]}>{errors.county}</Text>
+                                    )}
+                               </View>
+                            </View>
+
+                            <View style={styles.lineInput}>
+                                <Text style={styles.label}>Eircode</Text>
+                                <TextInput
+                                    style={[styles.input, styles.singleLineInput]}
+                                    placeholder="Enter eircode"
+                                    onChangeText={handleChange('zip')}
+                                    value={values.zip}
+                                    onBlur={() => setFieldTouched('zip')} 
+                                    />
+                            </View>
+                         </Card.Content>
+                     </Card>
+
+            <Card elevation={5} style={styles.card}>
               <Card.Content>
                 <Title style={styles.title}>Personal Details</Title>
                 <View >
@@ -305,8 +410,7 @@ const validateDob = async (value) => {
                     multiline
                     numberOfLines={3}   
                     placeholder="Type your bio here..."
-                    onChangeText={handleChange('bio')}
-                    autoCapitalize={false}
+                    onChangeText={handleChange('bio')} 
                     value={values.bio}
                     onBlur={() => setFieldTouched('bio')} 
                   />

@@ -4,6 +4,7 @@ import { Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButto
 import { Picker } from '@react-native-picker/picker';
 import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import callLambdaFunction from '../functions/PostAPI';
 
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -15,7 +16,27 @@ const RentalPreferencesForm = ({navigation, route}) => {
 
     const { rentalPref,formData } = route.params;
     const [loading, setLoading] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const auth = FIREBASE_AUTH;
+
+    // {uploading? <View style={{marginBottom: 10}}><ActivityIndicator size="large" color="#0000ff"/></View>
+    // : <>
+    // </>}
+
+    const insertUser = async (formData) => {
+      let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/user';
+      setUploading(true);
+      let res = await callLambdaFunction(formData, signUpUrl); // working 
+      console.log(res);
+    };
+
+    function generateUserIdentifier() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
 
     const SignupSchema = Yup.object().shape({
       
@@ -86,8 +107,14 @@ const RentalPreferencesForm = ({navigation, route}) => {
       try{
           const responce = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
           console.log(responce); 
+          formsToCombine.selectedRentalPref = formsToCombine.selectedRentalPref.map(item => `'${item}'`).join(', ');
+          formsToCombine.userIdentifier = generateUserIdentifier();
           console.log(formsToCombine);
+
+          await insertUser(formsToCombine);
           //Post data to DB from here
+          
+
           alert('Check your emails!');
        } catch (error){
           console.log(error);
