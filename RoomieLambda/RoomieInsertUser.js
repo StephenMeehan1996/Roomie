@@ -18,7 +18,7 @@ exports.handler = async (event) => {
     const formData = JSON.parse(JSON.stringify(event)); // Assuming form data is sent in the request body
     await client.connect();
     let  result = await client.query(
-      'SELECT * RoomieInsertUser($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27,$28, $29, $30, $31, $32, $33, $34, $35)',
+      'SELECT RoomieInsertUser($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27,$28, $29, $30, $31, $32, $33, $34, $35)',
       [
          formData.email,
          formData.firstName,
