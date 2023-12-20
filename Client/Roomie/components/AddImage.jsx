@@ -26,7 +26,7 @@ const AddImage = ({navigation, route}) => {
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [hasPostedAdd, setHasPostedAdd] = useState(false);
-  const [addID, setAddID] = useState(0);
+  const [addID, setAddID] = useState('');
   const [receivedID, setReceivedID] = useState(null);
   const {formData} = route.params;
 
@@ -91,6 +91,7 @@ const AddImage = ({navigation, route}) => {
     let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add'; // end point for form post
     setUploading(true);
     let res = await callLambdaFunction(formData, signUpUrl); // working 
+    let generatedID;
     console.log(res);
     res = res.body;
     try {
@@ -99,9 +100,8 @@ const AddImage = ({navigation, route}) => {
       console.log(newAddID)
       // Check if newAddID is a number
       if (!isNaN(newAddID)) {
-        setAddID(newAddID); // Set the newAddID as addID state value
-        id = newAddID;
-        console.log(addID);
+        generatedID = newAddID
+        console.log(generatedID);
       } else {
         console.error('Invalid addID value:', newAddID);
       }
@@ -109,12 +109,31 @@ const AddImage = ({navigation, route}) => {
       console.error('Error parsing the string:', error);
     }
 
-    setAddID(parseInt(res,10));
-    setHasPostedAdd(true);
-    console.log(addID);
-    setUploading(false);
+ 
+    //setHasPostedAdd(true);
+    //setUploading(false);
+
+    uploadFile(generatedID)
+
   };
 
+
+  const [myVariable, setMyVariable] = useState(0);
+
+  // set var in seperate function?? 
+  const updateID = (newAddID) => {
+    console.log(newAddID);
+    setAddID(newAddID);
+    console.log(newAddID);
+  };
+
+  // Function that uses the variable
+  const displayVariable = () => {
+    console.log(myVariable);
+    let imageObj = [myVariable, 'test', 'test', 1];
+    console.log(imageObj);
+    // You can perform other operations with myVariable here
+  };
 
 
   function generateFilename() {
@@ -131,7 +150,7 @@ const AddImage = ({navigation, route}) => {
     return 0;
   }
 
-  const uploadFile = async () => {
+  const uploadFile = async (generatedID) => {
     if (selectedFiles) {
       const storage = getStorage();
       const imagesToPost = [];
@@ -153,7 +172,7 @@ const AddImage = ({navigation, route}) => {
                 console.log('Uploaded a blob or file!');
                 const url = await getDownloadURL(snapshot.ref);
   
-                let imageObj = [id, url, file.filename, imagePosition(file)];
+                let imageObj = [generatedID, url, file.filename, imagePosition(file)];
                 console.log(imageObj);
                 imageArray.push(imageObj);
                 resolve(); 
@@ -187,7 +206,7 @@ const AddImage = ({navigation, route}) => {
  
 
   return (
-          <View>
+          <ScrollView>
             <Card elevation={5} style={styles.card}>
               <Card.Content>
                 <View style={styles.header}>
@@ -203,12 +222,11 @@ const AddImage = ({navigation, route}) => {
               </Card.Content>
             </Card>
 
-            {hasPostedAdd === false ? (
-             <>
+           
               <Card elevation={5} style={styles.card}>
               <Card.Content>
                 <View>
-                <Title style={styles.title}>Confirm Add Details</Title>
+                <Title style={styles.title}>Detail Summary</Title>
                 <Text style={styles2.username}>Add Type: {addTypeString}</Text>
                 <Text style={styles2.username}>Price: £1,300</Text>
                 <Text style={[styles2.username, {fontWeight: 'bold'}]}>Address: </Text>
@@ -219,22 +237,35 @@ const AddImage = ({navigation, route}) => {
                 <View>
                   <View style={{ flexDirection: 'row', marginVertical: 10, justifyContent: 'center'}}>
                   </View>
-                  {uploading? <View style={{marginBottom: 15}} ><ActivityIndicator size="large" color="#0000ff"/></View>
-                  : <>
-                  </>}
-                  <Button
+                
+          
+                  {/* <Button
                       mode="contained" // Use "outlined" for an outlined button
                       color="#FF5733" // Set your desired button color
                       labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
                       onPress={() => postAdd()}>
                       Confirm and Post Add
-                  </Button>
+                  </Button> */}
+                </View>
+                <View>
+                  <View style={{ flexDirection: 'row', marginVertical: 10, justifyContent: 'center'}}>
+                  </View>
+                  {uploading? <View style={{marginBottom: 15}} ><ActivityIndicator size="large" color="#0000ff"/></View>
+                  : <>
+                  </>}
+                  {/* <Button
+                      mode="contained" // Use "outlined" for an outlined button
+                      color="#FF5733" // Set your desired button color
+                      labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
+                      onPress={() => displayVariable()}>
+                      Confirm and Post Add
+                  </Button> */}
                 </View>
               </Card.Content>
              </Card>
              
-             </>
-             ):(
+           
+            
               <Card elevation={5} style={styles.card}>
               <Card.Content>
                 <View>
@@ -257,12 +288,12 @@ const AddImage = ({navigation, route}) => {
                             style={{position: 'absolute', top: -5, right: -5}}
                             onPress={() => removeImage(item.uri)}>
                         </IconButton>
-
                        </View>
                   )}
                   />
                 </View>
                 <View>
+                <Title style={styles.title}>Image Upload</Title>
                   <View style={{ flexDirection: 'row', marginVertical: 10, justifyContent: 'center'}}>
                     <Button
                       mode="contained"
@@ -285,17 +316,14 @@ const AddImage = ({navigation, route}) => {
                       mode="contained" // Use "outlined" for an outlined button
                       color="#FF5733" // Set your desired button color
                       labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
-                      onPress={uploadFile}>
-                      Upload File
+                      onPress={() => postAdd()}>
+                      Confirm and Post Add
                   </Button>
                 </View>
               </Card.Content>
             </Card>
-            )}
-
-            
            
-          </View>
+          </ScrollView>
   )
 }
 
