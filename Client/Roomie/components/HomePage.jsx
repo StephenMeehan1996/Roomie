@@ -9,11 +9,11 @@ import Search from '../components/Search';
 import Login from './Login';
 import CreateAdd from './CreateAdd';
 import { Avatar, Card, Title, Paragraph, Button,IconButton } from 'react-native-paper';
-import AddImage from './AddImage';
 import SearchResults from './SearchResults';
 import { createNativeStackNavigator, Header } from '@react-navigation/native-stack';
 import AddDetail from './AddDetail';
 import TestAPI from './Test_API';
+import PostAdd from './PostAdd';
 
 const Tab = createBottomTabNavigator();
 
@@ -42,7 +42,7 @@ function CreateTabStackScreens() {
     <SecondTabStack.Navigator initialRouteName='_CreateAdd' screenOptions={{headerShown: false}}>
       <SecondTabStack.Screen name="_CreateAdd" component={CreateAdd} />
       <SecondTabStack.Screen name="_TestAPI" component={TestAPI} />
-      <SecondTabStack.Screen name="_AddImage" component={AddImage} />
+      <SecondTabStack.Screen name="_PostAdd" component={PostAdd} />
     </SecondTabStack.Navigator>
   );
 }

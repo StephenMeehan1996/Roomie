@@ -13,7 +13,7 @@ import SearchResults from '../components/SearchResults';
 import SignUpForm from '../components/SignupForm';
 import RentalPreferencesForm from '../components/RentalPreferencesForm';
 import CreateAdd from '../components/CreateAdd';
-import AddImage from '../components/AddImage';
+import PostAdd from '../components/PostAdd';
 import AddDetail from '../components/AddDetail';
 import { Provider as PaperProvider } from 'react-native-paper';
 

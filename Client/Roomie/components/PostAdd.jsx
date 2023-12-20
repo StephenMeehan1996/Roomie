@@ -20,7 +20,7 @@ import fetchDataFromDatabase from '../functions/fetchDataFromDatabase';
 import postDataToDatabase from '../functions/postDataToDatabase';
 import callLambdaFunction from '../functions/PostAPI';
 
-const AddImage = ({navigation, route}) => {
+const PostAdd = ({navigation, route}) => {
 
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -253,13 +253,6 @@ const AddImage = ({navigation, route}) => {
                   {uploading? <View style={{marginBottom: 15}} ><ActivityIndicator size="large" color="#0000ff"/></View>
                   : <>
                   </>}
-                  {/* <Button
-                      mode="contained" // Use "outlined" for an outlined button
-                      color="#FF5733" // Set your desired button color
-                      labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
-                      onPress={() => displayVariable()}>
-                      Confirm and Post Add
-                  </Button> */}
                 </View>
               </Card.Content>
              </Card>
@@ -375,4 +368,4 @@ const styles2 = StyleSheet.create({
     }
   };
 
-export default AddImage
+export default PostAdd
