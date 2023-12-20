@@ -2,22 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet,Platform,TextInput,Dimensions,TouchableOpacity,Image,ScrollView, SafeAreaView, Alert, FlatList, ActivityIndicator} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
-import { FIREBASE_APP, FIREBASE_STORAGE } from '../FirebaseConfig';
 import { Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButton  } from 'react-native-paper';
-import { Picker } from '@react-native-picker/picker';
-import { DatePickerModal } from 'react-native-paper-dates';
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { MultiSelect, Dropdown } from 'react-native-element-dropdown';
 import { launchCameraAsync } from 'expo-image-picker';
-//import { firebase } from '../config'
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
-//PermissionsAndroid,
-import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference, environmentOptions, houseMatExpectations ,irishCounties, number, houseType, priceRange, days, roomType } from '../data/formData';
 import  styles  from '../styles/formStyle.style';
-import fetchDataFromDatabase from '../functions/fetchDataFromDatabase';
-import postDataToDatabase from '../functions/postDataToDatabase';
 import callLambdaFunction from '../functions/PostAPI';
 
 const PostAdd = ({navigation, route}) => {
@@ -25,15 +13,7 @@ const PostAdd = ({navigation, route}) => {
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const [hasPostedAdd, setHasPostedAdd] = useState(false);
-  const [addID, setAddID] = useState('');
-  const [receivedID, setReceivedID] = useState(null);
   const {formData} = route.params;
-
-  let imageArray = [];
-  id = 0;
-  //let addID = 0;
-
 
   const addTypeString = getAddTypeString(formData.addType);
 
@@ -88,7 +68,7 @@ const PostAdd = ({navigation, route}) => {
   }
 //{"v_add_id":78}
   const postAdd = async () => {
-    let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add'; // end point for form post
+    let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add';
     setUploading(true);
     let res = await callLambdaFunction(formData, signUpUrl); // working 
     let generatedID;
@@ -109,30 +89,7 @@ const PostAdd = ({navigation, route}) => {
       console.error('Error parsing the string:', error);
     }
 
- 
-    //setHasPostedAdd(true);
-    //setUploading(false);
-
     uploadFile(generatedID)
-
-  };
-
-
-  const [myVariable, setMyVariable] = useState(0);
-
-  // set var in seperate function?? 
-  const updateID = (newAddID) => {
-    console.log(newAddID);
-    setAddID(newAddID);
-    console.log(newAddID);
-  };
-
-  // Function that uses the variable
-  const displayVariable = () => {
-    console.log(myVariable);
-    let imageObj = [myVariable, 'test', 'test', 1];
-    console.log(imageObj);
-    // You can perform other operations with myVariable here
   };
 
 
@@ -143,6 +100,20 @@ const PostAdd = ({navigation, route}) => {
       return v.toString(16);
     });
   }
+
+  function getAddTypeString(addType){
+    switch (addType) {
+      case 1:
+        return "House Share";
+      case 2:
+        return "House Rental";
+      case 3:
+        return "Digs";
+      default:
+        return "Unknown";
+    }
+  };
+
   function imagePosition(file){
    if(file == selectedFiles[0]){
     return 1;
@@ -156,8 +127,8 @@ const PostAdd = ({navigation, route}) => {
       const imagesToPost = [];
       setUploading(true);
       const uploadPromises = [];
+      const imageArray = [];
 
-        console.log('Count changed:', addID);
     
   
       for (const file of selectedFiles) {
@@ -173,7 +144,6 @@ const PostAdd = ({navigation, route}) => {
                 const url = await getDownloadURL(snapshot.ref);
   
                 let imageObj = [generatedID, url, file.filename, imagePosition(file)];
-                console.log(imageObj);
                 imageArray.push(imageObj);
                 resolve(); 
               })
@@ -202,8 +172,6 @@ const PostAdd = ({navigation, route}) => {
       console.log('No image selected for upload.');
     }
   };
-  
- 
 
   return (
           <ScrollView>
@@ -221,7 +189,6 @@ const PostAdd = ({navigation, route}) => {
                 </View>
               </Card.Content>
             </Card>
-
            
               <Card elevation={5} style={styles.card}>
               <Card.Content>
@@ -237,34 +204,17 @@ const PostAdd = ({navigation, route}) => {
                 <View>
                   <View style={{ flexDirection: 'row', marginVertical: 10, justifyContent: 'center'}}>
                   </View>
-                
-          
-                  {/* <Button
-                      mode="contained" // Use "outlined" for an outlined button
-                      color="#FF5733" // Set your desired button color
-                      labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
-                      onPress={() => postAdd()}>
-                      Confirm and Post Add
-                  </Button> */}
                 </View>
                 <View>
                   <View style={{ flexDirection: 'row', marginVertical: 10, justifyContent: 'center'}}>
                   </View>
-                  {uploading? <View style={{marginBottom: 15}} ><ActivityIndicator size="large" color="#0000ff"/></View>
-                  : <>
-                  </>}
                 </View>
               </Card.Content>
              </Card>
-             
-           
             
               <Card elevation={5} style={styles.card}>
               <Card.Content>
                 <View>
-                 {uploading? <View ><ActivityIndicator size="large" color="#0000ff"/></View>
-                  : <>
-                  </>}
                   <FlatList
                       data={selectedFiles}
                       keyExtractor={(item, index) => index.toString()}
@@ -287,6 +237,9 @@ const PostAdd = ({navigation, route}) => {
                 </View>
                 <View>
                 <Title style={styles.title}>Image Upload</Title>
+                {uploading? <View style={{marginBottom: 10}}><ActivityIndicator size="large" color="#0000ff"/></View>
+                  : <>
+                  </>}
                   <View style={{ flexDirection: 'row', marginVertical: 10, justifyContent: 'center'}}>
                     <Button
                       mode="contained"
@@ -355,17 +308,6 @@ const styles2 = StyleSheet.create({
   }
   });
 
-  const getAddTypeString = (addType) => {
-    switch (addType) {
-      case 1:
-        return "House Share";
-      case 2:
-        return "House Rental";
-      case 3:
-        return "Digs";
-      default:
-        return "Unknown";
-    }
-  };
+
 
 export default PostAdd
