@@ -21,11 +21,14 @@ const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
 const OutsideStack = createNativeStackNavigator();
 
-const InsideLayout = () =>{
+const InsideLayout = ({route}) =>{
+  
+  const { email } = route.params;
+ 
    return(
     //add bottom nav here? 
     <InsideStack.Navigator initialRouteName='HomePage' screenOptions={{headerShown: false}}>
-        <InsideStack.Screen name = "HomePage" component={HomePage}/>
+        <InsideStack.Screen name = "HomePage" component={HomePage}  initialParams={{ email: email }}/>
     </InsideStack.Navigator>
     )
 }
@@ -40,20 +43,24 @@ const OutsideLayout = () =>{
     )
 }
 
-const Home =  () =>{
+const Home =  ({navigation, route}) =>{
 
     const auth = FIREBASE_AUTH;
     const [selectedOption, setselectedOption] = useState(null);
     const [user, setUser] = useState(null);
+    const [email, setEmail] = useState(null);
 
    useEffect(() => {
-     const unsubscribe = auth.onAuthStateChanged((user) => {
+     const unsubscribe = auth.onAuthStateChanged( (user) => {
        if (user) {
          // User is signed in
          setUser(user);
+         setEmail(user.email); // Set the email here
+     
        } else {
          // No user is signed in
          setUser(null);
+         setEmail(null); // Set the email here
        }
      });
      return () => unsubscribe();
@@ -64,7 +71,7 @@ const Home =  () =>{
         <SafeAreaView style={{flex: 1}}>
             <NavigationContainer  independent={true}>
                 <Stack.Navigator initialRouteName='Home' screenOptions={{headerShown: false}} >
-                    {user ? <Stack.Screen name='Inside' component={InsideLayout}/> : <Stack.Screen name='OutsideLayout' component={OutsideLayout}/> }
+                    {user ? <Stack.Screen name='Inside' component={InsideLayout}  initialParams={{ email: email }} /> : <Stack.Screen name='OutsideLayout' component={OutsideLayout}/> }
                 </Stack.Navigator>
             </NavigationContainer>
         </SafeAreaView>

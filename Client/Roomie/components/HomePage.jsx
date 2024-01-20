@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, StyleSheet, ScrollView,TouchableOpacity,Image } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { FIREBASE_AUTH } from '../FirebaseConfig'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,6 +14,7 @@ import { createNativeStackNavigator, Header } from '@react-navigation/native-sta
 import AddDetail from './AddDetail';
 import TestAPI from './Test_API';
 import PostAdd from './PostAdd';
+import useFetchData from '../functions/GetAPI';
 
 const Tab = createBottomTabNavigator();
 
@@ -47,7 +48,47 @@ function CreateTabStackScreens() {
   );
 }
 
-const HomePage = ({navigation}) => {
+const HomePage = ({navigation, route}) => {
+
+  const { email } = route.params;
+  const [uID, setUID] = useState(null);
+  const [userDetails, setUserDetails] = useState(null);
+  const [userImage, setUserImages] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  console.log(email);
+  
+  // Gets done here so I can pass the information to required components
+
+        useEffect(() => {
+        // Function to make API calls
+        const fetchData = async () => {
+          try {
+            const response1 = await useFetchData();
+            const result1 = await response1.json();
+
+            setUID(result1);
+    
+            const response2 = await fetch('YOUR_API_ENDPOINT_2');
+            const result2 = await response2.json();
+            setData2(result2);
+    
+            const response3 = await fetch('YOUR_API_ENDPOINT_3');
+            const result3 = await response3.json();
+            setData3(result3);
+    
+            // All API calls are completed, set loading to false
+            setIsLoading(false);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+            // Handle error if needed
+            setIsLoading(false);
+          }
+        };
+    
+        // Call the fetchData function
+        fetchData();
+      }, []);
 
   return (
 

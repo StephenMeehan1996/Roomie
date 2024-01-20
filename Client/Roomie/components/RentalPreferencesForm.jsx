@@ -105,15 +105,13 @@ const RentalPreferencesForm = ({navigation, route}) => {
       const formsToCombine = {...formData, ...values}
       setLoading(true);
       try{
-          //const responce = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-          //console.log(responce); 
+          const responce = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+          console.log(responce); 
           formsToCombine.selectedRentalPref = formsToCombine.selectedRentalPref.map(item => `'${item}'`).join(', ');
           formsToCombine.userIdentifier = generateUserIdentifier();
           console.log(formsToCombine);
 
-          await insertUser(formsToCombine);
-          //Post data to DB from here
-          
+          await insertUser(formsToCombine);       
 
           alert('Check your emails!');
        } catch (error){

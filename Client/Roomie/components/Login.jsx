@@ -36,17 +36,16 @@ const Login = ({navigation}) => {
             {loading ? <ActivityIndicator size="large" color="#0000ff"/>
             : <>
             <Button
-                mode="contained" // Use "contained" for a filled button
-                color="#FF5733" // Set your desired button color
-                labelStyle={styles.buttonLabel} // Apply custom label text style
-                style={{marginTop:15, marginBottom: 10}} // Apply custom button style
+                mode="contained" 
+                color="#FF5733" 
+                labelStyle={styles.buttonLabel} 
+                style={{marginTop:15, marginBottom: 10}} 
                 onPress={signIn}>
                 Login
             </Button>
             <Button
-                mode="outlined" // Use "outlined" for an outlined button
-                color="#FF5733" // Set your desired button color
-                labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
+                mode="outlined" 
+                color="#FF5733" 
                 onPress={() => navigation.navigate('SignupForm')}>
                 Create Account
             </Button>

@@ -7,7 +7,9 @@ import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
 import Ad from './Ad';
 
+
 const Profile = ({ navigation }) => {
+
 
     const [isBioExpanded, setIsBioExpanded] = useState(false);
     const bioText = `Hey there! 👋 I'm John. Whether I'm scaling mountain peaks, exploring new cities, or just enjoying a cozy afternoon with a good book, I believe in making every moment count.`;
@@ -15,6 +17,8 @@ const Profile = ({ navigation }) => {
     const toggleBio = () => {
         setIsBioExpanded(!isBioExpanded);
       };
+
+
  
   return (
     
