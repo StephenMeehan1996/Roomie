@@ -1,25 +1,63 @@
 import React, {useState } from 'react';
-import { View, Text, StyleSheet, Image,TouchableOpacity,ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image,TouchableOpacity,ScrollView,FlatList  } from 'react-native';
 import { Avatar, Card, Title, Paragraph, Button } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import Collapsible from 'react-native-collapsible';
 import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
 import Ad from './Ad';
+import  formStyles  from '../styles/formStyle.style';
 
 
-const Profile = ({ navigation }) => {
+const Profile = ({ navigation, route }) => {
 
+  const { uID, userDetails, userImages, userAdImages, userAdDetail } = route.params;
+  const [isBioExpanded, setIsBioExpanded] = useState(false);
 
-    const [isBioExpanded, setIsBioExpanded] = useState(false);
-    const bioText = `Hey there! 👋 I'm John. Whether I'm scaling mountain peaks, exploring new cities, or just enjoying a cozy afternoon with a good book, I believe in making every moment count.`;
+   
+
+ console.log(userAdImages);
+ console.log(userAdDetail);
 
     const toggleBio = () => {
         setIsBioExpanded(!isBioExpanded);
       };
 
+      const renderAds = ({ item: ad }) => {
+       
+        const adImages = userAdImages.filter((image) => image.AddID === ad.addid);
 
- 
+        return (
+          <TouchableOpacity key={ad.addid} onPress={() => nextPage(ad)}>
+            <Ad ad={ad} images={adImages} navigation={navigation} />
+          </TouchableOpacity>
+        );
+      };
+      
+     const calculateReviewStats = () => {
+
+      if(userDetails.numreviews > 0){
+
+        const positivePercentage = (userDetails.positivereview / userDetails.numreviews) * 100;
+
+        if(positivePercentage > 60){
+
+          return (
+            <Text style={styles.greenText}>{positivePercentage}% Positive ({userDetails.numreviews})</Text>
+          )
+        }
+  
+        return (
+          <Text style={styles.redText}>{positivePercentage}% Positive ({userDetails.numreviews})</Text>
+        )
+
+      }
+      return (
+        <Text style={styles.redText}>No Reviews</Text>
+      )
+    
+
+     }
   return (
     
     <ScrollView>
@@ -30,15 +68,19 @@ const Profile = ({ navigation }) => {
       <Card.Content>
         <Avatar.Image
           size={80}
-          source={require('../assets/Icons/images/kemal.jpg')}
+          source={userImages.imageurl}
         />
-        <Title style={styles.username}>John Doe</Title>
+        {/* <Avatar.Image
+        size={80}
+        source={require('../assets/Icons/images/NoProfile.png')}
+      /> */}
+        <Title style={styles.username}>{userDetails.firstname} {userDetails.secondname}</Title>
         <Paragraph style={styles.bio}>
           Web Developer | Traveller | Foodie
         </Paragraph>
         <View style={styles.info}>
-            <Text style={styles.infoText}>Active Adds: 2</Text>
-            <Text style={styles.infoText}>Rating: <Text style={styles.greenText}>85% Positive</Text></Text>
+            <Text style={styles.infoText}>Active Adds: {userAdDetail.length}</Text>
+            <Text style={styles.infoText}>Rating: {calculateReviewStats()}</Text>
         </View>
         <Button
           icon="email"
@@ -54,7 +96,7 @@ const Profile = ({ navigation }) => {
             Bio
           </Button>
         <Collapsible collapsed={!isBioExpanded}>
-            <Paragraph style={styles.bio}>{bioText}</Paragraph>
+            <Paragraph style={styles.bio}>{userDetails.bio}</Paragraph>
           </Collapsible>
       </Card.Content>
     </Card>
@@ -63,11 +105,23 @@ const Profile = ({ navigation }) => {
       <Card.Content>
         <Title style={styles.username}>Active adds</Title>
         <View >
-           <Ad navigation={navigation} ></Ad>
-        </View>
-
-        <View >
-          <Ad navigation={navigation} ></Ad>
+        <ScrollView>
+          {userAdDetail.length === 0 ? (
+          <Card elevation={5} style={[formStyles.card, {marginTop: 30, paddingVertical: 40}]}>
+            <Card.Content>
+              <View style={styles.noResultsContainer}>
+                  <Text style= {styles.noResultsText}>No results found</Text>
+              </View>
+            </Card.Content>
+          </Card>
+          ) : (
+        <FlatList
+          data={userAdDetail}
+          renderItem={renderAds}
+          keyExtractor={(userAdDetail) => userAdDetail.addid.toString()}
+        />
+        )} 
+      </ScrollView>
         </View>
       </Card.Content>
     </Card>
@@ -117,6 +171,10 @@ const styles = StyleSheet.create({
     },
     greenText: {
         color: 'green', // Set the color to green
+        fontWeight: 'bold', // Optional: You can apply additional styles as needed
+      },
+    redText: {
+        color: 'red', // Set the color to green
         fontWeight: 'bold', // Optional: You can apply additional styles as needed
       }
   });

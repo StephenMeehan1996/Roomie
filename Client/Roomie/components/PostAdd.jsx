@@ -13,10 +13,14 @@ const PostAdd = ({navigation, route}) => {
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const {formData} = route.params;
+  const {formData, uID, userID} = route.params;
+
+  console.log(uID);
+
+  formData.posterUID = uID; // ID's from user signed in
+  formData.posterID = userID;
 
   const addTypeString = getAddTypeString(formData.addType);
-
   const pickImage = async () =>{
     
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -70,6 +74,7 @@ const PostAdd = ({navigation, route}) => {
   const postAdd = async () => {
     let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add';
     setUploading(true);
+    console.log(JSON.stringify(formData));
     let res = await callLambdaFunction(formData, signUpUrl); // working 
     let generatedID;
     console.log(res);

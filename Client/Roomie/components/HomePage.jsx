@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet, ScrollView,TouchableOpacity,Image } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, ScrollView,TouchableOpacity,Image,ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { FIREBASE_AUTH } from '../FirebaseConfig'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -15,6 +15,7 @@ import AddDetail from './AddDetail';
 import TestAPI from './Test_API';
 import PostAdd from './PostAdd';
 import useFetchData from '../functions/GetAPI';
+import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 
 const Tab = createBottomTabNavigator();
 
@@ -30,20 +31,28 @@ function SearchTabStackScreens() {
   );
 }
 
-function ProfileTabStackScreens() {
+function ProfileTabStackScreens({ route }) {
+
+  const { uID, userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail } = route.params;
+
   return (
-    <SecondTabStack.Navigator initialRouteName='_Profile' screenOptions={{headerShown: false}}>
-      <SecondTabStack.Screen name="_Profile" component={Profile} />
+    <SecondTabStack.Navigator initialRouteName='_Profile' screenOptions={{headerShown: false}} >
+      <SecondTabStack.Screen name="_Profile" component={Profile} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages,userAdImages: userAdImages, userAdDetail: userAdDetail }}/>
       <SecondTabStack.Screen name="_AddDetail" component={AddDetail} />
     </SecondTabStack.Navigator>
   );
 }
-function CreateTabStackScreens() {
+function CreateTabStackScreens({ route }) {
+
+  const { uID, userDetails } = route.params;
+
+  const userID = userDetails._userid;
+
   return (
     <SecondTabStack.Navigator initialRouteName='_CreateAdd' screenOptions={{headerShown: false}}>
-      <SecondTabStack.Screen name="_CreateAdd" component={CreateAdd} />
+      <SecondTabStack.Screen name="_CreateAdd" component={CreateAdd}/>
       <SecondTabStack.Screen name="_TestAPI" component={TestAPI} />
-      <SecondTabStack.Screen name="_PostAdd" component={PostAdd} />
+      <SecondTabStack.Screen name="_PostAdd" component={PostAdd} initialParams={{ uID: uID, userID: userID}}/>
     </SecondTabStack.Navigator>
   );
 }
@@ -53,31 +62,32 @@ const HomePage = ({navigation, route}) => {
   const { email } = route.params;
   const [uID, setUID] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
-  const [userImage, setUserImages] = useState(null);
+  const [userImages, setUserImages] = useState(null);
+  const [userAdImages, setUserAdImages] = useState(null);
+  const [userAdDetail, setUserAdDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const fetchAds = useFetchDataBoth();
 
-  console.log(email);
   
   // Gets done here so I can pass the information to required components
-
         useEffect(() => {
-        // Function to make API calls
-        const fetchData = async () => {
+         setIsLoading(true)
+         const fetchData = async () => {
           try {
-            const response1 = await useFetchData();
-            const result1 = await response1.json();
+            const getUUID = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUID?email=${email}`);
+            const UUID = getUUID[0].useridentifier;
+            setUID(getUUID[0].useridentifier);
+      
+            const getUserDetails = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUser?uid=${UUID}`);
+            setUserDetails(getUserDetails[0]);
 
-            setUID(result1);
-    
-            const response2 = await fetch('YOUR_API_ENDPOINT_2');
-            const result2 = await response2.json();
-            setData2(result2);
-    
-            const response3 = await fetch('YOUR_API_ENDPOINT_3');
-            const result3 = await response3.json();
-            setData3(result3);
-    
-            // All API calls are completed, set loading to false
+            const getUserImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${UUID}`);
+            setUserImages(getUserImages[0]);
+
+            const getUserAds = await fetchAds(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUsersAds?uid=${UUID}`);
+            setUserAdImages(getUserAds.images);
+            setUserAdDetail(getUserAds.detail)
+      
             setIsLoading(false);
           } catch (error) {
             console.error('Error fetching data:', error);
@@ -90,10 +100,20 @@ const HomePage = ({navigation, route}) => {
         fetchData();
       }, []);
 
+      // useEffect(() => {
+      //   // This useEffect will run when uID changes
+      //   console.log(uID);
+      //   console.log(userDetails);
+      //   console.log(userImages);
+      // }, [uID, userDetails, userImages]); // Run useEffect whenever uID changes
+
   return (
 
     <View style={{flex: 1}}>
-        <View style={styles.header}>
+       
+      {isLoading? <View ><ActivityIndicator size="large" color="#0000ff"/></View>
+                  : <>
+      <View style={styles.header}>
             <IconButton
                 icon="logout"
                 mode="text"
@@ -101,7 +121,8 @@ const HomePage = ({navigation, route}) => {
                 style={{flex:1,alignItems: 'flex-end'}}
                 onPress={() => FIREBASE_AUTH.signOut()}>
             </IconButton>
-        </View>
+      </View>
+     
         <Tab.Navigator
             initialRouteName='HomePage'
             screenOptions={({ route }) => ({
@@ -122,11 +143,13 @@ const HomePage = ({navigation, route}) => {
             tabBarInactiveTintColor: 'gray',
             })}
         > 
-        <Tab.Screen name="Profile" component={ProfileTabStackScreens} options={{ headerShown: false }}/>
-        <Tab.Screen name="CreateAdd" component={CreateTabStackScreens} options={{ headerShown: false }} />
+        <Tab.Screen name="Profile" component={ProfileTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail}}/>
+        <Tab.Screen name="CreateAdd" component={CreateTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails }}/>
         <Tab.Screen name="Search" component={SearchTabStackScreens} options={{ headerShown: false }}/>
         
       </Tab.Navigator>
+
+                  </>}   
    </View>
   )
 }

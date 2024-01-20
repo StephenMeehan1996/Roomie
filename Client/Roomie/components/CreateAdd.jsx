@@ -12,8 +12,8 @@ import * as Yup from 'yup';
 import { genderOptions, workingHoursOptions, occupationOptions,yearOfStudyOptions,yesNO, rentalPreference, environmentOptions, houseMatExpectations ,irishCounties, number, houseType, priceRange, days, roomType } from '../data/formData';
 import  styles  from '../styles/formStyle.style';
 
-const CreateAdd = ({navigation}) => {
-
+const CreateAdd = ({navigation, route}) => {
+    
       const _renderItem = item => {
         return (
         <View style={styles.item}>
