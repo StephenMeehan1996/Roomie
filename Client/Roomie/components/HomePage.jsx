@@ -96,7 +96,7 @@ const HomePage = ({navigation, route}) => {
             setUserDetails(getUserDetails[0]);
 
             const getUserImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${UUID}`);
-            setUserImages(getUserImages[0]);
+            setUserImages(getUserImages);
 
             const getUserAds = await fetchAds(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUsersAds?uid=${UUID}`);
             setUserAdImages(getUserAds.images);

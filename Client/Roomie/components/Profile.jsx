@@ -69,7 +69,7 @@ const Profile = ({ navigation, route }) => {
         <Avatar.Image
           size={80}
          // source={userImages.imageurl}
-          source={userImages.imageurl ? { uri: userImages.imageurl } : require('../assets/Icons/images/NoProfile.png')}
+          source={userImages[0].imageurl ? { uri: userImages[0].imageurl } : require('../assets/Icons/images/NoProfile.png')}
         />
         {/* <Avatar.Image
         size={80}
