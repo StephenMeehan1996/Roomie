@@ -8,12 +8,13 @@ import Profile from '../components/Profile';
 import Search from '../components/Search';
 import Login from './Login';
 import CreateAdd from './CreateAdd';
-import { Avatar, Card, Title, Paragraph, Button,IconButton } from 'react-native-paper';
+import { Avatar, Card, Title, Paragraph, Button,IconButton,Modal, Portal, Dialog, Menu } from 'react-native-paper';
 import SearchResults from './SearchResults';
 import { createNativeStackNavigator, Header } from '@react-navigation/native-stack';
 import AddDetail from './AddDetail';
 import TestAPI from './Test_API';
 import PostAdd from './PostAdd';
+import ManageProfileImages from './ManageProfileImages';
 import useFetchData from '../functions/GetAPI';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 
@@ -39,6 +40,7 @@ function ProfileTabStackScreens({ route }) {
     <SecondTabStack.Navigator initialRouteName='_Profile' screenOptions={{headerShown: false}} >
       <SecondTabStack.Screen name="_Profile" component={Profile} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages,userAdImages: userAdImages, userAdDetail: userAdDetail }}/>
       <SecondTabStack.Screen name="_AddDetail" component={AddDetail} />
+      <SecondTabStack.Screen name="_manageImages" component={ManageProfileImages} initialParams={{ userImages: userImages }} />
     </SecondTabStack.Navigator>
   );
 }
@@ -67,6 +69,18 @@ const HomePage = ({navigation, route}) => {
   const [userAdDetail, setUserAdDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const fetchAds = useFetchDataBoth();
+
+  const showDialog = () => setVisible(true);
+  const hideDialog = () => setVisible(false);
+  const [visible, setVisible] = useState(false);
+
+  const nextPage = () => {
+    setVisible(false)
+    navigation.navigate('_manageImages', { 
+      
+    });
+  };
+
 
   
   // Gets done here so I can pass the information to required components
@@ -113,16 +127,42 @@ const HomePage = ({navigation, route}) => {
        
       {isLoading? <View ><ActivityIndicator size="large" color="#0000ff"/></View>
                   : <>
-      <View style={styles.header}>
-            <IconButton
-                icon="logout"
-                mode="text"
-                size={30}
-                style={{flex:1,alignItems: 'flex-end'}}
-                onPress={() => FIREBASE_AUTH.signOut()}>
-            </IconButton>
-      </View>
      
+        <View style={styles.header}>
+          <IconButton
+            icon="cog"  // Assuming "cog" is the name of your settings icon
+            size={30}
+            style={{marginHorizontal: 0}}
+            onPress={showDialog} 
+          />
+          <IconButton
+            icon="logout"
+            size={30}
+            style={{marginHorizontal: 0}}
+            onPress={() => FIREBASE_AUTH.signOut()}
+          />
+        </View>
+        
+        <Portal style={{ }}>
+            <Dialog visible={visible} onDismiss={hideDialog} style={styles.popup}>
+              <Dialog.Title>Settings</Dialog.Title>
+              <Dialog.Content>
+                <View>
+                  <TouchableOpacity
+                      style={[styles.button]}
+                      onPress={() => nextPage()}
+                  >
+                    <Text style={[styles.buttonText]}>Manage Images</Text>
+                    
+                  </TouchableOpacity>
+                </View>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={hideDialog}>Close</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+
         <Tab.Navigator
             initialRouteName='HomePage'
             screenOptions={({ route }) => ({
@@ -159,10 +199,40 @@ const styles = StyleSheet.create({
       flex: 1,
       padding: 5
     },
+    button: {
+      backgroundColor: '#6200EE',
+      paddingVertical: 12, 
+      paddingHorizontal: 20, 
+      borderRadius: 10, 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      elevation: 3,
+      shadowColor: '#000', 
+      shadowOffset: { width: 0, height: 2 }, 
+      shadowOpacity: 0.2, 
+      shadowRadius: 2, 
+    },
+    buttonText: {
+      color: '#fff', 
+      fontSize: 16, 
+      fontWeight: 'bold', 
+    },
+
+    popup:{
+      position: 'absolute',
+      right: -25,
+      flex: 1,
+      width: '85%',
+      padding: 5,
+      borderLeftWidth: 1,
+      backgroundColor: '#fff',
+      borderRadius: 0, 
+    },
+
     addContainer: {
         //backgroundColor: '#f5f5f5', // Slightly off-white color
         backgroundColor: '#fff',
-        shadowColor: 'rgba(0, 0, 0, 0.2)', // Cool box shadow color
+        shadowColor: 'rgba(0, 0, 0, 0.2)',
         shadowOffset: {
           width: 0,
           height: 0,
@@ -176,8 +246,7 @@ const styles = StyleSheet.create({
       },
       header: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        justifyContent: 'end', 
         paddingVertical: 0,
         backgroundColor: '#fff'
       },
@@ -190,16 +259,11 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         borderRadius: 15,
       },
-      button: {
-        backgroundColor: '#FF5733', // Background color
-        width: 50,
-        height: 50
-      },
+  
       buttonText: {
-        color: 'white', // Text color
+        color: '#fff',// Text color
+        fontSize: 16, // Font size
         fontWeight: 'bold', // Bold text
-        fontSize: 16, // Text size
-        textAlign: 'center', // Centered text
       },
   });
 

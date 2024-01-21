@@ -205,12 +205,13 @@ const styles = StyleSheet.create({
   popup:{
     position: 'absolute',
     right: -25,
-    flex: 1,
+    
     width: '85%',
     padding: 5,
     borderLeftWidth: 1,
     backgroundColor: '#fff',
     borderRadius: 0, 
+    marginTop: -30
   },
     container: {
       flex: 1,
