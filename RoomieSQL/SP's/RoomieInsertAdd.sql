@@ -1,10 +1,11 @@
--- FUNCTION: public.roomieinsertad(integer, integer, date, numeric, text, text, text, text, text, text, text, numeric, text, numeric, numeric, text, numeric, numeric, numeric, text, text, text, text, text, numeric, text, text)
+-- FUNCTION: public.roomieinsertad(integer, integer, uuid, date, numeric, text, text, text, text, text, text, text, numeric, text, numeric, numeric, text, numeric, numeric, numeric, text, text, text, text, text, numeric, text, text)
 
--- DROP FUNCTION IF EXISTS public.roomieinsertad(integer, integer, date, numeric, text, text, text, text, text, text, text, numeric, text, numeric, numeric, text, numeric, numeric, numeric, text, text, text, text, text, numeric, text, text);
+-- DROP FUNCTION IF EXISTS public.roomieinsertad(integer, integer, uuid, date, numeric, text, text, text, text, text, text, text, numeric, text, numeric, numeric, text, numeric, numeric, numeric, text, text, text, text, text, numeric, text, text);
 
 CREATE OR REPLACE FUNCTION public.roomieinsertad(
 	in_type integer,
 	in_poster_id integer,
+	in_posteruid uuid,
 	in_post_date date,
 	in_price numeric,
 	in_address_line1 text,
@@ -39,9 +40,9 @@ DECLARE
     v_add_id integer;
 BEGIN
     INSERT INTO 
-		public."AddTBL" ("AddType", "PosterID", "PostDate", "Price")
+		public."AddTBL" ("AddType", "PosterID", "PostDate", "Price", "PosterUID")
     VALUES 
-		(in_type, in_poster_id, in_post_date, in_price)
+		(in_type, in_poster_id, in_post_date, in_price, in_posterUID)
     RETURNING 
 		"AddID" INTO v_add_id;
 
@@ -95,8 +96,7 @@ BEGIN
 	
 	RETURN v_add_id;
 END;
-
 $BODY$;
 
-ALTER FUNCTION public.roomieinsertad(integer, integer, date, numeric, text, text, text, text, text, text, text, numeric, text, numeric, numeric, text, numeric, numeric, numeric, text, text, text, text, text, numeric, text, text)
+ALTER FUNCTION public.roomieinsertad(integer, integer, uuid, date, numeric, text, text, text, text, text, text, text, numeric, text, numeric, numeric, text, numeric, numeric, numeric, text, text, text, text, text, numeric, text, text)
     OWNER TO postgres;

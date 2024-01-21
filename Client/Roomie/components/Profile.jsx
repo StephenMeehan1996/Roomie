@@ -68,7 +68,8 @@ const Profile = ({ navigation, route }) => {
       <Card.Content>
         <Avatar.Image
           size={80}
-          source={userImages.imageurl}
+         // source={userImages.imageurl}
+          source={userImages.imageurl ? { uri: userImages.imageurl } : require('../assets/Icons/images/NoProfile.png')}
         />
         {/* <Avatar.Image
         size={80}

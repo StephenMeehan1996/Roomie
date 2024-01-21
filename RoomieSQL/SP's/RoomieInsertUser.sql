@@ -1,7 +1,10 @@
-CREATE OR REPLACE FUNCTION RoomieInsertUser(
-    --UserTBL
-	in_email text, 
-    in_firstname text,
+-- FUNCTION: public.roomieinsertuser(text, text, text, date, text, text, numeric, numeric, numeric, uuid, text, text, text, text, text, text, text, text, text, numeric, numeric, text, text, text, text, numeric, numeric, numeric, text, numeric, numeric, text, text, numeric, text)
+
+-- DROP FUNCTION IF EXISTS public.roomieinsertuser(text, text, text, date, text, text, numeric, numeric, numeric, uuid, text, text, text, text, text, text, text, text, text, numeric, numeric, text, text, text, text, numeric, numeric, numeric, text, numeric, numeric, text, text, numeric, text);
+
+CREATE OR REPLACE FUNCTION public.roomieinsertuser(
+	in_email text,
+	in_firstname text,
 	in_secondname text,
 	in_dob date,
 	in_gender text,
@@ -10,41 +13,36 @@ CREATE OR REPLACE FUNCTION RoomieInsertUser(
 	in_share_name numeric,
 	in_smoke numeric,
 	in_user_identifier uuid,
-	--AddressTBL need UserID
 	in_address_line1 text,
 	in_address_line2 text,
 	in_county text,
 	in_city text,
 	in_eircode text,
-	--ProfileDetailTBL need UserID
 	in_bio text,
 	in_intro_video_url text,
-	--OccupationTBL need userID
 	in_occupation_title text,
 	in_occupation_detail text,
-	--rental preference
-	--house share
 	in_house_share_price_max numeric,
 	in_house_share_price_min numeric,
 	in_house_share_room_type text,
 	in_house_share_house_type text,
 	in_house_share_envoirnment text,
 	in_housemate_expect text,
-	--house rental
 	in_house_rental_price_max numeric,
 	in_house_rental_price_min numeric,
 	in_house_rental_num_rooms numeric,
 	in_house_rental_house_type text,
-	--digs
-    in_digs_price_max numeric,
+	in_digs_price_max numeric,
 	in_digs_price_min numeric,
 	in_digs_room_type text,
 	in_digs_days text,
 	in_digs_meals_included numeric,
-	in_digs_house_type text
-) 
-RETURNS VOID AS
-$$
+	in_digs_house_type text)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
 DECLARE
     v_user_id integer;
 BEGIN
@@ -80,5 +78,7 @@ BEGIN
     VALUES 
 		(v_user_id, 0,0,0);
 END;
-$$
-LANGUAGE 'plpgsql';
+$BODY$;
+
+ALTER FUNCTION public.roomieinsertuser(text, text, text, date, text, text, numeric, numeric, numeric, uuid, text, text, text, text, text, text, text, text, text, numeric, numeric, text, text, text, text, numeric, numeric, numeric, text, numeric, numeric, text, text, numeric, text)
+    OWNER TO postgres;
