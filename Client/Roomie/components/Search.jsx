@@ -10,23 +10,52 @@ import useFetchData from '../functions/GetAPI';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 
 const Search = ({navigation, route}) => {
-        const [searchQuery, setSearchQuery] = useState('Roscommon');
+        const [searchQuery, setSearchQuery] = useState('');
         const [searchResult, setSearchResult] = useState(null);
         const [uploading, setUploading] = useState(false);
-
+        const [locations, setLocations] = useState([]);
+        const [countyLocations, setCountyLocations] = useState([]);
+       // const [county, setCounty] = useState('');
+        const [isLoading, setIsLoading] = useState(true);
+        const [selectedButton, setSelectedButton] = useState(1);
+        const [autocompleteData, setAutocompleteData] = useState([]); // Array to store autocomplete suggestions
+        const sampleData = ['Apple', 'Banana', 'Cherry', 'Date', 'Grape', 'Lemon', 'Orange', 'Pineapple'];
+        const isButtonSelected = (buttonId) => selectedButton === buttonId;
         const fetchData = useFetchDataBoth();
+
+      
+
+        useEffect(() => {
+          setIsLoading(true)
+          const fetchData = async () => {
+           try {
+             const getLocations = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetLocationDetails`);
+             setLocations(getLocations);
+             console.log(getLocations)
+             setIsLoading(false);
+           } catch (error) {
+             console.error('Error fetching data:', error);
+             // Handle error if needed
+             setIsLoading(false);
+           }
+         };
+         // Call the fetchData function
+         fetchData();
+       }, []);
 
         const onChangeSearch = (query) => {
           setSearchQuery(query);
           if(query.length > 2){
-            const location = irishCounties.map(item => item.value);
-            const filteredSuggestions = location.filter((item) =>
-            item.toLowerCase().includes(query.toLowerCase())
-          );
-          setAutocompleteData(filteredSuggestions);
+            const location = locations.map(item => item.locationvalue);
+            
+            const filteredSuggestions = location
+            .filter((item) => item.toLowerCase().includes(query.toLowerCase()))
+            .sort((a, b) => a.length - b.length);
+        
+            setAutocompleteData(filteredSuggestions);
+        
           }
-       
-        };  
+        };
 
         const search = (query) =>{
             setUploading(true);
@@ -62,31 +91,58 @@ const Search = ({navigation, route}) => {
               //console.log(data.images);
               const images = data.images;
               const detail = data.detail;
-              setUploading(false);
-              navigation.navigate('_SearchResults', { searchValue: searchValue, detail: detail, images: images});
+             
+          
+
+              const isSearchValueInLocations = locations.find(
+                location => location.locationvalue.toLowerCase() === searchValue.query.toLowerCase()
+              );
+
+              if (isSearchValueInLocations) {
+                const c = isSearchValueInLocations.county;
+          
+                const countyLoc = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetLocationDetailsByCounty?county=${c}`);
+              
+                setCountyLocations(countyLoc);
+                setUploading(false);
+                navigation.navigate('_SearchResults', {
+                  searchValue: searchValue,
+                  countyLocations: countyLoc,
+                  detail: detail,
+                  images: images
+                });
+              } else {
+                setUploading(false);
+                navigation.navigate('_SearchResults', {
+                  searchValue: searchValue,
+                  countyLocations: countyLocations, // Pass the current state if county is not found
+                  detail: detail,
+                  images: images
+                });
+              }
             } catch (error) {
               console.error(error); // Handle errors appropriately
             }
           };
 
-        const [selectedButton, setSelectedButton] = useState(1);
-        const [autocompleteData, setAutocompleteData] = useState([]); // Array to store autocomplete suggestions
-        const sampleData = ['Apple', 'Banana', 'Cherry', 'Date', 'Grape', 'Lemon', 'Orange', 'Pineapple'];
-        const isButtonSelected = (buttonId) => selectedButton === buttonId;
+    
   
         const handleButtonPress = (buttonId) => {
           setSelectedButton(buttonId);
        
         };
 
-        const handleItemPress = (item) => {
-           // setSelectedItem(item);
+        const handleItemPress = (item) => { // if value is selected from the list // 
+        
             setSearchQuery(item);
-            setAutocompleteData([]); // Hide the suggestions list after selecting an item
+       
+            setAutocompleteData([]); 
           };
       
         return (
           <View >
+            {isLoading? <View ><ActivityIndicator size="large" color="#0000ff"/></View>
+                  : <>
             <Card style={styles.card}>
                 <Card.Content>
                      <View style={styles.header}>
@@ -199,7 +255,7 @@ const Search = ({navigation, route}) => {
                 )}
                 </Card.Content>
             </Card>
-      
+            </>}   
           </View>
         );
       

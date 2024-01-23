@@ -13,7 +13,9 @@ import  formStyles  from '../styles/formStyle.style';
 
 const SearchResults = ({navigation, route}) => {
 
-      const {searchValue, detail, images} = route.params;
+      const {searchValue, detail, images, countyLocations} = route.params;
+      countyLocations.sort((a, b) => a.locationvalue.length - b.locationvalue.length);
+ 
 
 
       const [visible, setVisible] = useState(false);
@@ -73,8 +75,8 @@ const SearchResults = ({navigation, route}) => {
                     selectedValue={location}
                     onValueChange={value =>{setLocation(value)}}   
                   >
-                    {irishCounties.map((option, index) => (
-                      <Picker.Item key={index} label={option.label} value={option.value} />
+                    {countyLocations.map((option, index) => (
+                      <Picker.Item key={index} label={option.locationvalue} value={option.locationvalue} />
                     ))}
                   </Picker>
               </View>
