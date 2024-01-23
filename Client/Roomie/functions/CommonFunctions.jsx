@@ -33,3 +33,33 @@ export const returnAdTypeNum =  (type) => {
     }
 };
 
+export const references =  (type) => {
+    switch (type) {
+        case 1:
+            return 'References Required'
+            break;
+        case 2:
+            return 'References not Required'
+            break;
+       
+        default:
+            return
+            break;
+    }
+};
+
+export const smoking =  (type) => {
+    switch (type) {
+        case 1:
+            return 'Smoking Permitted'
+            break;
+        case 2:
+            return 'No Smoking'
+            break;
+       
+        default:
+            return
+            break;
+    }
+};
+

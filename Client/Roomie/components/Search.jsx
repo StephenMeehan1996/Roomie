@@ -11,6 +11,7 @@ import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import { returnAdTypeText } from '../functions/CommonFunctions';
 
 const Search = ({navigation, route}) => {
+  
         const [searchQuery, setSearchQuery] = useState('');
         const [searchResult, setSearchResult] = useState(null);
         const [uploading, setUploading] = useState(false);

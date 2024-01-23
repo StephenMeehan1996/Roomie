@@ -6,12 +6,15 @@ import { useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
+import { returnAdTypeText, references, smoking } from '../functions/CommonFunctions';
 
 
 
-const AddDetail = ({navigation}) =>{
-  const route = useRoute();
-  const {selectedAdImages} = route?.params || [];
+const AddDetail = ({navigation, route}) =>{
+  //const route = useRoute(); // not sure why I need route here? 
+
+  const {ad, images} = route.params;
+  console.log(ad);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedTab, setSelectedTab] = useState('Tab1');
 
@@ -43,41 +46,63 @@ const AddDetail = ({navigation}) =>{
                <Card.Content>
                 <View>
                   <Card style={styles.card2}>
-                    <Card.Content style={{padding: 6}}>
-                      <Title>Beautiful Property</Title>
+                    <Card.Content style={{padding: 5}}>
+                      <Title style={{textDecorationLine: 'underline',}}>Beautiful Property</Title>
+                      <Paragraph>Ad Type: <Text style = {{fontWeight: 'bold'}}>{returnAdTypeText(ad.addtype)}</Text> </Paragraph>
+                      <Paragraph style={{marginVertical: 8, paddingRight: 10}}>
+                        {ad.description}
+                      </Paragraph>
+                     
                       <Paragraph>Property Details:</Paragraph>
                       <View style={styles.chipContainer}>
-                        <Chip style={styles.chip}>Apartment</Chip>
-                        <Chip style={styles.chip}>Deposit: 1 Month</Chip>
-                        <Chip style={styles.chip}>Smoking Permitted</Chip>
-                        <Chip style={styles.chip}>References Required</Chip>
+                        <Chip style={styles.chip}>{ad.propertytype}</Chip>
+                        <Chip style={styles.chip}>{ad.deposit}</Chip>
+                        <Chip style={styles.chip}>{smoking(ad.smokingpermitted)}</Chip>
+                        <Chip style={styles.chip}>{references(ad.referencerequired)}</Chip>
                       </View>
-                      <Paragraph>Current occupants:</Paragraph>
-                      <View style={styles.chipContainer}>
-                        <Chip style={styles.chip}>3</Chip>
-                        <Chip style={styles.chip}>Students</Chip>
-                        <Chip style={styles.chip}>1st Year</Chip>
-                      </View>
-                      <View style={styles.sameLineContainer}>
-                        <View style={styles.lineInput}>
-                          <Paragraph>Environment:</Paragraph>
-                          <View style={styles.chipContainer}>
-                            <Chip style={styles.chip}>Social</Chip>
+
+                      {ad.addtype === 1 ? (
+                      <>
+                        <Paragraph>Current occupants:</Paragraph>
+                        <View style={styles.chipContainer}>
+                          <Chip style={styles.chip}>3</Chip>
+                        </View>
+                        <Paragraph>Looking For:</Paragraph>
+                        <View style={styles.chipContainer}>
+                          <Chip style={styles.chip}>Students</Chip>
+                          <Chip style={styles.chip}>1st Year</Chip>
+                        </View>
+                        <View style={styles.sameLineContainer}>
+                          <View style={styles.lineInput}>
+                            <Paragraph>Environment:</Paragraph>
+                            <View style={styles.chipContainer}>
+                              <Chip style={styles.chip}>{ad.envoirnment}</Chip>
+                            </View>
                           </View>
-                       </View>
-                        <View style={styles.lineInput}>
-                        <Paragraph>Roomie Expectation:</Paragraph>
-                          <View style={styles.chipContainer}>
-                            <Chip style={styles.chip}>Socialize together</Chip>
+                          <View style={styles.lineInput}>
+                            <Paragraph>Roomie Expectation:</Paragraph>
+                            <View style={styles.chipContainer}>
+                              <Chip style={styles.chip}>{ad.houseexpectation}</Chip>
+                            </View>
                           </View>
                         </View>
+                    </>
+                  ) : ad.addtype === 2 ? (
+                    <>
+                      <View>
+                        
                       </View>
-                    </Card.Content>
-                    <Card.Content>
-                      <Paragraph>
-                        This stunning property offers a perfect blend of comfort and style. It features two spacious bedrooms, two modern bathrooms, and a beautiful living area with ample natural light. Located in a serene neighborhood, this house is an ideal choice for your family.
-                      </Paragraph>
-                    </Card.Content>
+                    </>
+                  ) : ad.addtype === 3 ? (
+                    <>
+                      <View>{/* UI elements for ad type 3 */}</View>
+                    </>
+                  ) : (
+                    <>
+                      <View>{/* Default UI for unknown ad type */}</View>
+                    </>
+                  )}
+                </Card.Content>
                  </Card>
                 </View>
               </Card.Content>
@@ -157,8 +182,8 @@ const AddDetail = ({navigation}) =>{
     
     // Ensure the index stays within bounds
     if (newIndex < 0) {
-      newIndex = selectedAdImages.length - 1;
-    } else if (newIndex >= selectedAdImages.length) {
+      newIndex = images.length - 1;
+    } else if (newIndex >= images.length) {
       newIndex = 0;
     }
     
@@ -184,7 +209,7 @@ const AddDetail = ({navigation}) =>{
     <Card elevation={5} style={styles.card}>
       <Card.Content style={{paddingTop: 0}}>
         <View style={styles.imageViewer}>
-            <Image source={{ uri: selectedAdImages[selectedImageIndex].uri }} style={[styles.fullScreenImage, {  height: 245}]} />
+            <Image source={{ uri: images[selectedImageIndex].ImageURL }} style={[styles.fullScreenImage, {  height: 245}]} />
             <View style={styles.buttonContainer}>
                 <IconButton
                         icon="chevron-left"
@@ -206,15 +231,16 @@ const AddDetail = ({navigation}) =>{
             </View>
         </View>
         <View style={styles.counter}>
-          <Text>{selectedImageIndex + 1}/{selectedAdImages.length}</Text>
+          <Text>{selectedImageIndex + 1}/{images.length}</Text>
         </View>
         <View>
           <Title>Beautiful Property</Title>
           <Paragraph>2 Bedrooms | 2 Bathrooms | 1500 sqft</Paragraph>
-          <Paragraph>£1500</Paragraph>
-          <Paragraph style={styles.addressText}>Church Hill Road</Paragraph>
-          <Paragraph style={styles.addressText}>Sligo Town</Paragraph>
-          <Paragraph style={styles.addressText}>County Sligo</Paragraph>
+          <Paragraph>€{ad.price}</Paragraph>
+          <Paragraph style={styles.addressText}>{ad.addressline1}</Paragraph>
+          <Paragraph style={styles.addressText}>{ad.addressline2}</Paragraph>
+          <Paragraph style={styles.addressText}>{ad.city}</Paragraph>
+          <Paragraph style={styles.addressText}>{ad.county}</Paragraph>
           </View>
       </Card.Content>
       </Card>

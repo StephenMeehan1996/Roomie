@@ -16,8 +16,6 @@ const Ad = ({ad, images, navigation, route}) => {
     return null; // Return null if the ad object or title property is undefined
   }
 
-  console.log(images.length)
-
     const propertyImages = [
         { id: '1', uri: 'https://firebasestorage.googleapis.com/v0/b/roomie-a0158.appspot.com/o/stock_ad_images%2Fprop1.jpg?alt=media&token=2411eebd-9aad-417f-847e-f371237c639c&_gl=1*wiyu6g*_ga*MTgwMTY5Njg1My4xNjc4ODk3MTM5*_ga_CW55HF8NVT*MTY5Nzc5ODg3MS4xOC4xLjE2OTc4MDAyNDAuNjAuMC4w' },
         { id: '2', uri: 'https://firebasestorage.googleapis.com/v0/b/roomie-a0158.appspot.com/o/stock_ad_images%2Fprop2.jpg?alt=media&token=f15ff43e-7e84-4c34-9087-adf63cd33417&_gl=1*1tctnda*_ga*MTgwMTY5Njg1My4xNjc4ODk3MTM5*_ga_CW55HF8NVT*MTY5Nzc5ODg3MS4xOC4xLjE2OTc4MDAyMTkuOS4wLjA.' },
@@ -35,7 +33,8 @@ const Ad = ({ad, images, navigation, route}) => {
 
       const nextPage = () => {
         navigation.navigate('_AddDetail', {  
-            selectedAdImages: propertyImages 
+            ad: ad,
+            images: images 
         });
       };
 
@@ -53,7 +52,7 @@ const Ad = ({ad, images, navigation, route}) => {
           style={item.AddImageID === currentImage.AddImageID ? styles.largeImage : styles.smallImage}
         />
       </TouchableOpacity>
-      
+
       );
     
       return (

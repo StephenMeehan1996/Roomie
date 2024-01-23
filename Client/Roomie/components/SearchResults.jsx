@@ -39,10 +39,6 @@ const SearchResults = ({navigation, route}) => {
       const pickerItemStyle = {
         fontSize: 10, // Adjust the font size as needed
       };
-      const nextPage = () => {
-        	navigation.navigate('_AddDetail')
-      };
-
 
       const handleSearch = async (value) => {
         setLocation(value);
@@ -51,10 +47,8 @@ const SearchResults = ({navigation, route}) => {
       useEffect(() => {
         let search = location.split(',')[0];
         let adType = returnAdTypeNum(rentalType);
-        console.log('here '+adType);
         const filtered = detail.filter((ad) =>  `${ad.addressline1} ${ad.addressline2} ${ad.city} ${ad.county} `.toLowerCase().includes(search.toLowerCase()) 
                                                   && ad.addtype===adType)
-        console.log(filtered)
 
         setFilteredAds(filtered);
        
@@ -65,7 +59,7 @@ const SearchResults = ({navigation, route}) => {
       const adImages = images.filter((image) => image.AddID === ad.addid);
 
         return (
-          <TouchableOpacity key={ad.addid} onPress={() => nextPage(ad)}>
+          <TouchableOpacity key={ad.addid} >
             <Ad ad={ad} images={adImages} navigation={navigation} />
           </TouchableOpacity>
         );
