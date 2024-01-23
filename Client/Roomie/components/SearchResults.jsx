@@ -8,24 +8,30 @@ import Ad from './Ad'
 import { Picker } from '@react-native-picker/picker';
 import { yesNO, priceRange, number, roomType, houseType, houseMatExpectations, environmentOptions, days, irishCounties, rentalPreference, orderBy, radius } from '../data/formData';
 import  formStyles  from '../styles/formStyle.style';
-
+import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 
 
 const SearchResults = ({navigation, route}) => {
 
-      const {searchValue, detail, images, countyLocations} = route.params;
-      countyLocations.sort((a, b) => a.locationvalue.length - b.locationvalue.length);
- 
-
+      const {searchValue, countyLocations} = route.params;
+      let {detail, images } = route.params;
+      countyLocations.sort((a, b) => a.locationvalue.length - b.locationvalue.length); // sort so county appears first
 
       const [visible, setVisible] = useState(false);
-     
+      const [filteredAds, setFilteredAds] = useState([]);
       const [priceRangeMin, setPriceRangeMin] = useState('500');
       const [priceRangeMax, setPriceRangeMax] = useState('700');
       const [distanceRadius, setDistanceRadius] = useState('0');
       const [orderByValue, setOrderByValue] = useState('Match %');
       const [location, setLocation] = useState(searchValue.query);
       const [rentalType, setRentalType] = useState(searchValue.rentalType);
+
+      const fetchData = useFetchDataBoth();
+
+     
+      const [locations, setLocations] = useState([]);
+
+      const [details, setDetails] = useState(detail);
     
       const showDialog = () => setVisible(true);
       const hideDialog = () => setVisible(false);
@@ -36,9 +42,23 @@ const SearchResults = ({navigation, route}) => {
         	navigation.navigate('_AddDetail')
       };
 
+
+      const handleSearch = async (value) => {
+        setLocation(value);
+      };
+    
+      useEffect(() => {
+        let search = location.split(',')[0];
+        const filtered = detail.filter((ad) =>  `${ad.addressline1} ${ad.addressline2} ${ad.city} ${ad.county} `.toLowerCase().includes(search.toLowerCase()));
+        console.log(filtered)
+
+        setFilteredAds(filtered);
+       
+      }, [location, detail]);
+
       const renderAds = ({ item: ad }) => {
        
-        const adImages = images.filter((image) => image.AddID === ad.addid);
+      const adImages = images.filter((image) => image.AddID === ad.addid);
 
         return (
           <TouchableOpacity key={ad.addid} onPress={() => nextPage(ad)}>
@@ -70,15 +90,26 @@ const SearchResults = ({navigation, route}) => {
             <View style={styles.pickerContainer}>
               <View style={{flexDirection: 'column',alignItems: 'flex-start'}}>
               <Paragraph>Location:</Paragraph>
-                  <Picker
-                    style={[styles.input,{marginTop: 0}]}
-                    selectedValue={location}
-                    onValueChange={value =>{setLocation(value)}}   
-                  >
-                    {countyLocations.map((option, index) => (
-                      <Picker.Item key={index} label={option.locationvalue} value={option.locationvalue} />
-                    ))}
-                  </Picker>
+              {countyLocations.length > 0 ? (
+                        <Picker
+                          style={[styles.input, { marginTop: 0 }]}
+                          selectedValue={location} 
+                          //onValueChange={value => { setLocation(value) }}
+                          onValueChange={(value) => handleSearch(value)}
+                        >
+                          {countyLocations.map((option, index) => (
+                            <Picker.Item key={index} label={option.locationvalue} value={option.locationvalue} />
+                          ))}
+                        </Picker>
+                      ) : (
+                        <Picker
+                          style={[styles.input, { marginTop: 0 }]}
+                          selectedValue={location}
+                          onValueChange={value => { setLocation(value) }}
+                        >
+                          <Picker.Item label={searchValue.query} value={searchValue.query} />
+                        </Picker>
+                      )}
               </View>
             </View>
                   
@@ -171,7 +202,7 @@ const SearchResults = ({navigation, route}) => {
           </Card>
           ) : (
         <FlatList
-          data={detail}
+          data={filteredAds.length > 0 ? filteredAds : detail}
           renderItem={renderAds}
           keyExtractor={(detail) => detail.addid.toString()}
         />
