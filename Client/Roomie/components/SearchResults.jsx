@@ -9,6 +9,7 @@ import { Picker } from '@react-native-picker/picker';
 import { yesNO, priceRange, number, roomType, houseType, houseMatExpectations, environmentOptions, days, irishCounties, rentalPreference, orderBy, radius } from '../data/formData';
 import  formStyles  from '../styles/formStyle.style';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
+import { returnAdTypeNum } from '../functions/CommonFunctions';
 
 
 const SearchResults = ({navigation, route}) => {
@@ -49,12 +50,15 @@ const SearchResults = ({navigation, route}) => {
     
       useEffect(() => {
         let search = location.split(',')[0];
-        const filtered = detail.filter((ad) =>  `${ad.addressline1} ${ad.addressline2} ${ad.city} ${ad.county} `.toLowerCase().includes(search.toLowerCase()));
+        let adType = returnAdTypeNum(rentalType);
+        console.log('here '+adType);
+        const filtered = detail.filter((ad) =>  `${ad.addressline1} ${ad.addressline2} ${ad.city} ${ad.county} `.toLowerCase().includes(search.toLowerCase()) 
+                                                  && ad.addtype===adType)
         console.log(filtered)
 
         setFilteredAds(filtered);
        
-      }, [location, detail]);
+      }, [location, detail, rentalType]);
 
       const renderAds = ({ item: ad }) => {
        
@@ -192,7 +196,7 @@ const SearchResults = ({navigation, route}) => {
        
       </View>
         <ScrollView>
-          {detail.length === 0 ? (
+          {filteredAds.length === 0 ? (
           <Card elevation={5} style={[formStyles.card, {marginTop: 30, paddingVertical: 40}]}>
             <Card.Content>
               <View style={styles.noResultsContainer}>
@@ -202,9 +206,9 @@ const SearchResults = ({navigation, route}) => {
           </Card>
           ) : (
         <FlatList
-          data={filteredAds.length > 0 ? filteredAds : detail}
+          data={filteredAds.length > 0 ? filteredAds : null}
           renderItem={renderAds}
-          keyExtractor={(detail) => detail.addid.toString()}
+          keyExtractor={(ad) => ad.addid.toString()}
         />
         )} 
       </ScrollView>

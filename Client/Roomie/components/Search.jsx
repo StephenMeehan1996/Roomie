@@ -8,6 +8,7 @@ import fetchData from '../functions/GetAPI';
 import axios from 'axios'
 import useFetchData from '../functions/GetAPI';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
+import { returnAdTypeText } from '../functions/CommonFunctions';
 
 const Search = ({navigation, route}) => {
         const [searchQuery, setSearchQuery] = useState('');
@@ -60,20 +61,7 @@ const Search = ({navigation, route}) => {
         const search = (query) =>{
             setUploading(true);
             setSearchQuery(query);
-            let type ='';
-            switch (selectedButton) {
-                case 1:
-                    type = 'House Share'
-                    break;
-                case 2:
-                    type = 'House Rental'
-                    break;
-                case 3:
-                    type = 'Digs'
-                    break;
-                default:
-                    break;
-            }
+            let type = returnAdTypeText(selectedButton);
             const searchValue ={
                 "rentalType": type,
                 "query": searchQuery

@@ -34,9 +34,8 @@ const genderOptions = [
   ];
 
   const rentalPreference = [
-    
-    { label: 'House Rental', value: 'House Rental'},
     { label: 'House Share', value: 'House Share' },
+    { label: 'House Rental', value: 'House Rental'},
     { label: 'Digs', value: 'Digs',enabled : true }
   ];
   const orderBy = [
