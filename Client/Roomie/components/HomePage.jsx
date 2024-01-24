@@ -62,6 +62,7 @@ function CreateTabStackScreens({ route }) {
 const HomePage = ({navigation, route}) => {
 
   const { email } = route.params;
+
   const [uID, setUID] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
   const [userImages, setUserImages] = useState(null);
@@ -86,10 +87,15 @@ const HomePage = ({navigation, route}) => {
   // Gets done here so I can pass the information to required components
         useEffect(() => {
          setIsLoading(true)
+ 
          const fetchData = async () => {
           try {
+            console.log('Email here' + email);
+            console.log(email);
+            //const getUUID = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUID?email=${email}`);
             const getUUID = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUID?email=${email}`);
             const UUID = getUUID[0].useridentifier;
+            console.log(UUID)
             setUID(getUUID[0].useridentifier);
       
             const getUserDetails = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUser?uid=${UUID}`);
@@ -112,7 +118,7 @@ const HomePage = ({navigation, route}) => {
     
         // Call the fetchData function
         fetchData();
-      }, []);
+      }, [email]);
 
       // useEffect(() => {
       //   // This useEffect will run when uID changes

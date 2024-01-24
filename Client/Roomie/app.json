@@ -10,6 +10,7 @@
       [
         "expo-router"    
       ],
+     
       [
         "expo-image-picker",
         {
