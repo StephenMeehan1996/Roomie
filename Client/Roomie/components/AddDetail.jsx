@@ -8,7 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { returnAdTypeText, references, smoking } from '../functions/CommonFunctions';
 import useFetchData from '../functions/GetAPI';
-import { calculateReviewStats } from '../functions/CommonFunctions';
+import { calculateReviewStats, digsMeals } from '../functions/CommonFunctions';
 
 
 
@@ -130,7 +130,7 @@ const AddDetail = ({navigation, route}) =>{
                   ) : ad.addtype === 2 ? (
                     <>
                       <View>
-                      <Paragraph>Number of Bedrooms:</Paragraph>
+                            <Paragraph>Number of Bedrooms:</Paragraph>
                             <View style={styles.chipContainer}>
                               <Chip style={styles.chip}>{ad.houserentalnumbedrooms}</Chip>
                             </View>
@@ -151,7 +151,28 @@ const AddDetail = ({navigation, route}) =>{
                     </>
                   ) : ad.addtype === 3 ? (
                     <>
-                      <View>{/* UI elements for ad type 3 */}</View>
+                      <View>
+                    
+                      <Paragraph>Digs Details:</Paragraph>
+                                  <View style={styles.chipContainer}>
+                                    <Chip style={styles.chip}>{ad.digscurrentoccupants} occupants</Chip>
+                                    <Chip style={styles.chip}>{digsMeals(ad.digsmealsprovided)}</Chip>
+                                    <Chip style={styles.chip}>{ad.digsdaysavailable}</Chip>
+                                  </View>
+
+                                  {ad.preferenceset === 1 ? (
+                              <>
+                                  <Paragraph>Looking For:</Paragraph>
+                                  <View style={styles.chipContainer}>
+                                    <Chip style={styles.chip}>{ad.gender}</Chip>
+                                    <Chip style={styles.chip}>Age: {ad.agebracket}</Chip>
+                                    <Chip style={styles.chip}>{ad.occupation}</Chip>
+                                  </View>
+                              </>
+                            ) : (
+                              <View></View>
+                            )}
+                      </View>
                     </>
                   ) : (
                     <>

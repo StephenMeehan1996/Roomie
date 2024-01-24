@@ -49,6 +49,21 @@ export const references =  (type) => {
     }
 };
 
+export const digsMeals =  (type) => {
+    switch (type) {
+        case 1:
+            return 'Meals provided'
+            break;
+        case 2:
+            return 'Self Catering'
+            break;
+       
+        default:
+            return
+            break;
+    }
+};
+
 export const smoking =  (type) => {
     switch (type) {
         case 1:

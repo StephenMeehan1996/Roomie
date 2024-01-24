@@ -1,6 +1,10 @@
+-- FUNCTION: public.roomiegetusersadds(uuid)
+
+-- DROP FUNCTION IF EXISTS public.roomiegetusersadds(uuid);
+
 CREATE OR REPLACE FUNCTION public.roomiegetusersadds(
 	id uuid)
-    RETURNS TABLE(addid integer, addtype integer, posterid integer, postdate date, price numeric, addaddressid integer, addressline1 character varying, addressline2 character varying, county character varying, city character varying, eircode character varying, commonadddetailsid integer, propertytype character varying, description character varying, referencerequired integer, deposit character varying, preferenceset integer, agebracket character varying, gender character varying, occupation character varying, occupationdetail character varying, smokingpermitted integer, houseexpectation character varying, envoirnment character varying, houseshareroomtype character varying, houseshareensuite integer, housesharecurrentoccupants integer, houserentalnumbedrooms integer, digscurrentoccupants integer, digsmealsprovided integer, digsdaysavailable character varying) 
+    RETURNS TABLE(addid integer, addtype integer, posterid integer, postdate date, price numeric, addaddressid integer, addressline1 character varying, addressline2 character varying, county character varying, city character varying, eircode character varying, commonadddetailsid integer, propertytype character varying, description character varying, referencerequired integer, deposit character varying, preferenceset integer, agebracket character varying, gender character varying, occupation character varying, occupationdetail character varying, smokingpermitted integer, houseexpectation character varying, envoirnment character varying, houseshareroomtype character varying, houseshareensuite integer, housesharecurrentoccupants integer, houserentalnumbedrooms integer, digscurrentoccupants integer, digsmealsprovided integer, digsdaysavailable character varying, useridentifier uuid) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -40,7 +44,8 @@ AS $BODY$
 			HR."NumBedrooms",
 			D."CurrentOccupants",
 			D."MealsProvided",
-			D."DaysAvailable"
+			D."DaysAvailable",
+			A."PosterUID"
 		FROM
 			public."AddTBL" A
 		INNER JOIN
