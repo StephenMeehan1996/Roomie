@@ -1,4 +1,4 @@
-import React, {useState } from 'react';
+import React, {useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image,TouchableOpacity,ScrollView,FlatList  } from 'react-native';
 import { Avatar, Card, Title, Paragraph, Button } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,18 +7,37 @@ import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
 import Ad from './Ad';
 import  formStyles  from '../styles/formStyle.style';
-import { calculateReviewStats } from '../functions/CommonFunctions';
+import { calculateReviewStats, returnSelectedProfileImage } from '../functions/CommonFunctions';
 
 
 const Profile = ({ navigation, route }) => {
 
   const { uID, userDetails, userImages, userAdImages, userAdDetail } = route.params;
   const [isBioExpanded, setIsBioExpanded] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+  const [coverImage, setCoverImage] = useState(null);
 
    
 
- console.log(userAdImages);
- console.log(userAdDetail);
+   console.log('Images' + JSON.stringify(userImages));
+
+   useEffect(() => {
+ 
+
+    const setSelectedImages = async () => {
+     try {
+      setProfileImage(returnSelectedProfileImage(userImages));
+      setCoverImage(returnSelectedCoverImage(userImages));
+      console.log(returnSelectedCoverImage(userImages))
+     } catch (error) {
+       console.log(error);
+     }
+   };
+
+   // Call the fetchData function
+   setSelectedImages();
+ }, [profileImage, coverImage]);
+
 
     const toggleBio = () => {
         setIsBioExpanded(!isBioExpanded);
@@ -35,19 +54,21 @@ const Profile = ({ navigation, route }) => {
         );
       };
       
-   
+     
   return (
     
     <ScrollView>
-    <View style={styles.container}>
+    <View style={styles.container}> 
        
     <Card elevation={5} style={styles.card}>
-      <Card.Cover  source={require('../assets/Icons/images/cover.jpg')} style={{borderRadius:0, marginBottom: 5}}/>
+      <Card.Cover  
+          source={coverImage !== null ? { uri: coverImage.imageurl } : require('../assets/Icons/images/noCover.png')} style={{borderRadius:0, marginBottom: 5}}
+        />
       <Card.Content>
         <Avatar.Image
           size={80}
          // source={userImages.imageurl}
-          source={userImages[0].imageurl ? { uri: userImages[0].imageurl } : require('../assets/Icons/images/NoProfile.png')}
+          source={profileImage != null ? { uri: profileImage.imageurl } : require('../assets/Icons/images/NoProfile.png')}
         />
         {/* <Avatar.Image
         size={80}
@@ -61,9 +82,11 @@ const Profile = ({ navigation, route }) => {
             <Text style={styles.infoText}>Active Adds: {userAdDetail.length}</Text>
             <Text style={styles.infoText}>Rating: {calculateReviewStats(userDetails.numreviews,userDetails.positivereview )}</Text>
         </View>
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 10}}>
         <Button
           icon="email"
           mode="outlined"
+          style={{width: 150}}
           onPress={() => console.log('Message button pressed')}>
           Message
         </Button>
@@ -71,9 +94,10 @@ const Profile = ({ navigation, route }) => {
             icon="text-box"
             mode="outlined"
             onPress={toggleBio}
-            style={styles.bioButton}>
+            style={[styles.bioButton, {width: 150}]}>
             Bio
           </Button>
+          </View>
         <Collapsible collapsed={!isBioExpanded}>
             <Paragraph style={styles.bio}>{userDetails.bio}</Paragraph>
           </Collapsible>

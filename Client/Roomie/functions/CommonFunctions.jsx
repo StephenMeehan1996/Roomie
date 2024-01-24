@@ -105,6 +105,26 @@ export const calculateReviewStats = (numReviews, positiveReviews) => {
 
    }
 
+   export const returnSelectedProfileImage =  (images) => {
+  
+    const selectedImage = images.find(image => image.imagetype === 1 && image.currentselected === 1);
+
+    if(selectedImage)
+    return selectedImage
+  return null;
+
+};
+
+export const returnSelectedCoverImage =  (images) => {
+ 
+  const selectedImage = images.find(image => image.imagetype === 2 && image.currentselected === 1);
+  if(selectedImage)
+    return selectedImage
+  return null;
+
+};
+
+
 
    const styles = StyleSheet.create({
     container: {
