@@ -1,23 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image,StyleSheet,FlatList,ScrollView,Alert} from 'react-native';
+import { View, Text, TouchableOpacity, Image,StyleSheet,FlatList,ScrollView,Alert, Menu, ActivityIndicator} from 'react-native';
 import {Modal, Portal, Provider } from 'react-native-paper';
-import { Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButton  } from 'react-native-paper';
+import { Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButton,MD3Colors  } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import  styles  from '../styles/formStyle.style';
+import postDataToDatabase from '../functions/postDataToDatabase';
+import { launchCameraAsync } from 'expo-image-picker';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import useFetchData from '../functions/GetAPI';
+
 
 const ManageProfileImages = ({navigation, route}) => {
-    let {userImages} = route.params
+    let imageSel = route.params.userImages
+    const [userImages, setUserImages] = useState(route.params.userImages);
     const [profileImage, setProfileImage] = useState(null);
     const [coverImage, setCoverImage] = useState(null);
     const [isModalVisible, setModalVisible] = useState(false);
 
     const toggleModal = () => setModalVisible(!isModalVisible);
     const [currentImage, setCurrentImage] = useState(userImages[0]);
-    
+    const [menuVisible, setMenuVisible] = useState(false);
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [uploading, setUploading] = useState(false);
+
   
     
-    console.log(userImages);
+    
+
+    const openMenu = () => setMenuVisible(true);
+    const closeMenu = () => setMenuVisible(false);
 
     const handleImageUpload = (type) => {
         const options = {
@@ -64,38 +76,140 @@ const ManageProfileImages = ({navigation, route}) => {
         setCurrentImage(image);
       };
 
-      const removeImage = (imageurl) => {
-        console.log('test');
- // web
-        const userConfirmation = window.confirm('Are you sure you want to delete this item?');
-            if (userConfirmation) {
-            // Call your delete function or perform delete action here
-            console.log('Item deleted!');
-            } else {
-            // User canceled the deletion
-            console.log('Deletion canceled.');
-            }
-//not working on
-            Alert.alert(
-                'Delete Confirmation',
-                'Are you sure you want to delete this item?',
-                [
-                {
-                    text: 'Cancel',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Delete',
-                    onPress: () => {
-                        const updatedFiles = userImages.filter((image) => image.imageurl !== imageurl);
-                        userImages = updatedFiles;
-                    console.log('Item deleted!');
-                    },
-                },
-                ],
-                { cancelable: false }
-            );
+      const UploadImages = () =>{
+
+      }
+
+
+      useEffect(() => {
+        // This effect will be triggered when userImages changes
+        console.log('userImages updated:', userImages);
+      }, [userImages]);
+
+      const updateProfileImages = async () => {
+        try {
+          const userIdentifier = userImages[0]._useridentifier;
+          const updatedImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${userIdentifier}`);
+          setUserImages(updatedImages);
+        } catch (error) {
+          console.error('Error fetching updated profile images:', error);
+        }
       };
+
+      const pickImage = async () =>{
+    
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4,3],
+            quality: 1,
+            base64: false,
+        })
+        if (!result.canceled) {
+          let uri = result.assets[0].uri;
+          let filename = generateFilename();
+          const newImage = {uri: uri, filename: filename };
+          setSelectedFiles([...selectedFiles, newImage]);
+        }
+      }
+
+      function generateFilename() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0;
+          const v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      }
+    
+      const removeImage = (uri) => {
+        const updatedFiles = selectedFiles.filter((image) => image.uri !== uri);
+        setSelectedFiles(updatedFiles);
+      };
+
+      const uploadFile = async () => {
+        if (selectedFiles) {
+          const storage = getStorage();
+          setUploading(true);
+          const uploadPromises = [];
+          const imageArray = [];
+    
+          for (const file of selectedFiles) {
+            try {
+              const response = await fetch(file.uri);
+              const blob = await response.blob();
+              const storageRef = ref(storage, 'images/' + file.filename);
+      
+              const uploadPromise = new Promise((resolve, reject) => {
+                uploadBytes(storageRef, blob)
+                  .then(async (snapshot) => {
+                    console.log('Uploaded a blob or file!');
+                    const url = await getDownloadURL(snapshot.ref);
+      
+                    let imageObj = [userImages[0].userid, 0, 0, url, file.filename];
+                    imageArray.push(imageObj);
+                    resolve(); 
+                  })
+                  .catch((error) => {
+                    console.error('Error uploading image:', error);
+                    reject(error); 
+                  });
+              });
+
+              uploadPromises.push(uploadPromise);
+             
+            } catch (error) {
+              console.error('Error uploading image:', error);
+            }
+          }
+      
+          try {
+            await Promise.all(uploadPromises);
+            let postImages = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/profileImage'; // end point for form post
+
+            await postDataToDatabase(imageArray, postImages); // working 
+            await updateProfileImages();
+            setUploading(false);
+            setSelectedFiles([]); 
+          } catch (error) {
+            console.error('Error occurred during file uploads:', error);
+          }
+        } else {
+          console.log('No image selected for upload.');
+        }
+      };
+
+//       const removeImage = (imageurl) => {
+//         console.log('test');
+//  // web
+//         const userConfirmation = window.confirm('Are you sure you want to delete this item?');
+//             if (userConfirmation) {
+//             // Call your delete function or perform delete action here
+//             console.log('Item deleted!');
+//             } else {
+//             // User canceled the deletion
+//             console.log('Deletion canceled.');
+//             }
+// //not working on
+//             Alert.alert(
+//                 'Delete Confirmation',
+//                 'Are you sure you want to delete this item?',
+//                 [
+//                 {
+//                     text: 'Cancel',
+//                     style: 'cancel',
+//                 },
+//                 {
+//                     text: 'Delete',
+//                     onPress: () => {
+//                         const updatedFiles = userImages.filter((image) => image.imageurl !== imageurl);
+//                         userImages = updatedFiles;
+//                     console.log('Item deleted!');
+//                     },
+//                 },
+//                 ],
+//                 { cancelable: false }
+//             );
+//       };
 
       const renderImageItem = ({ item }) => (
         <TouchableOpacity onPress={() => handleImageSelect(item)}>
@@ -103,13 +217,7 @@ const ManageProfileImages = ({navigation, route}) => {
                 source={{ uri: item.imageurl }}
                 style={item.profileimageid === currentImage.profileimageid ? styles2.largeImage : styles2.smallImage}
             />
-               <IconButton
-                    icon="trash-can-outline"
-                    size={30}
-                    iconColor="red"
-                    style={{position: 'absolute', top: -5, right: -5}}
-                    onPress={() => removeImage(item.imageurl)}>
-                </IconButton>  
+             
       </TouchableOpacity>
       );
     
@@ -141,9 +249,9 @@ const ManageProfileImages = ({navigation, route}) => {
                             <View>
                                 <Image source={{ uri: currentImage.imageurl }} style={styles2.largeImage} />
                                 <IconButton
-                                    icon="trash-can-outline"
-                                    size={30}
-                                    iconColor="red"
+                                   icon="dots-vertical"
+                                   size={30}
+                                   iconColor={MD3Colors.error50}
                                     style={{position: 'absolute', top: -5, right: -5}}
                                     onPress={() => removeImage(item.uri)}>
                                 </IconButton>  
@@ -155,13 +263,14 @@ const ManageProfileImages = ({navigation, route}) => {
                             <>
                             <View>
                                 <Image source={{ uri: currentImage.imageurl }} style={styles2.largeImage} />
+                                <View style={{position: 'absolute', top: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: 5 }}>
                                 <IconButton
-                                    icon="trash-can-outline"
+                                    icon="dots-vertical"
                                     size={30}
-                                    iconColor="red"
-                                    style={{position: 'absolute', top: -5, right: -5}}
-                                    onPress={() => removeImage(currentImage.imageurl)}>
-                                </IconButton>  
+                                    iconColor={MD3Colors.neutralVariant90}
+                                    onPress={() => removeImage(item.uri)}>
+                                </IconButton> 
+                                </View>
                             </View>
                           
                              <FlatList
@@ -177,7 +286,65 @@ const ManageProfileImages = ({navigation, route}) => {
                             <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
                           )}
                      
-                    
+                     <View style={{marginTop: 20}}>
+                  <FlatList
+                      data={selectedFiles}
+                      keyExtractor={(item, index) => index.toString()}
+                      horizontal={false}
+                      numColumns={3} // Set the number of columns
+                       contentContainerStyle={styles.listContainer}
+                      renderItem={({ item}) => (
+                        <View key={item.id}>
+                          <Image source={item} style={{ width: 100, height: 100, margin: 5 }} />
+                          <IconButton
+                            icon="trash-can-outline"
+                            size={30}
+                            iconColor="red"
+                            style={{position: 'absolute', top: -5, right: -5}}
+                            onPress={() => removeImage(item.uri)}>
+                        </IconButton>
+                       </View>
+                  )}
+                  />
+                </View>
+                {uploading? <View style={{marginVertical: 10}}><ActivityIndicator size="large" color="#6200EE" /></View>
+                  : <>
+                  </>}
+                     <View style ={{marginVertical: 15}}>
+
+                            {selectedFiles.length === 0 ? (
+                           <>
+                           <TouchableOpacity
+                                style={[styles2.button]}
+                                onPress={() => pickImage()}
+                            >
+                              <Text style={[styles2.buttonText]}>Upload Images</Text>
+                          </TouchableOpacity>
+                                </>
+                            ) :selectedFiles.length > 0  ? (
+                        
+                            <>
+                             <View style={{ flexDirection: 'row', alignSelf: 'center'}}>
+                             <TouchableOpacity
+                                  style={[styles2.button, {marginRight: 5}]}
+                                  onPress={() => pickImage()}
+                              >
+                                <Text style={[styles2.buttonText]}>Select Image </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[styles2.button, {marginLeft: 5}]}
+                                onPress={() => uploadFile()}
+                            >
+                              <Text style={[styles2.buttonText]}>Upload ({selectedFiles.length})</Text>
+                          </TouchableOpacity>
+                          </View>
+                            </>
+                            ):(
+                              <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
+                        )}
+
+                      
+                  </View>
                 </Card.Content>
              </Card>
 
@@ -217,8 +384,8 @@ const styles2 = StyleSheet.create({
       height: 200
     },
     smallImage: {
-        width: 100,
-        height: 100,
+        width: 102.5,
+        height: 102.5,
         marginRight: 10,
         borderRadius: 0,
       },
@@ -250,6 +417,24 @@ const styles2 = StyleSheet.create({
         alignSelf: 'flex-start',
         justifyContent: 'space-between',
         height: 120
+      },
+      button: {
+        backgroundColor: '#6200EE',
+        paddingVertical: 12, 
+        paddingHorizontal: 20, 
+        borderRadius: 10, 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        elevation: 3,
+        shadowColor: '#000', 
+        shadowOffset: { width: 0, height: 2 }, 
+        shadowOpacity: 0.2, 
+        shadowRadius: 2, 
+      },
+      buttonText: {
+        color: '#fff', 
+        fontSize: 16, 
+        fontWeight: 'bold', 
       },
   });
 

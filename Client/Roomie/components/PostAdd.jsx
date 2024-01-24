@@ -7,6 +7,7 @@ import { launchCameraAsync } from 'expo-image-picker';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import  styles  from '../styles/formStyle.style';
 import callLambdaFunction from '../functions/PostAPI';
+import { returnAdTypeText } from '../functions/CommonFunctions';
 
 const PostAdd = ({navigation, route}) => {
 
@@ -20,7 +21,7 @@ const PostAdd = ({navigation, route}) => {
   formData.posterUID = uID; // ID's from user signed in
   formData.posterID = userID;
 
-  const addTypeString = getAddTypeString(formData.addType);
+  const addTypeString = returnAdTypeText(formData.addType);
   const pickImage = async () =>{
     
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -71,6 +72,7 @@ const PostAdd = ({navigation, route}) => {
     //}
   }
 //{"v_add_id":78}
+
   const postAdd = async () => {
     let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add';
     setUploading(true);
@@ -106,19 +108,7 @@ const PostAdd = ({navigation, route}) => {
     });
   }
 
-  function getAddTypeString(addType){
-    switch (addType) {
-      case 1:
-        return "House Share";
-      case 2:
-        return "House Rental";
-      case 3:
-        return "Digs";
-      default:
-        return "Unknown";
-    }
-  };
-
+ 
   function imagePosition(file){
    if(file == selectedFiles[0]){
     return 1;

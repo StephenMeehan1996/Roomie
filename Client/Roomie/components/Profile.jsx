@@ -7,7 +7,7 @@ import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
 import Ad from './Ad';
 import  formStyles  from '../styles/formStyle.style';
-import { calculateReviewStats, returnSelectedProfileImage } from '../functions/CommonFunctions';
+import { calculateReviewStats, returnSelectedProfileImage,returnSelectedCoverImage } from '../functions/CommonFunctions';
 
 
 const Profile = ({ navigation, route }) => {
