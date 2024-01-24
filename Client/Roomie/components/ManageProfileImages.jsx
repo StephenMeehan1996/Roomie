@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image,StyleSheet,FlatList,ScrollView,Alert, Menu, ActivityIndicator} from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, Image,StyleSheet,FlatList,ScrollView,Alert, ActivityIndicator,Dimensions} from 'react-native';
 import {Modal, Portal, Provider } from 'react-native-paper';
-import { Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButton,MD3Colors  } from 'react-native-paper';
+import { Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButton,MD3Colors, Menu,  } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import  styles  from '../styles/formStyle.style';
@@ -24,9 +24,10 @@ const ManageProfileImages = ({navigation, route}) => {
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [uploading, setUploading] = useState(false);
 
-  
-    
-    
+    //used to get top of the image for dropdown menu
+    const windowWidth = Dimensions.get('window').width;
+    const [anchorY, setAnchorY] = useState(0);
+    const targetViewRef = useRef(null);
 
     const openMenu = () => setMenuVisible(true);
     const closeMenu = () => setMenuVisible(false);
@@ -73,6 +74,17 @@ const ManageProfileImages = ({navigation, route}) => {
       };
 
       const handleImageSelect = (image) => {
+// have to remove
+        let newArray = userImages;
+        let oldCurrent = currentImage;
+
+        newArray.push(oldCurrent);
+
+        const index = userImages.findIndex((item) => item.profileimageid === currentImage.profileimageid);
+
+        newArray = userImages.filter((item) => item !== index);
+        setUserImages(newArray)
+        //alert(index);
         setCurrentImage(image);
       };
 
@@ -85,6 +97,14 @@ const ManageProfileImages = ({navigation, route}) => {
         // This effect will be triggered when userImages changes
         console.log('userImages updated:', userImages);
       }, [userImages]);
+
+      useEffect(() => {
+        if (targetViewRef.current) {
+          targetViewRef.current.measure((x, y, width, height, pageX, pageY) => {
+            setAnchorY(pageY);
+          });
+        }
+      }, [targetViewRef]);
 
       const updateProfileImages = async () => {
         try {
@@ -212,12 +232,11 @@ const ManageProfileImages = ({navigation, route}) => {
 //       };
 
       const renderImageItem = ({ item }) => (
-        <TouchableOpacity onPress={() => handleImageSelect(item)}>
+        <TouchableOpacity onPress={() => handleImageSelect(item)}>  
             <Image
                 source={{ uri: item.imageurl }}
                 style={item.profileimageid === currentImage.profileimageid ? styles2.largeImage : styles2.smallImage}
-            />
-             
+            />    
       </TouchableOpacity>
       );
     
@@ -246,39 +265,40 @@ const ManageProfileImages = ({navigation, route}) => {
                     <Card.Content>
                           {userImages.length === 1 ? (
                             <>
-                            <View>
+                            <View ref={targetViewRef}>
                                 <Image source={{ uri: currentImage.imageurl }} style={styles2.largeImage} />
-                                <IconButton
-                                   icon="dots-vertical"
-                                   size={30}
-                                   iconColor={MD3Colors.error50}
-                                    style={{position: 'absolute', top: -5, right: -5}}
-                                    onPress={() => removeImage(item.uri)}>
-                                </IconButton>  
-                            </View>
-                         
-                             
-                            </>
-                          ) : userImages.length > 1  ? (
-                            <>
-                            <View>
-                                <Image source={{ uri: currentImage.imageurl }} style={styles2.largeImage} />
-                                <View style={{position: 'absolute', top: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: 5 }}>
+                                <View style={{position: 'absolute', top: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.7)', borderRadius: 5 }}>
                                 <IconButton
                                     icon="dots-vertical"
                                     size={30}
-                                    iconColor={MD3Colors.neutralVariant90}
-                                    onPress={() => removeImage(item.uri)}>
+                                    iconColor={MD3Colors.neutralVariant100}
+                                    onPress={openMenu}>
+                                </IconButton> 
+                                </View> 
+                            </View>
+                            </>
+                          ) : userImages.length > 1  ? (
+                            <>
+                            <View ref={targetViewRef}>
+                                <Image source={{ uri: currentImage.imageurl }} style={styles2.largeImage} />
+                                <View style={{position: 'absolute', top: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.7)', borderRadius: 5 }}>
+                                <IconButton
+                                    icon="dots-vertical"
+                                    size={30}
+                                    iconColor={MD3Colors.neutralVariant100}
+                                    onPress={openMenu}>
                                 </IconButton> 
                                 </View>
+                          
                             </View>
                           
                              <FlatList
                                 data={userImages}
                                 renderItem={renderImageItem}
                                 keyExtractor={(item) => item.profileimageid}
-                                horizontal
-                                contentContainerStyle={styles2.imageList}
+                                horizontal={false}
+                                numColumns={3}
+                               
                               />
 
                             </>
@@ -292,7 +312,7 @@ const ManageProfileImages = ({navigation, route}) => {
                       keyExtractor={(item, index) => index.toString()}
                       horizontal={false}
                       numColumns={3} // Set the number of columns
-                       contentContainerStyle={styles.listContainer}
+                      contentContainerStyle={styles.listContainer}
                       renderItem={({ item}) => (
                         <View key={item.id}>
                           <Image source={item} style={{ width: 100, height: 100, margin: 5 }} />
@@ -343,34 +363,20 @@ const ManageProfileImages = ({navigation, route}) => {
                               <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
                         )}
 
-                      
+                            <Menu
+                              visible={menuVisible}
+                              onDismiss={closeMenu}
+                              contentStyle={{ backgroundColor: 'white' }}
+                              anchor={{ x: windowWidth , y: anchorY - 122.5}} // Adjust the position as needed
+                            >
+                              <Menu.Item style={{backgroundColor: '#fff'}} onPress={() => {}} title="Set as Profile Picture" />
+                              <Menu.Item style={{backgroundColor: '#fff'}} onPress={() => {}} title="Set as Cover Photo" />
+                             
+                              <Menu.Item style={{backgroundColor: '#fff'}} title="Delete" />
+                            </Menu>   
                   </View>
                 </Card.Content>
              </Card>
-
-      <TouchableOpacity onPress={toggleModal}>
-        <Text>Manage Images</Text>
-      </TouchableOpacity>
-
-      <Portal>
-        <Modal visible={isModalVisible} onDismiss={toggleModal}>
-          <View>
-            {profileImage && (
-              <Image source={profileImage} style={{ width: 100, height: 100 }} />
-            )}
-            <Button onPress={() => handleImageUpload('profile')}>Upload Profile Image</Button>
-            <Button onPress={() => handleDeleteImage('profile')}>Delete Profile Image</Button>
-            <Button onPress={handleSetAsProfile}>Set as Profile Picture</Button>
-
-            {coverImage && (
-              <Image source={coverImage} style={{ width: 100, height: 100 }} />
-            )}
-            <Button onPress={() => handleImageUpload('cover')}>Upload Cover Image</Button>
-            <Button onPress={() => handleDeleteImage('cover')}>Delete Cover Image</Button>
-            <Button onPress={handleSetAsCover}>Set as Cover Picture</Button>
-          </View>
-        </Modal>
-      </Portal>
     </View>
   </Provider>
   </ScrollView>
@@ -388,6 +394,7 @@ const styles2 = StyleSheet.create({
         height: 102.5,
         marginRight: 10,
         borderRadius: 0,
+        marginTop: 10
       },
       imageList: {
         flexDirection: 'row',
