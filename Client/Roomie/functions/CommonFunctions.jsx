@@ -1,3 +1,4 @@
+import {  StyleSheet, Text } from 'react-native';
 
 export const returnAdTypeText =  (type) => {
     switch (type) {
@@ -61,5 +62,79 @@ export const smoking =  (type) => {
             return
             break;
     }
+
 };
 
+export const calculateReviewStats = (numReviews, positiveReviews) => {
+
+    if(numReviews > 0){
+
+      const positivePercentage = (positiveReviews / numReviews) * 100;
+
+      if(positivePercentage > 60){
+
+        return (
+          <Text style={styles.greenText}>{positivePercentage}% Positive ({numReviews})</Text>
+        )
+      }
+
+      return (
+        <Text style={styles.redText}>{positivePercentage}% Positive ({numReviews})</Text>
+      )
+
+    }
+    return (
+      <Text style={styles.redText}>No Reviews</Text>
+    )
+  
+
+   }
+
+
+   const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+    },
+    card: {
+      width: '100%',
+      backgroundColor: '#FFF',
+      marginBottom: 10
+    },
+    username: {
+      fontSize: 24,
+      marginTop: 10,
+      textAlign: 'center',
+    },
+    bio: {
+      fontSize: 16,
+      marginTop: 8,
+      textAlign: 'center',
+    },
+    bioScroll: {
+        maxHeight: 100, // Adjust as needed
+        marginTop: 8,
+      },
+      bioButton: {
+        alignSelf: 'center',
+        marginVertical: 8,
+      },
+    info: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      marginTop: 12,
+    },
+    infoText: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      marginBottom: 5
+    },
+    greenText: {
+        color: 'green', // Set the color to green
+        fontWeight: 'bold', // Optional: You can apply additional styles as needed
+      },
+    redText: {
+        color: 'red', // Set the color to green
+        fontWeight: 'bold', // Optional: You can apply additional styles as needed
+      }
+  });

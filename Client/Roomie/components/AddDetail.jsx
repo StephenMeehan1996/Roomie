@@ -1,12 +1,14 @@
 //import {View, Text, SafeAreaView, StyleSheet} from 'react-native';
-import React, { useState } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Dimensions,TextInput } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Dimensions,TextInput,ActivityIndicator } from 'react-native';
 import { Modal, Portal, Button, Title, Paragraph, Card,IconButton, MD3Colors, Chip, Avatar, Subheading  } from 'react-native-paper';
 import { useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { returnAdTypeText, references, smoking } from '../functions/CommonFunctions';
+import useFetchData from '../functions/GetAPI';
+import { calculateReviewStats } from '../functions/CommonFunctions';
 
 
 
@@ -17,9 +19,15 @@ const AddDetail = ({navigation, route}) =>{
   console.log(ad);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedTab, setSelectedTab] = useState('Tab1');
-
   const [selectedOption, setSelectedOption] = useState('');
   const [message, setMessage] = useState('');
+  const [adPosterDetail, setAdPosterDetail] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [posterImages, setPosterImages] = useState(null);
+  const [posterDetail, setPosterDetail] = useState(null);
+
+
+
 
   const dropdownOptions = [
                             {label:'Intro Message 1', value:'Hello! Im a passionate and dedicated student eager to embark on a journey of knowledge and discovery. My academic pursuits revolve around computer science and technology, with a keen interest in AI and software development.'},
@@ -36,6 +44,31 @@ const AddDetail = ({navigation, route}) =>{
     // Handle sending the message here
     // You can use the 'selectedOption' and 'message' state values
   };
+
+  useEffect(() => {
+    setIsLoading(true)
+
+    const fetchData = async () => {
+     try {
+     
+      const getUserDetails = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUserDetailsForAd?uid=${ad.useridentifier}`);
+      setPosterDetail(getUserDetails[0]);
+      console.log(getUserDetails);
+
+      const getUserImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${ad.useridentifier}`);
+      setPosterImages(getUserImages);
+ 
+       setIsLoading(false);
+     } catch (error) {
+       console.error('Error fetching data:', error);
+       // Handle error if needed
+       setIsLoading(false);
+     }
+   };
+
+   // Call the fetchData function
+   fetchData();
+ }, []);
  
   const renderTabContent = () => {
     switch (selectedTab) {
@@ -67,11 +100,18 @@ const AddDetail = ({navigation, route}) =>{
                         <View style={styles.chipContainer}>
                           <Chip style={styles.chip}>3</Chip>
                         </View>
-                        <Paragraph>Looking For:</Paragraph>
-                        <View style={styles.chipContainer}>
-                          <Chip style={styles.chip}>Students</Chip>
-                          <Chip style={styles.chip}>1st Year</Chip>
-                        </View>
+                        {ad.preferenceset === 1 ? (
+                              <>
+                                  <Paragraph>Looking For:</Paragraph>
+                                  <View style={styles.chipContainer}>
+                                    <Chip style={styles.chip}>{ad.gender}</Chip>
+                                    <Chip style={styles.chip}>Age:{ad.agebracket}</Chip>
+                                    <Chip style={styles.chip}>{ad.occupation}</Chip>
+                                  </View>
+                              </>
+                            ) : (
+                              <View></View>
+                            )}
                         <View style={styles.sameLineContainer}>
                           <View style={styles.lineInput}>
                             <Paragraph>Environment:</Paragraph>
@@ -90,7 +130,23 @@ const AddDetail = ({navigation, route}) =>{
                   ) : ad.addtype === 2 ? (
                     <>
                       <View>
-                        
+                      <Paragraph>Number of Bedrooms:</Paragraph>
+                            <View style={styles.chipContainer}>
+                              <Chip style={styles.chip}>{ad.houserentalnumbedrooms}</Chip>
+                            </View>
+
+                            {ad.preferenceset === 1 ? (
+                              <>
+                                  <Paragraph>Looking For:</Paragraph>
+                                  <View style={styles.chipContainer}>
+                                    <Chip style={styles.chip}>{ad.gender}</Chip>
+                                    <Chip style={styles.chip}>{ad.agebracket}</Chip>
+                                    <Chip style={styles.chip}>Age: {ad.occupation}</Chip>
+                                  </View>
+                              </>
+                            ) : (
+                              <View></View>
+                            )}
                       </View>
                     </>
                   ) : ad.addtype === 3 ? (
@@ -120,14 +176,14 @@ const AddDetail = ({navigation, route}) =>{
                       <View style={styles.avatarContainer}>
                         <Avatar.Image size={80} source={require('../assets/Icons/images/kemal.jpg')} />
                       </View>
-                      <Title>Joe Bloggs</Title>
-                      <Text style={styles.infoText}>Rating: <Text style={styles.greenText}>85% Positive</Text></Text>
+                      <Title>{posterDetail.firstname} {posterDetail.secondname}</Title>
+                      <Text style={styles.infoText}>Rating: {calculateReviewStats(posterDetail.numreviews,posterDetail.posistivereview )}</Text>
                       <View style={styles.chipContainer}>
-                        <Chip style={styles.chip}>Student</Chip>
-                        <Chip style={styles.chip}>1st Year</Chip>
+                        <Chip style={styles.chip}>{posterDetail.occupation}</Chip>
+                        <Chip style={styles.chip}>{posterDetail.occupationdetail} </Chip>
                       </View>
                       <Paragraph>
-                         Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock.
+                         {posterDetail.bio}
                       </Paragraph>
                     </Card.Content>
                   </Card>
@@ -191,7 +247,13 @@ const AddDetail = ({navigation, route}) =>{
   };
 
   return (
-  <ScrollView>
+    <ScrollView>
+    {isLoading?  
+      <View style={[styles.loadingContainer, {marginTop: 200}]}>
+        <ActivityIndicator size="large" color="#6200EE" />
+      </View>
+            : <>
+  
     <View >
     <Card elevation={5} style={styles.card}>
               <Card.Content>
@@ -282,6 +344,8 @@ const AddDetail = ({navigation, route}) =>{
     </View>
 
     </View>
+
+  </>}   
   </ScrollView>
 
   );
@@ -301,6 +365,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
 
     marginBottom: 5
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   greenText: {
       color: 'green', // Set the color to green

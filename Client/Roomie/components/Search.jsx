@@ -61,6 +61,7 @@ const Search = ({navigation, route}) => {
 
         const search = (query) =>{
             setUploading(true);
+            setAutocompleteData([]);
             setSearchQuery(query);
             let type = returnAdTypeText(selectedButton);
             const searchValue ={
@@ -132,7 +133,7 @@ const Search = ({navigation, route}) => {
           <View >
             {isLoading?  
             <View style={[styles.loadingContainer, {marginTop: 200}]}>
-              <ActivityIndicator size="{200}" color="#6200EE" />
+              <ActivityIndicator size="large" color="#6200EE" />
             </View>
                   : <>
             <Card style={styles.card}>
@@ -207,7 +208,7 @@ const Search = ({navigation, route}) => {
                 />
                   {uploading? 
                   <View style={[styles.loadingContainer, {marginVertical: 50}]}>
-                      <ActivityIndicator size="{200}" color="#6200EE" />
+                      <ActivityIndicator size="large" color="#6200EE" />
                   </View>
                   : <>
                   </>}   

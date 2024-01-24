@@ -7,6 +7,7 @@ import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
 import Ad from './Ad';
 import  formStyles  from '../styles/formStyle.style';
+import { calculateReviewStats } from '../functions/CommonFunctions';
 
 
 const Profile = ({ navigation, route }) => {
@@ -34,30 +35,7 @@ const Profile = ({ navigation, route }) => {
         );
       };
       
-     const calculateReviewStats = () => {
-
-      if(userDetails.numreviews > 0){
-
-        const positivePercentage = (userDetails.positivereview / userDetails.numreviews) * 100;
-
-        if(positivePercentage > 60){
-
-          return (
-            <Text style={styles.greenText}>{positivePercentage}% Positive ({userDetails.numreviews})</Text>
-          )
-        }
-  
-        return (
-          <Text style={styles.redText}>{positivePercentage}% Positive ({userDetails.numreviews})</Text>
-        )
-
-      }
-      return (
-        <Text style={styles.redText}>No Reviews</Text>
-      )
-    
-
-     }
+   
   return (
     
     <ScrollView>
@@ -81,7 +59,7 @@ const Profile = ({ navigation, route }) => {
         </Paragraph>
         <View style={styles.info}>
             <Text style={styles.infoText}>Active Adds: {userAdDetail.length}</Text>
-            <Text style={styles.infoText}>Rating: {calculateReviewStats()}</Text>
+            <Text style={styles.infoText}>Rating: {calculateReviewStats(userDetails.numreviews,userDetails.positivereview )}</Text>
         </View>
         <Button
           icon="email"

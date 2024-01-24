@@ -82,20 +82,14 @@ const HomePage = ({navigation, route}) => {
     });
   };
 
-
-  
   // Gets done here so I can pass the information to required components
         useEffect(() => {
          setIsLoading(true)
  
          const fetchData = async () => {
           try {
-            console.log('Email here' + email);
-            console.log(email);
-            //const getUUID = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUID?email=${email}`);
             const getUUID = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUID?email=${email}`);
             const UUID = getUUID[0].useridentifier;
-            console.log(UUID)
             setUID(getUUID[0].useridentifier);
       
             const getUserDetails = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUser?uid=${UUID}`);
@@ -131,9 +125,9 @@ const HomePage = ({navigation, route}) => {
 
     <View style={{flex: 1}}>
        
-      {isLoading?  <View style={styles.loadingContainer}>
-            <ActivityIndicator size="{200}" color="#6200EE" />
-            {/* Optionally, you can display a message indicating the retry attempt */}
+      {isLoading?  
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#6200EE" />
           </View>
                   : <>
      
