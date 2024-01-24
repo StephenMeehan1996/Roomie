@@ -17,6 +17,11 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         backgroundColor: '#FFFFFF'
       },
+      loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
       title: {
         fontSize: 20,
         fontWeight: 'bold',

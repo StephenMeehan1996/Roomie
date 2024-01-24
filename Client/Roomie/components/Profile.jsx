@@ -106,7 +106,7 @@ const Profile = ({ navigation, route }) => {
       <Card.Content>
         <Title style={styles.username}>Active adds</Title>
         <View >
-        <ScrollView>
+       
           {userAdDetail.length === 0 ? (
           <Card elevation={5} style={[formStyles.card, {marginTop: 30, paddingVertical: 40}]}>
             <Card.Content>
@@ -122,7 +122,7 @@ const Profile = ({ navigation, route }) => {
           keyExtractor={(userAdDetail) => userAdDetail.addid.toString()}
         />
         )} 
-      </ScrollView>
+    
         </View>
       </Card.Content>
     </Card>

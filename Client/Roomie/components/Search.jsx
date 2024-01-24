@@ -11,7 +11,7 @@ import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import { returnAdTypeText } from '../functions/CommonFunctions';
 
 const Search = ({navigation, route}) => {
-  
+
         const [searchQuery, setSearchQuery] = useState('');
         const [searchResult, setSearchResult] = useState(null);
         const [uploading, setUploading] = useState(false);
@@ -130,7 +130,10 @@ const Search = ({navigation, route}) => {
       
         return (
           <View >
-            {isLoading? <View ><ActivityIndicator size="large" color="#0000ff"/></View>
+            {isLoading?  
+            <View style={[styles.loadingContainer, {marginTop: 200}]}>
+              <ActivityIndicator size="{200}" color="#6200EE" />
+            </View>
                   : <>
             <Card style={styles.card}>
                 <Card.Content>
@@ -202,7 +205,10 @@ const Search = ({navigation, route}) => {
                
                 
                 />
-                  {uploading? <View ><ActivityIndicator size="large" color="#0000ff"/></View>
+                  {uploading? 
+                  <View style={[styles.loadingContainer, {marginVertical: 50}]}>
+                      <ActivityIndicator size="{200}" color="#6200EE" />
+                  </View>
                   : <>
                   </>}   
                 {searchQuery.length >= 2 && autocompleteData.length > 0 && (

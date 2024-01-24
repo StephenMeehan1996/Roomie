@@ -1,4 +1,3 @@
-
 import {SafeAreaView,ActivityIndicator,View,StyleSheet,Text,Button} from 'react-native';
 import React, { useEffect, useState } from 'react'
 import { NavigationContainer, createSwitchNavigator } from '@react-navigation/native';
@@ -23,7 +22,7 @@ const OutsideStack = createNativeStackNavigator();
 
 const InsideLayout = ({ route }) => {
 
-  const {email} = route.params?.email;
+  const {email} = route.params;
 
   return (
     <InsideStack.Navigator initialRouteName='HomePage' screenOptions={{ headerShown: false }}>
@@ -69,39 +68,13 @@ const Home =  ({navigation, route}) =>{
         <SafeAreaView style={{flex: 1}}>
             <NavigationContainer  independent={true}>
                 <Stack.Navigator initialRouteName='Home' screenOptions={{headerShown: false}} >
-                    {user ? <Stack.Screen name='Inside' component={InsideLayout}  initialParams={{ email: user }} /> : <Stack.Screen name='OutsideLayout' component={OutsideLayout}/> }
+                    {user ? <Stack.Screen name='Inside' component={InsideLayout}  initialParams={{ email: user.email }} /> : <Stack.Screen name='OutsideLayout' component={OutsideLayout}/> }
                 </Stack.Navigator>
             </NavigationContainer>
         </SafeAreaView>
         </PaperProvider>
     )
 }
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'red',
-  },
-});
-
-const LoadingScreen = ({ onRetry }) => (
-  <View style={styles.loadingContainer}>
-    <ActivityIndicator size="large" color="#0000ff" />
-    {/* Optionally, you can display a message indicating the retry attempt */}
-  </View>
-);
-
 
 
 export default Home;

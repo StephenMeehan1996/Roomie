@@ -131,7 +131,10 @@ const HomePage = ({navigation, route}) => {
 
     <View style={{flex: 1}}>
        
-      {isLoading? <View ><ActivityIndicator size="large" color="#0000ff"/></View>
+      {isLoading?  <View style={styles.loadingContainer}>
+            <ActivityIndicator size="{200}" color="#6200EE" />
+            {/* Optionally, you can display a message indicating the retry attempt */}
+          </View>
                   : <>
      
         <View style={styles.header}>
@@ -271,6 +274,11 @@ const styles = StyleSheet.create({
         fontSize: 16, // Font size
         fontWeight: 'bold', // Bold text
       },
+      loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }
   });
 
 export default HomePage
