@@ -8,7 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { returnAdTypeText, references, smoking } from '../functions/CommonFunctions';
 import useFetchData from '../functions/GetAPI';
-import { calculateReviewStats, digsMeals } from '../functions/CommonFunctions';
+import { calculateReviewStats, digsMeals, returnSelectedProfileImage,returnSelectedCoverImage } from '../functions/CommonFunctions';
 
 
 
@@ -27,6 +27,9 @@ const AddDetail = ({navigation, route}) =>{
   const [posterDetail, setPosterDetail] = useState(null);
 
 
+  const [profileImage, setProfileImage] = useState(null);
+  const [coverImage, setCoverImage] = useState(null);
+
 
 
   const dropdownOptions = [
@@ -39,6 +42,7 @@ const AddDetail = ({navigation, route}) =>{
     setSelectedOption(value);
     setMessage(value);
   };
+
 
   const handleSendMessage = () => {
     // Handle sending the message here
@@ -69,6 +73,21 @@ const AddDetail = ({navigation, route}) =>{
    // Call the fetchData function
    fetchData();
  }, []);
+
+ useEffect(() => {
+  const setSelectedImages = async () => {
+   try {
+    console.log(posterImages)
+    setProfileImage(returnSelectedProfileImage(posterImages));
+    setCoverImage(returnSelectedCoverImage(posterImages));
+    console.log('here :: ' + returnSelectedCoverImage(posterImages))
+   } catch (error) {
+     console.log(error);
+   }
+ };
+
+ setSelectedImages();
+}, [posterImages]);
  
   const renderTabContent = () => {
     switch (selectedTab) {
@@ -192,10 +211,16 @@ const AddDetail = ({navigation, route}) =>{
           <Card elevation={5} style={styles.card}>
             <Card.Content>
                   <Card style={[styles.card, {padding: 0}]}>
-                    <Card.Cover source={require('../assets/Icons/images/cover.jpg')} style={{borderRadius: 0}}/>
+                  <Card.Cover
+                      source={coverImage !== null ? { uri: coverImage.imageurl } : require('../assets/Icons/images/noCover.png')}
+                      style={{ borderRadius: 0, marginBottom: 5 }}
+                    />
                     <Card.Content>
                       <View style={styles.avatarContainer}>
-                        <Avatar.Image size={80} source={require('../assets/Icons/images/kemal.jpg')} />
+                      <Avatar.Image
+                        size={80}
+                        source={profileImage != null ? { uri: profileImage.imageurl } : require('../assets/Icons/images/NoProfile.png')}
+                      />
                       </View>
                       <Title>{posterDetail.firstname} {posterDetail.secondname}</Title>
                       <Text style={styles.infoText}>Rating: {calculateReviewStats(posterDetail.numreviews,posterDetail.posistivereview )}</Text>
