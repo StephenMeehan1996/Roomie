@@ -11,6 +11,7 @@ import * as Yup from 'yup';
 
 import { yesNO, priceRange, number, roomType, houseType, houseMatExpectations, environmentOptions, days } from '../data/formData';
 import  styles  from '../styles/formStyle.style';
+import { generateUUID } from '../functions/CommonFunctions';
 
 const RentalPreferencesForm = ({navigation, route}) => {
 
@@ -29,14 +30,6 @@ const RentalPreferencesForm = ({navigation, route}) => {
       let res = await callLambdaFunction(formData, signUpUrl); // working 
       console.log(res);
     };
-
-    function generateUserIdentifier() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        const r = Math.random() * 16 | 0;
-        const v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-      });
-    }
 
     const SignupSchema = Yup.object().shape({
       
@@ -108,7 +101,7 @@ const RentalPreferencesForm = ({navigation, route}) => {
           const responce = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
           console.log(responce); 
           formsToCombine.selectedRentalPref = formsToCombine.selectedRentalPref.map(item => `'${item}'`).join(', ');
-          formsToCombine.userIdentifier = generateUserIdentifier();
+          formsToCombine.userIdentifier = generateUUID();
           console.log(formsToCombine);
 
           await insertUser(formsToCombine);       

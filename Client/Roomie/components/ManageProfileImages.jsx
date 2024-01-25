@@ -9,6 +9,7 @@ import postDataToDatabase from '../functions/postDataToDatabase';
 import { launchCameraAsync } from 'expo-image-picker';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import useFetchData from '../functions/GetAPI';
+import { generateUUID } from '../functions/CommonFunctions';
 
 
 const ManageProfileImages = ({navigation, route}) => {
@@ -32,28 +33,7 @@ const ManageProfileImages = ({navigation, route}) => {
     const openMenu = () => setMenuVisible(true);
     const closeMenu = () => setMenuVisible(false);
 
-    const handleImageUpload = (type) => {
-        const options = {
-          title: 'Select Image',
-          storageOptions: {
-            skipBackup: true,
-            path: 'images',
-          },
-        };
-    
-        ImagePicker.showImagePicker(options, (response) => {
-          if (response.didCancel || response.error) {
-            console.log('Image picker canceled or encountered an error.');
-          } else {
-            const source = { uri: response.uri };
-            if (type === 'profile') {
-              setProfileImage(source);
-            } else if (type === 'cover') {
-              setCoverImage(source);
-            }
-          }
-        });
-    };
+
 
     const handleDeleteImage = (type) => {
         if (type === 'profile') {
@@ -74,29 +54,19 @@ const ManageProfileImages = ({navigation, route}) => {
       };
 
       const handleImageSelect = (image) => {
-// have to remove
-        let newArray = userImages;
-        let oldCurrent = currentImage;
+        const index1 = 0; 
+        const index2  = userImages.findIndex((item) => item.profileimageid === image.profileimageid);
+        
+        if (index1 >= 0 && index1 < userImages.length && index2 >= 0 && index2 < userImages.length) {
+      
+          [userImages[index1], userImages[index2]] = [userImages[index2], userImages[index1]];
+          setCurrentImage(userImages[0]);
 
-        newArray.push(oldCurrent);
+        } else {
+          console.log('Invalid indices for swapping.');
+        }
 
-        const index = userImages.findIndex((item) => item.profileimageid === currentImage.profileimageid);
-
-        newArray = userImages.filter((item) => item !== index);
-        setUserImages(newArray)
-        //alert(index);
-        setCurrentImage(image);
       };
-
-      const UploadImages = () =>{
-
-      }
-
-
-      useEffect(() => {
-        // This effect will be triggered when userImages changes
-        console.log('userImages updated:', userImages);
-      }, [userImages]);
 
       useEffect(() => {
         if (targetViewRef.current) {
@@ -127,19 +97,13 @@ const ManageProfileImages = ({navigation, route}) => {
         })
         if (!result.canceled) {
           let uri = result.assets[0].uri;
-          let filename = generateFilename();
+          let filename = generateUUID();
           const newImage = {uri: uri, filename: filename };
           setSelectedFiles([...selectedFiles, newImage]);
         }
       }
 
-      function generateFilename() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-          const r = Math.random() * 16 | 0;
-          const v = c === 'x' ? r : (r & 0x3 | 0x8);
-          return v.toString(16);
-        });
-      }
+     
     
       const removeImage = (uri) => {
         const updatedFiles = selectedFiles.filter((image) => image.uri !== uri);
@@ -235,7 +199,8 @@ const ManageProfileImages = ({navigation, route}) => {
         <TouchableOpacity onPress={() => handleImageSelect(item)}>  
             <Image
                 source={{ uri: item.imageurl }}
-                style={item.profileimageid === currentImage.profileimageid ? styles2.largeImage : styles2.smallImage}
+                //style={item.profileimageid === currentImage.profileimageid ? styles2.largeImage : styles2.smallImage}
+                style={styles2.smallImage}
             />    
       </TouchableOpacity>
       );
@@ -280,7 +245,7 @@ const ManageProfileImages = ({navigation, route}) => {
                           ) : userImages.length > 1  ? (
                             <>
                             <View ref={targetViewRef}>
-                                <Image source={{ uri: currentImage.imageurl }} style={styles2.largeImage} />
+                                <Image source={{ uri: currentImage.imageurl }} style={styles2.largeImage}  />
                                 <View style={{position: 'absolute', top: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.7)', borderRadius: 5 }}>
                                 <IconButton
                                     icon="dots-vertical"
@@ -293,7 +258,7 @@ const ManageProfileImages = ({navigation, route}) => {
                             </View>
                           
                              <FlatList
-                                data={userImages}
+                                data={userImages.slice(1)}
                                 renderItem={renderImageItem}
                                 keyExtractor={(item) => item.profileimageid}
                                 horizontal={false}

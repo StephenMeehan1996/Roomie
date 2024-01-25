@@ -7,7 +7,7 @@ import { launchCameraAsync } from 'expo-image-picker';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import  styles  from '../styles/formStyle.style';
 import callLambdaFunction from '../functions/PostAPI';
-import { returnAdTypeText } from '../functions/CommonFunctions';
+import { generateUUID, returnAdTypeText } from '../functions/CommonFunctions';
 
 const PostAdd = ({navigation, route}) => {
 
@@ -33,7 +33,7 @@ const PostAdd = ({navigation, route}) => {
     })
     if (!result.canceled) {
       let uri = result.assets[0].uri;
-      let filename = generateFilename();
+      let filename = generateUUID();
       const newImage = {uri: uri, filename: filename };
       setSelectedFiles([...selectedFiles, newImage]);
     }
@@ -98,16 +98,6 @@ const PostAdd = ({navigation, route}) => {
 
     uploadFile(generatedID)
   };
-
-
-  function generateFilename() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      const r = Math.random() * 16 | 0;
-      const v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
-
  
   function imagePosition(file){
    if(file == selectedFiles[0]){
