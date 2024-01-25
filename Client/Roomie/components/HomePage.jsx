@@ -35,12 +35,14 @@ function SearchTabStackScreens() {
 function ProfileTabStackScreens({ route }) {
 
   const { uID, userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail } = route.params;
+  const userID = userDetails._userid;
+  const uid = userDetails.useridentifier
 
   return (
     <SecondTabStack.Navigator initialRouteName='_Profile' screenOptions={{headerShown: false}} >
       <SecondTabStack.Screen name="_Profile" component={Profile} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages,userAdImages: userAdImages, userAdDetail: userAdDetail }}/>
       <SecondTabStack.Screen name="_AddDetail" component={AddDetail} />
-      <SecondTabStack.Screen name="_manageImages" component={ManageProfileImages} initialParams={{ userImages: userImages }} />
+      <SecondTabStack.Screen name="_manageImages" component={ManageProfileImages} initialParams={{ userImages: userImages, userID : userID, uid: uid }} />
     </SecondTabStack.Navigator>
   );
 }

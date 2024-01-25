@@ -1,4 +1,5 @@
 import {  StyleSheet, Text } from 'react-native';
+import { getStorage, ref, child, deleteObject } from 'firebase/storage';
 
 export const returnAdTypeText =  (type) => {
     switch (type) {
@@ -133,6 +134,40 @@ export const generateUUID = () => {
   });
 
 }
+
+export const getStorageLocation = (directory, filename) => {
+  const storage = getStorage();
+  // Create a reference to the file in Firebase Storage
+
+  const x = directory+'/'+filename;
+  // Use the child method to specify the filename
+  const fileLocation = ref(storage, x);
+
+  // Return the full storage location (URL or path)
+  return fileLocation.toString();
+}
+
+
+
+
+export const deleteImage = async (imagePath) => {
+
+  const storage = getStorage();
+
+  try {
+    // Create a reference to the file in Firebase Storage
+    const fileRef = ref(storage, imagePath);
+
+    // Delete the file
+    await deleteObject(fileRef);
+
+    console.log(`Image ${imagePath} deleted successfully.`);
+  } catch (error) {
+    console.error('Error deleting image:', error.message);
+  }
+}
+
+
 
 
 

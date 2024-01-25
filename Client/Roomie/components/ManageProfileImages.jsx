@@ -9,21 +9,18 @@ import postDataToDatabase from '../functions/postDataToDatabase';
 import { launchCameraAsync } from 'expo-image-picker';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import useFetchData from '../functions/GetAPI';
-import { generateUUID } from '../functions/CommonFunctions';
+import { generateUUID, getStorageLocation, deleteImage } from '../functions/CommonFunctions';
 
 
 const ManageProfileImages = ({navigation, route}) => {
-    let imageSel = route.params.userImages
+  
+    const {userID, uid} = route.params
     const [userImages, setUserImages] = useState(route.params.userImages);
-    const [profileImage, setProfileImage] = useState(null);
-    const [coverImage, setCoverImage] = useState(null);
-    const [isModalVisible, setModalVisible] = useState(false);
-
-    const toggleModal = () => setModalVisible(!isModalVisible);
-    const [currentImage, setCurrentImage] = useState(userImages[0]);
+    const [currentImage, setCurrentImage] = useState(userImages[0]); // bug with image may be here
     const [menuVisible, setMenuVisible] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [uploading, setUploading] = useState(false);
+    const [updating, setUpdating] = useState(false);
 
     //used to get top of the image for dropdown menu
     const windowWidth = Dimensions.get('window').width;
@@ -33,27 +30,42 @@ const ManageProfileImages = ({navigation, route}) => {
     const openMenu = () => setMenuVisible(true);
     const closeMenu = () => setMenuVisible(false);
 
+    const handleDeleteImage = async (type) => {
+        setUpdating(true);
+        let imageID = currentImage.profileimageid;
+        let uid = currentImage._useridentifier;
 
-
-    const handleDeleteImage = (type) => {
-        if (type === 'profile') {
-          setProfileImage(null);
-        } else if (type === 'cover') {
-          setCoverImage(null);
-        }
+        await deleteImage(getStorageLocation('images', currentImage.filename)); // deletes from firebase
+        await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieDeleteProfileImage?imageID=${imageID}&uid=${uid}`);
+        userImages.shift(); // removes image locally, to avoid refresh
+        closeMenu();
+        setUserImages([...userImages]);
+        setCurrentImage(userImages[0]);
+        setUpdating(false);
       };
     
-      const handleSetAsProfile = () => {
-        // Implement logic to set the selected image as the profile picture
-        console.log('Setting image as profile picture');
+      const handleSetAsProfile = async () => {
+        setUpdating(true);
+        let imageID = userImages[0].profileimageid;
+        let uid = userImages[0]._useridentifier;
+        let id = userImages[0].userid;
+        closeMenu();
+        await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieUpdateProfileImages?imageID=${imageID}&imageType=1&uid=${uid}&id=${id}`);
+        setUpdating(false);
       };
     
-      const handleSetAsCover = () => {
-        // Implement logic to set the selected image as the cover picture
-        console.log('Setting image as cover picture');
+      const handleSetAsCover = async () => {
+        setUpdating(true);
+        let imageID = userImages[0].profileimageid;
+        let uid = userImages[0]._useridentifier;
+        let id = userImages[0].userid;
+        closeMenu();
+        await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieUpdateProfileImages?imageID=${imageID}&imageType=2&uid=${uid}&id=${id}`);
+        setUpdating(false);
       };
 
       const handleImageSelect = (image) => {
+        //Swaps selected image with image at index 0
         const index1 = 0; 
         const index2  = userImages.findIndex((item) => item.profileimageid === image.profileimageid);
         
@@ -78,8 +90,8 @@ const ManageProfileImages = ({navigation, route}) => {
 
       const updateProfileImages = async () => {
         try {
-          const userIdentifier = userImages[0]._useridentifier;
-          const updatedImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${userIdentifier}`);
+          //const userIdentifier = userImages[0]._useridentifier;
+          const updatedImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${uid}`);
           setUserImages(updatedImages);
         } catch (error) {
           console.error('Error fetching updated profile images:', error);
@@ -129,7 +141,7 @@ const ManageProfileImages = ({navigation, route}) => {
                     console.log('Uploaded a blob or file!');
                     const url = await getDownloadURL(snapshot.ref);
       
-                    let imageObj = [userImages[0].userid, 0, 0, url, file.filename];
+                    let imageObj = [userID, 0, 0, url, file.filename];
                     imageArray.push(imageObj);
                     resolve(); 
                   })
@@ -240,6 +252,9 @@ const ManageProfileImages = ({navigation, route}) => {
                                     onPress={openMenu}>
                                 </IconButton> 
                                 </View> 
+                                {updating? <View style={{marginVertical: 10}}><ActivityIndicator size="large" color="#6200EE" /></View>
+                            : <>
+                            </>}
                             </View>
                             </>
                           ) : userImages.length > 1  ? (
@@ -254,9 +269,11 @@ const ManageProfileImages = ({navigation, route}) => {
                                     onPress={openMenu}>
                                 </IconButton> 
                                 </View>
-                          
+                                {updating? <View style={{marginVertical: 10}}><ActivityIndicator size="large" color="#6200EE" /></View>
+                            : <>
+                            </>}
                             </View>
-                          
+                           
                              <FlatList
                                 data={userImages.slice(1)}
                                 renderItem={renderImageItem}
@@ -334,10 +351,10 @@ const ManageProfileImages = ({navigation, route}) => {
                               contentStyle={{ backgroundColor: 'white' }}
                               anchor={{ x: windowWidth , y: anchorY - 122.5}} // Adjust the position as needed
                             >
-                              <Menu.Item style={{backgroundColor: '#fff'}} onPress={() => {}} title="Set as Profile Picture" />
-                              <Menu.Item style={{backgroundColor: '#fff'}} onPress={() => {}} title="Set as Cover Photo" />
+                              <Menu.Item style={{backgroundColor: '#fff'}} onPress={() => handleSetAsProfile()} title="Set as Profile Picture" />
+                              <Menu.Item style={{backgroundColor: '#fff'}} onPress={() => handleSetAsCover()} title="Set as Cover Photo" />
                              
-                              <Menu.Item style={{backgroundColor: '#fff'}} title="Delete" />
+                              <Menu.Item style={{backgroundColor: '#fff'}} onPress={() => handleDeleteImage()} title="Delete" />
                             </Menu>   
                   </View>
                 </Card.Content>

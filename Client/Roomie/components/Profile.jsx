@@ -1,29 +1,39 @@
 import React, {useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image,TouchableOpacity,ScrollView,FlatList  } from 'react-native';
+import { View, Text, StyleSheet, Image,TouchableOpacity,ScrollView,FlatList, ActivityIndicator  } from 'react-native';
 import { Avatar, Card, Title, Paragraph, Button } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import Collapsible from 'react-native-collapsible';
 import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
 import Ad from './Ad';
 import  formStyles  from '../styles/formStyle.style';
 import { calculateReviewStats, returnSelectedProfileImage,returnSelectedCoverImage } from '../functions/CommonFunctions';
+import useFetchData from '../functions/GetAPI';
 
 
 const Profile = ({ navigation, route }) => {
 
-  const { uID, userDetails, userImages, userAdImages, userAdDetail } = route.params;
+  const { uID, userDetails, userAdImages, userAdDetail } = route.params;
+  const [userImages, setUserImages] = useState(route.params.userImages);
   const [isBioExpanded, setIsBioExpanded] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
+  const [updating, setUpdating] = useState(false);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', async () => {
+      setUpdating(true);
+      const getUserImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${uID}`);
+      setUserImages(getUserImages);
+      setUpdating(false);
+    });
+
+    // Clean up the subscription when component unmounts
+    return unsubscribe;
+  }, [navigation]);
    
-
-   console.log('Images' + JSON.stringify(userImages));
-
    useEffect(() => {
- 
-
     const setSelectedImages = async () => {
      try {
       setProfileImage(returnSelectedProfileImage(userImages));
@@ -36,7 +46,7 @@ const Profile = ({ navigation, route }) => {
 
    // Call the fetchData function
    setSelectedImages();
- }, [profileImage, coverImage]);
+ }, [userImages]);
 
 
     const toggleBio = () => {
@@ -61,48 +71,52 @@ const Profile = ({ navigation, route }) => {
     <View style={styles.container}> 
        
     <Card elevation={5} style={styles.card}>
-      <Card.Cover  
-          source={coverImage !== null ? { uri: coverImage.imageurl } : require('../assets/Icons/images/noCover.png')} style={{borderRadius:0, marginBottom: 5}}
-        />
+  {updating ? (
+    <View style={{ marginVertical: 10 }}>
+      <ActivityIndicator size="large" color="#6200EE" />
+    </View>
+  ) : (
+    <>
+      <Card.Cover
+        source={coverImage !== null ? { uri: coverImage.imageurl } : require('../assets/Icons/images/noCover.png')}
+        style={{ borderRadius: 0, marginBottom: 5 }}
+      />
       <Card.Content>
         <Avatar.Image
           size={80}
-         // source={userImages.imageurl}
           source={profileImage != null ? { uri: profileImage.imageurl } : require('../assets/Icons/images/NoProfile.png')}
         />
-        {/* <Avatar.Image
-        size={80}
-        source={require('../assets/Icons/images/NoProfile.png')}
-      /> */}
         <Title style={styles.username}>{userDetails.firstname} {userDetails.secondname}</Title>
         <Paragraph style={styles.bio}>
           Web Developer | Traveller | Foodie
         </Paragraph>
         <View style={styles.info}>
-            <Text style={styles.infoText}>Active Adds: {userAdDetail.length}</Text>
-            <Text style={styles.infoText}>Rating: {calculateReviewStats(userDetails.numreviews,userDetails.positivereview )}</Text>
+          <Text style={styles.infoText}>Active Adds: {userAdDetail.length}</Text>
+          <Text style={styles.infoText}>Rating: {calculateReviewStats(userDetails.numreviews, userDetails.positivereview)}</Text>
         </View>
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 10}}>
-        <Button
-          icon="email"
-          mode="outlined"
-          style={{width: 150}}
-          onPress={() => console.log('Message button pressed')}>
-          Message
-        </Button>
-        <Button
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
+          <Button
+            icon="email"
+            mode="outlined"
+            style={{ width: 150 }}
+            onPress={() => console.log('Message button pressed')}>
+            Message
+          </Button>
+          <Button
             icon="text-box"
             mode="outlined"
             onPress={toggleBio}
-            style={[styles.bioButton, {width: 150}]}>
+            style={[styles.bioButton, { width: 150 }]}>
             Bio
           </Button>
-          </View>
+        </View>
         <Collapsible collapsed={!isBioExpanded}>
-            <Paragraph style={styles.bio}>{userDetails.bio}</Paragraph>
-          </Collapsible>
+          <Paragraph style={styles.bio}>{userDetails.bio}</Paragraph>
+        </Collapsible>
       </Card.Content>
-    </Card>
+    </>
+  )}
+</Card>
 
     <Card elevation={5} style={styles.card}>
       <Card.Content>
