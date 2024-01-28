@@ -149,15 +149,15 @@ const validateDob = async (value) => {
     <ScrollView>
        <Formik
               initialValues={{
-                  firstName: 'John',
-                  lastName: 'Connor',
-                  email: 'cdsmeehan@gmail.com',
+                  firstName: 'Ciara',
+                  lastName: 'Jones (P400)',
+                  email: 'cds123meehan@gmail.com',
                   //dob: new Date(),
-                  gender: 'Male',
+                  gender: 'Female',
                   dateBirth: dob,
                   password:'Roomie##2',
                   confirmPassword : 'Roomie##2',
-                  bio: 'test test test',
+                  bio: 'Passionate explorer navigating the journey of life 🌍. Enthusiastic about technology, art, and the beauty of everyday moments. 🎨✨ Coffee lover, bookworm, and aspiring storyteller',
                   occupation: 'Student',
                   occupationDropdownValue: '1st',
                   smoke: 1,

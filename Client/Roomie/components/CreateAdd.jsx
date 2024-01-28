@@ -226,17 +226,17 @@ const CreateAdd = ({navigation, route}) => {
                 {showForm === 1 && (
                 <Formik  initialValues={{
                     addType : 1,
-                    addressLine1: 'Kilgarve, Keadue',
-                    addressLine2: 'Boyle',
-                    city: 'Roscommon',
-                    county: 'Roscommon',
+                    addressLine1: 'Canal Road',
+                    addressLine2: 'Ballinode',
+                    city: 'Sligo',
+                    county: 'Sligo',
                     zip: 'F91 XY32',
                     numOccupants: 3,
                     houseShareHouseType : 'Apartment',
                     houseSharePrice : '600',
                     houseShareRoomType : 'Double',
                     houseShareEnsuite: 1,
-                    bio : 'Test Test',
+                    bio : 'nthusiastic about technology, art, and the beauty of everyday moments. 🎨✨ Coffee lover, bookworm, and aspiring storyteller.',
                     referenceRequired: 1,
                     deposit: '1 Month',
             

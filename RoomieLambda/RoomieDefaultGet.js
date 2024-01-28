@@ -14,9 +14,9 @@ exports.handler = async (event) => {
   const pool = new Pool(rdsConfig);
   const queryString = event.queryStringParameters;
   
-  let uid = queryString.uid;
+  let queryStringVar = queryString; // access query string variale
   
-  let query = `SELECT * from RoomieGetProfileImages('${uid}');`;
+  let query = `SELECT * from SPname('${queryStringVar}');`;
   
   try {
     // Your SQL query to read data from the RDS table
