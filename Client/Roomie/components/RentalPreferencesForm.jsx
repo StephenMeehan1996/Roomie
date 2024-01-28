@@ -41,7 +41,7 @@ const RentalPreferencesForm = ({navigation, route}) => {
       .required('Please enter a maximum price'),
       houseShareRoomType : Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
-      .required('Please select a room type'),
+      .required('Please select a room type'), 
       houseShareHouseType : Yup.string()
       .notOneOf(['Select an option'], 'Please select a value')
       .required('Please select a house type'),
