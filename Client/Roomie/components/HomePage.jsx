@@ -8,7 +8,7 @@ import Profile from '../components/Profile';
 import Search from '../components/Search';
 import Login from './Login';
 import CreateAdd from './CreateAdd';
-import { Avatar, Card, Title, Paragraph, Button,IconButton,Modal, Portal, Dialog, Menu } from 'react-native-paper';
+import { Avatar, Card, Title, Paragraph, Button,IconButton,Modal, Portal, Dialog, Menu , ICon} from 'react-native-paper';
 import SearchResults from './SearchResults';
 import { createNativeStackNavigator, Header } from '@react-navigation/native-stack';
 import AddDetail from './AddDetail';
@@ -17,6 +17,8 @@ import PostAdd from './PostAdd';
 import ManageProfileImages from './ManageProfileImages';
 import useFetchData from '../functions/GetAPI';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
+import ManagePreferences from './ManagePreferences';
+import ManageMessages from './ManageMessages';
 
 const Tab = createBottomTabNavigator();
 
@@ -43,6 +45,8 @@ function ProfileTabStackScreens({ route }) {
       <SecondTabStack.Screen name="_Profile" component={Profile} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages,userAdImages: userAdImages, userAdDetail: userAdDetail }}/>
       <SecondTabStack.Screen name="_AddDetail" component={AddDetail} />
       <SecondTabStack.Screen name="_manageImages" component={ManageProfileImages} initialParams={{ userImages: userImages, userID : userID, uid: uid }} />
+      <SecondTabStack.Screen name="_managePreferences" component={ManagePreferences} initialParams={{ uID: uID, userDetails: userDetails}} />
+      <SecondTabStack.Screen name="_manageMessages" component={ManageMessages}/>
     </SecondTabStack.Navigator>
   );
 }
@@ -77,9 +81,9 @@ const HomePage = ({navigation, route}) => {
   const hideDialog = () => setVisible(false);
   const [visible, setVisible] = useState(false);
 
-  const nextPage = () => {
+  const nextPage = (route) => {
     setVisible(false)
-    navigation.navigate('_manageImages', { 
+    navigation.navigate(route, { 
       
     });
   };
@@ -155,12 +159,33 @@ const HomePage = ({navigation, route}) => {
                 <View>
                   <TouchableOpacity
                       style={[styles.button]}
-                      onPress={() => nextPage()}
+                      onPress={() => nextPage("_manageImages")}
                   >
                     <Text style={[styles.buttonText]}>Manage Images</Text>
                     
                   </TouchableOpacity>
                 </View>
+
+                <View>
+                  <TouchableOpacity
+                      style={[styles.button]}
+                      onPress={() => nextPage("_managePreferences")}
+                  >
+                    <Text style={[styles.buttonText]}>Manage Preferences</Text>
+                    
+                  </TouchableOpacity>
+                </View>
+
+                <View>
+                  <TouchableOpacity
+                      style={[styles.button]}
+                      onPress={() => nextPage("_manageMessages")}
+                  >
+                    <Text style={[styles.buttonText]}>Manage Messages</Text>
+                    
+                  </TouchableOpacity>
+                </View>
+
             </Dialog.Content>
             <Dialog.Actions>
               <Button onPress={hideDialog}>Close</Button>
@@ -216,11 +241,13 @@ const styles = StyleSheet.create({
       shadowOffset: { width: 0, height: 2 }, 
       shadowOpacity: 0.2, 
       shadowRadius: 2, 
+      marginBottom: 10
     },
     buttonText: {
       color: '#fff', 
       fontSize: 16, 
       fontWeight: 'bold', 
+     
     },
 
     popup:{
