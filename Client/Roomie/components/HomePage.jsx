@@ -46,7 +46,7 @@ function ProfileTabStackScreens({ route }) {
       <SecondTabStack.Screen name="_AddDetail" component={AddDetail} />
       <SecondTabStack.Screen name="_manageImages" component={ManageProfileImages} initialParams={{ userImages: userImages, userID : userID, uid: uid }} />
       <SecondTabStack.Screen name="_managePreferences" component={ManagePreferences} initialParams={{ uID: uID, userDetails: userDetails}} />
-      <SecondTabStack.Screen name="_manageMessages" component={ManageMessages}/>
+      <SecondTabStack.Screen name="_manageMessages" component={ManageMessages}initialParams={{ uID: uID, userDetails: userDetails}}/>
     </SecondTabStack.Navigator>
   );
 }

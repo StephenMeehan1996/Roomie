@@ -12,21 +12,29 @@ import { calculateReviewStats, digsMeals, returnSelectedProfileImage,returnSelec
 import  styles  from '../styles/common.style';
 import  formStyles  from '../styles/formStyle.style';
 import callLambdaFunction from '../functions/PostAPI';
+import putAPI from '../functions/PutAPI';
 
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
 export default function ManageMessages({navigation, route}) {
+    const {userDetails,uID} = route.params;
+ 
+
     const [selectedOption, setSelectedOption] = useState('');
 
     const [messageTitle, setMessageTitle] = useState('');
-    const [messageBody, setMessageBody] = useState('test');
+    const [messageBody, setMessageBody] = useState('');
 
     const [message, setMessage] = useState('');
+    const [userMessages, setUserMessages] = useState('');
     const [selectedTab, setSelectedTab] = useState('Tab1');
     const [uploading, setUploading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isSelected, setIsSelected] = useState(false);
 
-
+//get
+//https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/presavedMessage
 
     const dropdownOptions = [
         {label:'Intro Message 1', value:'Hello! Im a passionate and dedicated student eager to embark on a journey of knowledge and discovery. My academic pursuits revolve around computer science and technology, with a keen interest in AI and software development.'},
@@ -34,22 +42,72 @@ export default function ManageMessages({navigation, route}) {
         {label:'Intro Message 3', value:'placeholder'},
       ];
 
- const handleDropdownSelect = (value) => {
-
-    alert(value);
-    setSelectedOption(value);
-    setMessageTitle(value)
-    setMessageBody(value)
+ const handleDropdownSelect = (id) => {
+    
+   
+    const mes  = userMessages.find((item) => item.usepresavedmessageid === parseInt(id));
+    console.log(mes);
+    setSelectedOption(mes);
+    setMessageTitle(mes.messagetitle)
+    setMessageBody(mes.messagebody)
    
     };
 
+    useEffect(() => {
+        setIsLoading(true)
+
+        const fetchData = async () => { 
+         try {
+           const m = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomiePresavedMessages?uid=${uID}`);
+           setUserMessages(m);
+           console.log(m);
+           setIsLoading(false);
+
+         } catch (error) {
+           console.error('Error fetching data:', error);
+           setIsLoading(false);
+         }
+       };
+   
+       
+       fetchData();
+     },[uID]);
+
+     useEffect(() => {
+        // Additional logic to run after userMessages is updated
+        console.log("userMessages has been updated:", userMessages);
+      
+        // Add your additional logic here...
+      
+        // For example, if you want to do something when userMessages changes, you can place that logic here.
+      }, [userMessages]);
+
+
+     useEffect(() => {
+        // Check if userMessages has items
+        if (userMessages.length > 0) {
+          setSelectedOption(userMessages[0]);
+          setMessageTitle(userMessages[0].messagetitle);
+          setMessageBody(userMessages[0].messagebody);
+        } else {
+          setSelectedOption('');
+          setMessageTitle(''); // Set to null or an empty string as needed
+          setMessageBody('');
+        }
+      }, [userMessages]);
+
  const postMessage = async (values) =>{
+
+    values.userID = userDetails._userid;
+    values.userIdentifier = userDetails.useridentifier;
     console.log(values);
 
     let url = "https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/presavedMessage"
     setUploading(true);
     
     let res = await callLambdaFunction(values, url); // working 
+    const x = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomiePresavedMessages?uid=${uID}`); //refactor here with useeffect above
+    setUserMessages(x);
 } 
 
 const handleDeleteMessage = async () => {
@@ -57,6 +115,14 @@ const handleDeleteMessage = async () => {
 };
 
 const handleUpdateMessage = async () => {
+  //https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/presavedMessage
+  selectedOption.messagetitle = messageTitle;
+  selectedOption.messagebody = messageBody
+  const m = await  putAPI("https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/presavedMessage", selectedOption);
+  const x = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomiePresavedMessages?uid=${uID}`); //refactor here with useeffect above
+  setUserMessages(x);
+  setIsLoading(false);
+
 
 };
 
@@ -66,6 +132,7 @@ const MessageSchema = Yup.object().shape({
     .required('Please enter a title'),
     body: Yup.string()
     .required('Please enter a message value'),
+
    
   });
 
@@ -87,6 +154,7 @@ const renderTabContent = () => {
                <Formik  initialValues={{
                    title: '',
                    body: '',
+              
                }}
                 validationSchema={MessageSchema}
                 onSubmit={values => postMessage(values)}
@@ -162,22 +230,30 @@ const renderTabContent = () => {
              <View>  
               <Card style={styles.card}>
                 <Card.Content>
-                 <Paragraph>Select from saved messages:</Paragraph>
+              
+
+                {userMessages.length > 0 ? (
+                            <>
+                            <Paragraph>Select from saved messages:</Paragraph>
                  <Picker
                   style={styles.input}
-                  selectedValue={selectedOption}
+                  selectedValue={selectedOption.messagetitle}
+                 
                   onValueChange={(itemValue, itemIndex) => handleDropdownSelect(itemValue)}
                  >
-                  {dropdownOptions.map((option, index) => (
-                    <Picker.Item label={option.label} value={option.value} key={index} />
+                  {userMessages.map((message, index) => (
+                    <Picker.Item label={message.messagetitle} value={message.usepresavedmessageid} key={index} />
                   ))}
 
                 </Picker>
+                
                 <View >
                    <Text style={formStyles.label}>Message Title:</Text>
                     <TextInput
                         style={formStyles.input}
                         placeholder="Enter Message Title"
+                        value={messageTitle}
+                        onChangeText={(text) => setMessageTitle(text)}
                     />   
                 </View>
                    <TextInput
@@ -187,24 +263,39 @@ const renderTabContent = () => {
                     placeholder="Type your bio here..."
                     label="Message"
                     value={messageBody}
+                    onChangeText={(text) => setMessageBody(text)}
+                   
                   />
                  <View style={styles.buttonContainer2}>
-  <Button
-      mode="contained"
-      onPress={handleUpdateMessage}
-      style={ { marginRight: 10, borderRadius: 0 }} // Adjust margin as needed
-  >
-      Update Message
-  </Button>
-  <Button
-      mode="contained"
-      onPress={handleDeleteMessage}
-      style={[styles.button, { backgroundColor: 'red', borderRadius: 0  }]}
-  >
-      Delete Message
-  </Button>
-</View>
-                </Card.Content>
+                    <Button
+                        mode="contained"
+                        onPress={handleUpdateMessage}
+                        style={ { marginRight: 10, borderRadius: 0 }} // Adjust margin as needed
+                        disabled={messageBody === selectedOption.messagebody && messageTitle === selectedOption.messagetitle}
+                    >
+                        Update Message
+                    </Button>
+                    <Button
+                        mode="contained"
+                        onPress={handleDeleteMessage}
+                        style={[styles.button, { backgroundColor: 'red', borderRadius: 0  }]}
+                    >
+                        Delete Message
+                    </Button>
+                    </View>
+                          
+                           
+                        
+
+                            </>
+                          ) :(
+                            <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
+                          )}
+
+
+
+
+                 </Card.Content>
               </Card>
             </View>
            </Card.Content>
