@@ -22,11 +22,11 @@ const OutsideStack = createNativeStackNavigator();
 
 const InsideLayout = ({ route }) => {
 
-  const {email} = route.params;
+  const {email, user} = route.params;
 
   return (
     <InsideStack.Navigator initialRouteName='HomePage' screenOptions={{ headerShown: false }}>
-      <InsideStack.Screen name="HomePage" component={HomePage} initialParams={{ email: email }} />
+      <InsideStack.Screen name="HomePage" component={HomePage} initialParams={{ email: email, user: user }} />
     </InsideStack.Navigator>
   );
 };
@@ -68,7 +68,7 @@ const Home =  ({navigation, route}) =>{
         <SafeAreaView style={{flex: 1}}>
             <NavigationContainer  independent={true}>
                 <Stack.Navigator initialRouteName='Home' screenOptions={{headerShown: false}} >
-                    {user ? <Stack.Screen name='Inside' component={InsideLayout}  initialParams={{ email: user.email }} /> : <Stack.Screen name='OutsideLayout' component={OutsideLayout}/> }
+                    {user ? <Stack.Screen name='Inside' component={InsideLayout}  initialParams={{ email: user.email, user: user }} /> : <Stack.Screen name='OutsideLayout' component={OutsideLayout}/> }
                 </Stack.Navigator>
             </NavigationContainer>
         </SafeAreaView>

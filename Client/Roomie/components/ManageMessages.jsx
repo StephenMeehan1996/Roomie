@@ -18,11 +18,12 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
 export default function ManageMessages({navigation, route}) {
-    const {userDetails,uID} = route.params;
- 
+    const {userDetails} = route.params;
+    const [uID, setUID] = useState(route.params.uID)
 
     const [selectedOption, setSelectedOption] = useState('');
 
+    const [selectedMessage, setSelectedMessage] = useState('');
     const [messageTitle, setMessageTitle] = useState('');
     const [messageBody, setMessageBody] = useState('');
 
@@ -32,6 +33,7 @@ export default function ManageMessages({navigation, route}) {
     const [uploading, setUploading] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isSelected, setIsSelected] = useState(false);
+    const [forceRefresh, setForceRefresh] = useState(false);
 
 //get
 //https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/presavedMessage
@@ -44,12 +46,12 @@ export default function ManageMessages({navigation, route}) {
 
  const handleDropdownSelect = (id) => {
     
-   
-    const mes  = userMessages.find((item) => item.usepresavedmessageid === parseInt(id));
-    console.log(mes);
-    setSelectedOption(mes);
-    setMessageTitle(mes.messagetitle)
-    setMessageBody(mes.messagebody)
+      const mes  = userMessages.find((item) => item.usepresavedmessageid === parseInt(id));
+      console.log(mes.messagetitle);
+      setSelectedOption(id);
+      setSelectedMessage(mes);
+      setMessageTitle(mes.messagetitle)
+      setMessageBody(mes.messagebody)
    
     };
 
@@ -69,26 +71,12 @@ export default function ManageMessages({navigation, route}) {
          }
        };
    
-       
        fetchData();
-     },[uID]);
-
-     useEffect(() => {
-        // Additional logic to run after userMessages is updated
-        console.log("userMessages has been updated:", userMessages);
-      
-        // Add your additional logic here...
-      
-        // For example, if you want to do something when userMessages changes, you can place that logic here.
-      }, [userMessages]);
-
+     },[uID,forceRefresh]);
 
      useEffect(() => {
         // Check if userMessages has items
         if (userMessages.length > 0) {
-          setSelectedOption(userMessages[0]);
-          setMessageTitle(userMessages[0].messagetitle);
-          setMessageBody(userMessages[0].messagebody);
         } else {
           setSelectedOption('');
           setMessageTitle(''); // Set to null or an empty string as needed
@@ -96,34 +84,45 @@ export default function ManageMessages({navigation, route}) {
         }
       }, [userMessages]);
 
- const postMessage = async (values) =>{
-
+ const handleSubmit = async (values, {resetForm}) =>{
+    setIsLoading(true);
     values.userID = userDetails._userid;
     values.userIdentifier = userDetails.useridentifier;
     console.log(values);
 
     let url = "https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/presavedMessage"
     setUploading(true);
-    
-    let res = await callLambdaFunction(values, url); // working 
-    const x = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomiePresavedMessages?uid=${uID}`); //refactor here with useeffect above
-    setUserMessages(x);
+    let res = await callLambdaFunction(values, url);  
+    setForceRefresh(prev => !prev); // triggers refresh after post
+    resetForm();
+    setIsLoading(false);
 } 
 
-const handleDeleteMessage = async () => {
+const handleDeleteMessage = async (id) => {
+  //https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieDeletePresavedMessages
+    setIsLoading(true);
+    await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieDeletePresavedMessages?id=${selectedMessage.usepresavedmessageid}`);
+    await setForceRefresh(prev => !prev); // triggers refresh after post
+   
+   alert(selectedOption);
+    //const selectedMessage = userMessages.find((message) => message.usepresavedmessageid === selectedOption);
 
+    setSelectedMessage(userMessages);
+    setSelectedOption(userMessages[0].usepresavedmessageid);
+    setMessageTitle(userMessages[0].messagetitle);
+    setMessageBody(userMessages[0].messagebody);
+
+    setIsLoading(false);
 };
 
 const handleUpdateMessage = async () => {
   //https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/presavedMessage
-  selectedOption.messagetitle = messageTitle;
-  selectedOption.messagebody = messageBody
-  const m = await  putAPI("https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/presavedMessage", selectedOption);
-  const x = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomiePresavedMessages?uid=${uID}`); //refactor here with useeffect above
-  setUserMessages(x);
-  setIsLoading(false);
-
-
+    setIsLoading(true);
+    selectedMessage.messagetitle = messageTitle;
+    selectedMessage.messagebody = messageBody
+    const m = await  putAPI("https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/presavedMessage", selectedMessage);
+    setForceRefresh(prev => !prev); // triggers refresh after post
+    setIsLoading(false);
 };
 
 const MessageSchema = Yup.object().shape({
@@ -133,7 +132,6 @@ const MessageSchema = Yup.object().shape({
     body: Yup.string()
     .required('Please enter a message value'),
 
-   
   });
 
   const ManageMessageSchema = Yup.object().shape({
@@ -157,9 +155,9 @@ const renderTabContent = () => {
               
                }}
                 validationSchema={MessageSchema}
-                onSubmit={values => postMessage(values)}
+                onSubmit={handleSubmit}
                >
-               {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit}) => (
+               {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit }) => (
         <View style={styles.tabContent}>
           <Card elevation={5} style={styles.card}>
             <Card.Content>
@@ -230,15 +228,12 @@ const renderTabContent = () => {
              <View>  
               <Card style={styles.card}>
                 <Card.Content>
-              
-
                 {userMessages.length > 0 ? (
-                            <>
-                            <Paragraph>Select from saved messages:</Paragraph>
+                  <>
+                  <Paragraph>Select from saved messages:</Paragraph>
                  <Picker
                   style={styles.input}
-                  selectedValue={selectedOption.messagetitle}
-                 
+                  selectedValue={selectedOption}
                   onValueChange={(itemValue, itemIndex) => handleDropdownSelect(itemValue)}
                  >
                   {userMessages.map((message, index) => (
@@ -271,7 +266,7 @@ const renderTabContent = () => {
                         mode="contained"
                         onPress={handleUpdateMessage}
                         style={ { marginRight: 10, borderRadius: 0 }} // Adjust margin as needed
-                        disabled={messageBody === selectedOption.messagebody && messageTitle === selectedOption.messagetitle}
+                        disabled={messageBody === selectedMessage.messagebody && messageTitle === selectedMessage.messagetitle}
                     >
                         Update Message
                     </Button>
@@ -283,18 +278,10 @@ const renderTabContent = () => {
                         Delete Message
                     </Button>
                     </View>
-                          
-                           
-                        
-
-                            </>
-                          ) :(
-                            <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
-                          )}
-
-
-
-
+                   </>
+                    ) :(
+                      <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
+                    )}
                  </Card.Content>
               </Card>
             </View>

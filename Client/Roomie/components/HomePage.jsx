@@ -19,6 +19,7 @@ import useFetchData from '../functions/GetAPI';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import ManagePreferences from './ManagePreferences';
 import ManageMessages from './ManageMessages';
+import Chat from './Chat';
 
 const Tab = createBottomTabNavigator();
 
@@ -36,7 +37,7 @@ function SearchTabStackScreens() {
 
 function ProfileTabStackScreens({ route }) {
 
-  const { uID, userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail } = route.params;
+  const { uID, userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail, user } = route.params;
   const userID = userDetails._userid;
   const uid = userDetails.useridentifier
 
@@ -47,12 +48,13 @@ function ProfileTabStackScreens({ route }) {
       <SecondTabStack.Screen name="_manageImages" component={ManageProfileImages} initialParams={{ userImages: userImages, userID : userID, uid: uid }} />
       <SecondTabStack.Screen name="_managePreferences" component={ManagePreferences} initialParams={{ uID: uID, userDetails: userDetails}} />
       <SecondTabStack.Screen name="_manageMessages" component={ManageMessages}initialParams={{ uID: uID, userDetails: userDetails}}/>
+      <SecondTabStack.Screen name="_chat" component={Chat}initialParams={{ uID: uID, userDetails: userDetails, user}}/>
     </SecondTabStack.Navigator>
   );
 }
 function CreateTabStackScreens({ route }) {
 
-  const { uID, userDetails } = route.params;
+  const { uID, userDetails} = route.params;
 
   const userID = userDetails._userid;
 
@@ -67,7 +69,7 @@ function CreateTabStackScreens({ route }) {
 
 const HomePage = ({navigation, route}) => {
 
-  const { email } = route.params;
+  const { email, user } = route.params;
 
   const [uID, setUID] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
@@ -138,6 +140,12 @@ const HomePage = ({navigation, route}) => {
                   : <>
      
         <View style={styles.header}>
+        <IconButton
+            icon="message"  // Assuming "cog" is the name of your settings icon
+            size={30}
+            style={{marginHorizontal: 0}}
+            onPress={() => nextPage("_chat")} 
+          />
           <IconButton
             icon="cog"  // Assuming "cog" is the name of your settings icon
             size={30}
@@ -213,7 +221,7 @@ const HomePage = ({navigation, route}) => {
             tabBarInactiveTintColor: 'gray',
             })}
         > 
-        <Tab.Screen name="Profile" component={ProfileTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail}}/>
+        <Tab.Screen name="Profile" component={ProfileTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail, user: user}}/>
         <Tab.Screen name="CreateAdd" component={CreateTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails }}/>
         <Tab.Screen name="Search" component={SearchTabStackScreens} options={{ headerShown: false }}/>
         
