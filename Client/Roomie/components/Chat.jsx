@@ -16,50 +16,71 @@ const Chat = ({navigation, route}) => {
   const [m, setM] = useState('');
   const [newMessage, setNewMessage] = useState('');
 
+
+
+
+  const [formattedMessages, setFormattedMessages] = useState([]);
+  const [yourMessageList, setYourMessageList] = useState([
+  ]);
+
   //const parentFolderRef = firebase.database().ref('parentFolder');
 
-console.log(user)
+//console.log(user)
 
   function writeUserData(userId, name, email, imageUrl) {
     const db = FIREBASE_DATABASE;
-
-
     set(ref(db, 'chats/' + uID+ '/' + generateChatID()), {
       senderID: uID,
-      email: '"8518d16c-c3df-4ead-b509-a0827e949c17"',
+      email: '8518d16c-c3df-4ead-b509-a0827e949c17',
       date : '01/01/23',
-      message: newMessage
+      message: 'Testing Gifted Chat'
     });
   }
 
 
-
-//   useEffect(() => {
-//     const dbRef = ref(getDatabase());
-//     get(child(dbRef, `chats/`+ uID)).then((snapshot) => {
-//       if (snapshot.exists()) {
-//         console.log(snapshot.val());
-//         setM(snapshot.val())
-//       } else {
-//         console.log("No data available");
-//       }
-//     }).catch((error) => {
-//       console.error(error);
-//     });
-// },[messages]);
-
 useEffect(() => {
-    const db = getDatabase();
+    const db = FIREBASE_DATABASE;
     const userId = FIREBASE_AUTH.currentUser.uid;
     return onValue(ref(db, `chats/`+ uID), (snapshot) => {
-      const username = (snapshot.val()) || 'Anonymous';
-      console.log(username)
+      const mes = (snapshot.val()) || 'Anonymous';
+      console.log(mes)
+      //setMessages(username)
+      const newFormattedMessages = Object.values(mes).map(messageObj => ({
+        _id: generateChatID(),
+        createdAt: messageObj.date,
+        text: messageObj.message,
+        user: {
+          _id: messageObj.senderID,
+          // Add other user properties as needed
+        }
+      
+      }));
+      setFormattedMessages(newFormattedMessages);
+      console.log(newFormattedMessages);
     }, {
    
     });
 },[uID]);
 
+// useEffect(() => {
+   
 
+//   }, [messages]);
+
+const handleFormat = async (mes) => {
+    const newFormattedMessages = Object.values(mes).map(messageObj => ({
+        _id: generateChatID(),
+        createdAt: messageObj.date,
+        text: messageObj.message,
+        user: {
+          _id: messageObj.senderID,
+          // Add other user properties as needed
+        }
+      
+      }));
+      setFormattedMessages(newFormattedMessages);
+      console.log(newFormattedMessages);
+};
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -85,22 +106,10 @@ useEffect(() => {
     })
 }, [navigation]);
 
-  useEffect(() => {
-    setMessages([
-        {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-                _id: 2,
-                name: 'React Native',
-                avatar: 'https://placeimg.com/140/140/any',
-            },
-        },
-    ])
-}, []);
+
 
   const onSend = useCallback((messages = []) => {
+    writeUserData()
     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
 }, []);
   return (
@@ -124,20 +133,20 @@ useEffect(() => {
     //  
     //   </View>
     // </View>
-<View>
+
         <GiftedChat
-                messages={messages}
+                messages={formattedMessages}
                 showAvatarForEveryMessage={true}
                 onSend={messages => onSend(messages)}
                 user={{
-                    _id: user?.email,
+                    _id: uID,
                     name: user?.displayName,
                     avatar: user?.photoURL
             }}
             
         />
-           <Button title="Send" onPress={writeUserData} />
-</View>
+      
+
   );
 };
 
