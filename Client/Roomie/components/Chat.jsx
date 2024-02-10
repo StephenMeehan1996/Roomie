@@ -10,7 +10,7 @@ import { generateChatID} from '../functions/CommonFunctions';
 
 
 const Chat = ({navigation, route}) => {
-  const { user} = route.params;
+ 
   const [uID, setUID] = useState(route.params.uID)
   const [messages, setMessages] = useState([]);
   const [m, setM] = useState('');
@@ -27,13 +27,16 @@ const Chat = ({navigation, route}) => {
 
 //console.log(user)
 
-  function writeUserData(userId, name, email, imageUrl) {
+  function writeUserData(messages) {
     const db = FIREBASE_DATABASE;
-    set(ref(db, 'chats/' + uID+ '/' + generateChatID()), {
-      senderID: uID,
-      email: '8518d16c-c3df-4ead-b509-a0827e949c17',
-      date : '01/01/23',
-      message: 'Testing Gifted Chat'
+    console.log(messages[0])
+    console.log(new Date(messages[0].createdAt));
+    //ref(db, 'chats/' + uID+ '/' + generateChatID()
+    set(ref(db, 'chats/123/' + generateChatID()), {
+        date : new Date(messages[0].createdAt).toISOString(),
+        senderID: uID,
+        email: '8518d16c-c3df-4ead-b509-a0827e949c17',
+        message: messages[0].text
     });
   }
 
@@ -41,21 +44,26 @@ const Chat = ({navigation, route}) => {
 useEffect(() => {
     const db = FIREBASE_DATABASE;
     const userId = FIREBASE_AUTH.currentUser.uid;
-    return onValue(ref(db, `chats/`+ uID), (snapshot) => {
+    //db, `chats/`+ uID
+    return onValue(ref(db, `chats/123`), (snapshot) => {
       const mes = (snapshot.val()) || 'Anonymous';
-      console.log(mes)
+      console.log('Here' + JSON.stringify(mes))
       //setMessages(username)
-      const newFormattedMessages = Object.values(mes).map(messageObj => ({
-        _id: generateChatID(),
-        createdAt: messageObj.date,
-        text: messageObj.message,
+      const newFormattedMessages = Object.keys(mes).map(key => ({
+        _id: key,
+        createdAt: mes[key].date,
+        text: mes[key].message,
         user: {
-          _id: messageObj.senderID,
+          _id: mes[key].senderID,
           // Add other user properties as needed
         }
-      
       }));
-      setFormattedMessages(newFormattedMessages);
+
+      const sortedMessages = newFormattedMessages.sort((a, b) => {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      }); 
+
+      setFormattedMessages(sortedMessages);
       console.log(newFormattedMessages);
     }, {
    
@@ -109,9 +117,12 @@ const handleFormat = async (mes) => {
 
 
   const onSend = useCallback((messages = []) => {
-    writeUserData()
-    setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+    //console.log(messages);
+    writeUserData(messages)
+    //setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
 }, []);
+
+
   return (
     // <View style={{ flex: 1 }}>
     //   <FlatList
@@ -140,8 +151,8 @@ const handleFormat = async (mes) => {
                 onSend={messages => onSend(messages)}
                 user={{
                     _id: uID,
-                    name: user?.displayName,
-                    avatar: user?.photoURL
+                    //name: user?.displayName,
+                   // avatar: user?.photoURL
             }}
             
         />
