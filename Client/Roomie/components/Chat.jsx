@@ -1,8 +1,9 @@
 import React,  { useEffect, useCallback, useState, useLayoutEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList } from 'react-native';
-import { getDatabase, ref, set,child, get } from "firebase/database";
+import { getDatabase, ref, set,child, get , onValue} from "firebase/database";
 import { GiftedChat } from 'react-native-gifted-chat';
 import { FIREBASE_AUTH,FIREBASE_DATABASE } from '../FirebaseConfig';
+import { generateChatID} from '../functions/CommonFunctions';
 
 
 
@@ -12,33 +13,51 @@ const Chat = ({navigation, route}) => {
   const { user} = route.params;
   const [uID, setUID] = useState(route.params.uID)
   const [messages, setMessages] = useState([]);
+  const [m, setM] = useState('');
   const [newMessage, setNewMessage] = useState('');
+
+  //const parentFolderRef = firebase.database().ref('parentFolder');
 
 console.log(user)
 
   function writeUserData(userId, name, email, imageUrl) {
     const db = FIREBASE_DATABASE;
-    set(ref(db, 'chats/' + uID), {
-      username: 'James Testy',
-      email: 'Test@test',
-      profile_picture : '///',
+
+
+    set(ref(db, 'chats/' + uID+ '/' + generateChatID()), {
+      senderID: uID,
+      email: '"8518d16c-c3df-4ead-b509-a0827e949c17"',
+      date : '01/01/23',
       message: newMessage
     });
   }
 
-  useEffect(() => {
-    const dbRef = ref(getDatabase());
-    get(child(dbRef, `chat`)).then((snapshot) => {
-      if (snapshot.exists()) {
-        console.log(snapshot.val());
-        //setMessages(snapshot.val())
-      } else {
-        console.log("No data available");
-      }
-    }).catch((error) => {
-      console.error(error);
+
+
+//   useEffect(() => {
+//     const dbRef = ref(getDatabase());
+//     get(child(dbRef, `chats/`+ uID)).then((snapshot) => {
+//       if (snapshot.exists()) {
+//         console.log(snapshot.val());
+//         setM(snapshot.val())
+//       } else {
+//         console.log("No data available");
+//       }
+//     }).catch((error) => {
+//       console.error(error);
+//     });
+// },[messages]);
+
+useEffect(() => {
+    const db = getDatabase();
+    const userId = FIREBASE_AUTH.currentUser.uid;
+    return onValue(ref(db, `chats/`+ uID), (snapshot) => {
+      const username = (snapshot.val()) || 'Anonymous';
+      console.log(username)
+    }, {
+   
     });
-}, [messages]);
+},[uID]);
 
 
 
@@ -102,10 +121,10 @@ console.log(user)
     //       value={newMessage}
     //       onChangeText={setNewMessage}
     //     />
-    //     <Button title="Send" onPress={writeUserData} />
+    //  
     //   </View>
     // </View>
-
+<View>
         <GiftedChat
                 messages={messages}
                 showAvatarForEveryMessage={true}
@@ -115,7 +134,10 @@ console.log(user)
                     name: user?.displayName,
                     avatar: user?.photoURL
             }}
+            
         />
+           <Button title="Send" onPress={writeUserData} />
+</View>
   );
 };
 

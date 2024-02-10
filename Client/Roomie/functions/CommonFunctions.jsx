@@ -135,6 +135,14 @@ export const generateUUID = () => {
 
 }
 
+export const generateChatID = () => {
+  return 'xxxxxx'.replace(/x/g, function() {
+    const r = Math.random() * 16 | 0;
+    const v = r < 10 ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
+
 export const getStorageLocation = (directory, filename) => {
   const storage = getStorage();
   // Create a reference to the file in Firebase Storage
