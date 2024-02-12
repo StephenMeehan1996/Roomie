@@ -30,11 +30,14 @@ export default function ChatList({navigation, route}) {
 
     }
 
-    const handleChatPress = (chatId) => {
+    const handleChatPress = (chatID) => {
     
-        console.log(chatId);
-        
-      };
+        console.log(chatID);
+            navigation.navigate('_chat', {  
+               chatID: chatID,
+               uID: uID 
+        });
+    };
 
     const renderItem = ({ item }) => (
         <TouchableOpacity onPress={() => handleChatPress(item.chatid)}>
@@ -56,11 +59,6 @@ export default function ChatList({navigation, route}) {
            const c = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${uID}`);
            setChats(c);
            console.log(c);
-
-           // returns images and names//
-        //    const getUsersDetails = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUser?uid=${UUID}`); 
-        //    setUserDetails(getUsersDetails[0]);
-
            setIsLoading(false);
 
          } catch (error) {
@@ -80,10 +78,10 @@ export default function ChatList({navigation, route}) {
             </View>
          ) : (
          <>
-            <Card elevation={5} style={styles.card}>
+          <Card elevation={5} style={styles.card}>
                 <Card.Content>
                     <View style={styles.header}>
-                        <Title style={styles.title}>Active Chats</Title>
+                      
                         <IconButton
                             icon="arrow-left"
                             mode="text"
@@ -94,7 +92,16 @@ export default function ChatList({navigation, route}) {
                     </View>
                 </Card.Content>
             </Card>
-
+          {chats.length === 0 ? (
+            <Card elevation={5} style={styles.card}>
+            <Card.Content>
+                <View style={styles.header}>
+                    <Title style={styles.title}>No Active Chats</Title>
+                    </View>
+                    </Card.Content>
+                    </Card>
+             ) : (
+            <>
             <Card elevation={5} style={styles.card}>
                 <Card.Content>
                 <View>  
@@ -106,9 +113,12 @@ export default function ChatList({navigation, route}) {
                 </View>
             </Card.Content>
             </Card>
-         </>
-         )}
+            </>
+           )}
+       </>
+      )}
     </View>
+  
   )
 
   
