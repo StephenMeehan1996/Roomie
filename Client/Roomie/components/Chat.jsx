@@ -4,13 +4,15 @@ import { getDatabase, ref, set,child, get , onValue} from "firebase/database";
 import { Modal, Portal, Title, Paragraph, Card,IconButton, MD3Colors, Chip, Avatar, Subheading  } from 'react-native-paper';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { FIREBASE_AUTH,FIREBASE_DATABASE } from '../FirebaseConfig';
-import { generateChatID,returnSelectedProfileImage} from '../functions/CommonFunctions';
+import { generateChatID,returnSelectedProfileImage,generateUUID} from '../functions/CommonFunctions';
 import  styles  from '../styles/common.style';
+import callLambdaFunction from '../functions/PostAPI';
 
 
 const Chat = ({navigation, route}) => {
-  const {userDetails, userImages, chatID} = route?.params
+  const {userDetails, userImages, uID2} = route?.params
   const [uID, setUID] = useState(route.params.uID)
+  const [chatID, setChatID] = useState(route.params.chatID)
   const [profileImage, setProfileImage] = useState(null);
   const [formattedMessages, setFormattedMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,6 +31,15 @@ const Chat = ({navigation, route}) => {
     });
   }
 
+  // from addetail component // 
+  // Click on message now // 
+  // Pass UUID of second user to chat component as well as the users chats // 
+  // Send flag from add detail component // 
+  // Check chats list if Clicked on user id is user1 or user2 // 
+  // if so return chatid // 
+  // Else create and post chat record // 
+  // set chat id and use in refererence // 
+
   useEffect(() => {
     const setSelectedImages = async () => {
      try {
@@ -43,12 +54,22 @@ const Chat = ({navigation, route}) => {
    // Call the fetchData function
    setSelectedImages();
  }, [userImages]);
-
+//3f0347ec-3169-490b-9e8b-802317a3e212
 useEffect(() => {
     const db = FIREBASE_DATABASE;
-
-    // If passed in ChatID is N/A Create Object // 
-
+        const PostChatRecord = async () => {
+            if(chatID == 'N/A'){ // wip 
+            const chatRecord = {
+                chatID: generateUUID(),
+                user1: uID,
+                //user2: uID2,
+                user2: '3f0347ec-3169-490b-9e8b-802317a3e212'
+            };
+            setChatID(chatRecord.chatID);
+            let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
+            console.log(res);
+        }
+    }
 
     // Post ChatRecord // 
     // Set Chat ID // 
@@ -77,6 +98,9 @@ useEffect(() => {
     }, {
    
     });
+
+    PostChatRecord();
+
 },[uID]);
 
 

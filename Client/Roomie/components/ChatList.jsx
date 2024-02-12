@@ -22,8 +22,7 @@ export default function ChatList({navigation, route}) {
     const [userDetails, setUserDetails] = useState([]);
     
 
-    //Insert Chat: https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat
-    //
+   
     const locateCreateChat = () => {
 
    
