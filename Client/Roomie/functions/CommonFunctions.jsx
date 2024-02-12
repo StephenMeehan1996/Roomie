@@ -76,7 +76,7 @@ export const smoking =  (type) => {
        
         default:
             return
-            break;
+        break;
     }
 
 };
@@ -142,6 +142,21 @@ export const generateChatID = () => {
     return v.toString(16);
   });
 };
+
+export const convertToDateTimeString = (val) =>{
+
+  const date = new Date(val);
+
+
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; 
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+
+    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
 
 export const getStorageLocation = (directory, filename) => {
   const storage = getStorage();

@@ -239,6 +239,30 @@ const styles = StyleSheet.create({
       selectedTab: {
         borderColor: 'blue',
       },
+
+      chatItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+      },
+      profileImage: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+      },
+      chatDetails: {
+        flex: 1,
+        marginLeft: 10,
+      },
+      username: {
+        fontWeight: 'bold',
+        fontSize: 16,
+      },
+      lastMessageDate: {
+        color: '#666',
+      },
  
   });
 

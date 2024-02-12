@@ -20,6 +20,7 @@ import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import ManagePreferences from './ManagePreferences';
 import ManageMessages from './ManageMessages';
 import Chat from './Chat';
+import ChatList from './ChatList';
 
 const Tab = createBottomTabNavigator();
 
@@ -48,6 +49,7 @@ function ProfileTabStackScreens({ route }) {
       <SecondTabStack.Screen name="_manageImages" component={ManageProfileImages} initialParams={{ userImages: userImages, userID : userID, uid: uid }} />
       <SecondTabStack.Screen name="_managePreferences" component={ManagePreferences} initialParams={{ uID: uID, userDetails: userDetails}} />
       <SecondTabStack.Screen name="_manageMessages" component={ManageMessages}initialParams={{ uID: uID, userDetails: userDetails}}/>
+      <SecondTabStack.Screen name="_chatList" component={ChatList}initialParams={{ uID: uID}}/>
       <SecondTabStack.Screen name="_chat" component={Chat}initialParams={{ uID: uID, userDetails: userDetails,userImages: userImages}}/>
     </SecondTabStack.Navigator>
   );
@@ -144,7 +146,7 @@ const HomePage = ({navigation, route}) => {
             icon="message"  // Assuming "cog" is the name of your settings icon
             size={30}
             style={{marginHorizontal: 0}}
-            onPress={() => nextPage("_chat")} 
+            onPress={() => nextPage("_chatList")} 
           />
           <IconButton
             icon="cog"  // Assuming "cog" is the name of your settings icon
