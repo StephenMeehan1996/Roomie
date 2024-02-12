@@ -22,11 +22,11 @@ const OutsideStack = createNativeStackNavigator();
 
 const InsideLayout = ({ route }) => {
 
-  const {email, user} = route.params;
+  const {email} = route.params;
 
   return (
     <InsideStack.Navigator initialRouteName='HomePage' screenOptions={{ headerShown: false }}>
-      <InsideStack.Screen name="HomePage" component={HomePage} initialParams={{ email: email, user: user }} />
+      <InsideStack.Screen name="HomePage" component={HomePage} initialParams={{ email: email}} />
     </InsideStack.Navigator>
   );
 };

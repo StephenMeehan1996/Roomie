@@ -37,7 +37,7 @@ function SearchTabStackScreens() {
 
 function ProfileTabStackScreens({ route }) {
 
-  const { uID, userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail, user } = route.params;
+  const { uID, userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail } = route.params;
   const userID = userDetails._userid;
   const uid = userDetails.useridentifier
 
@@ -48,7 +48,7 @@ function ProfileTabStackScreens({ route }) {
       <SecondTabStack.Screen name="_manageImages" component={ManageProfileImages} initialParams={{ userImages: userImages, userID : userID, uid: uid }} />
       <SecondTabStack.Screen name="_managePreferences" component={ManagePreferences} initialParams={{ uID: uID, userDetails: userDetails}} />
       <SecondTabStack.Screen name="_manageMessages" component={ManageMessages}initialParams={{ uID: uID, userDetails: userDetails}}/>
-      <SecondTabStack.Screen name="_chat" component={Chat}initialParams={{ uID: uID, userDetails: userDetails, user}}/>
+      <SecondTabStack.Screen name="_chat" component={Chat}initialParams={{ uID: uID, userDetails: userDetails,userImages: userImages}}/>
     </SecondTabStack.Navigator>
   );
 }
