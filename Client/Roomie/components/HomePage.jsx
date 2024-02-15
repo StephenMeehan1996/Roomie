@@ -26,12 +26,15 @@ const Tab = createBottomTabNavigator();
 
 const SecondTabStack = createNativeStackNavigator();
 
-function SearchTabStackScreens() {
+function SearchTabStackScreens({ route }) {
+  const { uID,userDetails,userImages} = route.params;
+
   return (
     <SecondTabStack.Navigator initialRouteName='_Search' screenOptions={{headerShown: false}}>
       <SecondTabStack.Screen name="_Search" component={Search} />
       <SecondTabStack.Screen name="_SearchResults" component={SearchResults} />
-      <SecondTabStack.Screen name="_AddDetail" component={AddDetail} />
+      <SecondTabStack.Screen name="_AddDetail" component={AddDetail} initialParams={{ uID: uID}} />
+      <SecondTabStack.Screen name="_chat" component={Chat}initialParams={{ uID: uID, userDetails: userDetails,userImages: userImages}}/>
     </SecondTabStack.Navigator>
   );
 }
@@ -71,7 +74,7 @@ function CreateTabStackScreens({ route }) {
 
 const HomePage = ({navigation, route}) => {
 
-  const { email, user } = route.params;
+  const { email } = route.params;
 
   const [uID, setUID] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
@@ -223,9 +226,9 @@ const HomePage = ({navigation, route}) => {
             tabBarInactiveTintColor: 'gray',
             })}
         > 
-        <Tab.Screen name="Profile" component={ProfileTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail, user: user}}/>
+        <Tab.Screen name="Profile" component={ProfileTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail}}/>
         <Tab.Screen name="CreateAdd" component={CreateTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails }}/>
-        <Tab.Screen name="Search" component={SearchTabStackScreens} options={{ headerShown: false }}/>
+        <Tab.Screen name="Search" component={SearchTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages,}}/>
         
       </Tab.Navigator>
 

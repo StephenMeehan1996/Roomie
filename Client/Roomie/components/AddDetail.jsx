@@ -8,14 +8,16 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { returnAdTypeText, references, smoking } from '../functions/CommonFunctions';
 import useFetchData from '../functions/GetAPI';
-import { calculateReviewStats, digsMeals, returnSelectedProfileImage,returnSelectedCoverImage } from '../functions/CommonFunctions';
+import { calculateReviewStats, digsMeals, returnSelectedProfileImage,returnSelectedCoverImage, generateUUID } from '../functions/CommonFunctions';
 import  styles  from '../styles/common.style';
+import callLambdaFunction from '../functions/PostAPI';
 
 
 const AddDetail = ({navigation, route}) =>{
   //const route = useRoute(); // not sure why I need route here? 
 
   const {ad, images} = route.params;
+  const [uID, setUID] = useState(route.params.uID);
   console.log(ad);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedTab, setSelectedTab] = useState('Tab1');
@@ -26,9 +28,14 @@ const AddDetail = ({navigation, route}) =>{
   const [posterImages, setPosterImages] = useState(null);
   const [posterDetail, setPosterDetail] = useState(null);
 
+  const [chats, setChats] = useState([]);
+  const [forceRefresh, setForceRefresh] = useState(false);
+
 
   const [profileImage, setProfileImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
+
+  console.log(chats);
 
 
 
@@ -43,6 +50,77 @@ const AddDetail = ({navigation, route}) =>{
     setMessage(value);
   };
 
+  useEffect(() => {
+    setIsLoading(true)
+
+    const fetchData = async () => { 
+     try {
+      const getChats = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${uID}`);
+      setChats(getChats);
+       setIsLoading(false);
+
+     } catch (error) {
+       console.error('Error fetching data:', error);
+       setIsLoading(false);
+     }
+   };
+
+   fetchData();
+ },[uID,forceRefresh]);
+
+  const handleChat = async ()  =>{
+  // from addetail component // 
+  // Click on message now // 
+  // Pass UUID of second user to chat component as well as the users chats // 
+  // Send flag from add detail component // 
+  // Check chats list if Clicked on user id is user1 or user2 // 
+  // if so return chatid // 
+  // Else create and post chat record // 
+  // set chat id and use in refererence // 
+
+  let c;
+
+  if (!chats || chats.length === 0) {
+    c = generateUUID();
+    const chatRecord = {
+      chatID: c,
+      user1: uID,
+      user2: ad.useridentifier
+    };
+
+    let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
+    setForceRefresh(prev => !prev); // triggers refresh after post
+  }
+
+  else if(chats.length > 0){
+
+      const matchingChatRecord = chats.find(record => record.user1 === ad.useridentifier || record.user2 === ad.useridentifier);
+
+      if(matchingChatRecord){
+
+        c = matchingChatRecord.chatid
+        console.log(c);
+
+      }
+      else{
+        c = generateUUID();
+        const chatRecord = {
+          chatID: c,
+          user1: uID,
+          user2: ad.useridentifier
+        };
+      
+        let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
+        setForceRefresh(prev => !prev); // triggers refresh after post
+    }
+
+  }
+ 
+      navigation.navigate('_chat', {  
+        chatID: c,
+        uID: uID 
+    });
+  }
 
   const handleSendMessage = () => {
     // Handle sending the message here
@@ -231,6 +309,15 @@ const AddDetail = ({navigation, route}) =>{
                       <Paragraph>
                          {posterDetail.bio}
                       </Paragraph>
+                      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
+                            <Button
+                              icon="email"
+                              mode="outlined"
+                              style={{ width: 150 }}
+                              onPress={() => handleChat()}>
+                              Message
+                            </Button>
+                      </View>
                     </Card.Content>
                   </Card>
           </Card.Content>

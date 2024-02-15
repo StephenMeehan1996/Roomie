@@ -22,16 +22,7 @@ export default function ChatList({navigation, route}) {
     const [userDetails, setUserDetails] = useState([]);
     
 
-   
-    const locateCreateChat = () => {
-
-   
-
-    }
-
     const handleChatPress = (chatID) => {
-    
-        console.log(chatID);
             navigation.navigate('_chat', {  
                chatID: chatID,
                uID: uID 

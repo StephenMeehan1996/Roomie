@@ -68,7 +68,7 @@ const Home =  ({navigation, route}) =>{
         <SafeAreaView style={{flex: 1}}>
             <NavigationContainer  independent={true}>
                 <Stack.Navigator initialRouteName='Home' screenOptions={{headerShown: false}} >
-                    {user ? <Stack.Screen name='Inside' component={InsideLayout}  initialParams={{ email: user.email, user: user }} /> : <Stack.Screen name='OutsideLayout' component={OutsideLayout}/> }
+                    {user ? <Stack.Screen name='Inside' component={InsideLayout}  initialParams={{ email: user.email }} /> : <Stack.Screen name='OutsideLayout' component={OutsideLayout}/> }
                 </Stack.Navigator>
             </NavigationContainer>
         </SafeAreaView>
