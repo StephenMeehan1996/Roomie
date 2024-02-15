@@ -38,8 +38,8 @@ const AddDetail = ({navigation, route}) =>{
   const [profileImage, setProfileImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
 
-  console.log(JSON.stringify(ad));
-  console.log(uID);
+  //console.log(JSON.stringify(ad));
+  //console.log(uID);
 
 
     const [selectedMessage, setSelectedMessage] = useState('');
@@ -193,7 +193,20 @@ const AddDetail = ({navigation, route}) =>{
 }, [posterImages]);
 
 const handleApply = async () =>{
-  //Post : https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/AdApplications
+    let application = {
+      adID : ad.addid,
+      uid: uID,
+      message: messageBody,
+    }
+
+    setIsLoading(true)
+      try {
+        let res = await callLambdaFunction(application, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/AdApplications');
+        console.log(res);
+    } catch (error) {
+        console.error('An error occurred:', error);
+    }
+    setIsLoading(false);
 }
  
   const renderTabContent = () => {
