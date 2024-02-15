@@ -10,8 +10,10 @@ import { DatePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { MultiSelect, Dropdown } from 'react-native-element-dropdown';
 
-const Ad = ({ad, images, navigation, route}) => {
+const Ad = ({ad, images, uID, navigation, route}) => {
   
+
+
   if (!ad) {
     return null; // Return null if the ad object or title property is undefined
   }
@@ -34,9 +36,12 @@ const Ad = ({ad, images, navigation, route}) => {
       const nextPage = () => {
         navigation.navigate('_AddDetail', {  
             ad: ad,
-            images: images 
+            images: images, 
+            uID : uID
         });
       };
+
+
 
     //   const nextPage = (values) => {
     //     console.log(values);

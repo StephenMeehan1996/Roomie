@@ -11,6 +11,7 @@ import useFetchData from '../functions/GetAPI';
 import { calculateReviewStats, digsMeals, returnSelectedProfileImage,returnSelectedCoverImage, generateUUID } from '../functions/CommonFunctions';
 import  styles  from '../styles/common.style';
 import callLambdaFunction from '../functions/PostAPI';
+import  formStyles  from '../styles/formStyle.style';
 
 
 const AddDetail = ({navigation, route}) =>{
@@ -18,11 +19,11 @@ const AddDetail = ({navigation, route}) =>{
 
   const {ad, images} = route.params;
   const [uID, setUID] = useState(route.params.uID);
-  console.log(ad);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedTab, setSelectedTab] = useState('Tab1');
+  const [selectedApplicationTab, setSelectedApplicationTab] = useState('Tab1');
   const [selectedOption, setSelectedOption] = useState('');
-  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState('');
   const [adPosterDetail, setAdPosterDetail] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [posterImages, setPosterImages] = useState(null);
@@ -35,19 +36,23 @@ const AddDetail = ({navigation, route}) =>{
   const [profileImage, setProfileImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
 
-  console.log(chats);
+  console.log(JSON.stringify(ad));
+  console.log(uID);
+
+
+    const [selectedMessage, setSelectedMessage] = useState('');
+    const [messageTitle, setMessageTitle] = useState('');
+    const [messageBody, setMessageBody] = useState('');
 
 
 
-  const dropdownOptions = [
-                            {label:'Intro Message 1', value:'Hello! Im a passionate and dedicated student eager to embark on a journey of knowledge and discovery. My academic pursuits revolve around computer science and technology, with a keen interest in AI and software development.'},
-                            {label:'Intro Message 2', value:'placeholder'},
-                            {label:'Intro Message 3', value:'placeholder'},
-                          ];
-
-  const handleDropdownSelect = (value) => {
-    setSelectedOption(value);
-    setMessage(value);
+  const handleDropdownSelect = (id) => {
+    const mes  = messages.find((item) => item.usepresavedmessageid === parseInt(id));
+    console.log(mes.messagetitle);
+    setSelectedOption(id);
+    setSelectedMessage(mes);
+    setMessageTitle(mes.messagetitle)
+    setMessageBody(mes.messagebody)
   };
 
   useEffect(() => {
@@ -66,18 +71,36 @@ const AddDetail = ({navigation, route}) =>{
    };
 
    fetchData();
- },[uID,forceRefresh]);
+ },[uID]);
+
+ useEffect(() => {
+  setIsLoading(true)
+
+  const fetchData = async () => { 
+   try {
+     const m = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomiePresavedMessages?uid=${uID}`);
+     setMessages(m);
+
+     if(m){
+       setSelectedOption(messages[0].usepresavedmessageid);
+       setMessageTitle(messages[0].messagetitle);
+       setMessageBody(messages[0].messagebody);
+     }
+   
+ 
+     console.log('Mess' + m);
+     setIsLoading(false);
+
+   } catch (error) {
+     console.error('Error fetching data:', error);
+     setIsLoading(false);
+   }
+ };
+
+ fetchData();
+},[uID]);
 
   const handleChat = async ()  =>{
-  // from addetail component // 
-  // Click on message now // 
-  // Pass UUID of second user to chat component as well as the users chats // 
-  // Send flag from add detail component // 
-  // Check chats list if Clicked on user id is user1 or user2 // 
-  // if so return chatid // 
-  // Else create and post chat record // 
-  // set chat id and use in refererence // 
-
   let c;
 
   if (!chats || chats.length === 0) {
@@ -166,6 +189,10 @@ const AddDetail = ({navigation, route}) =>{
 
  setSelectedImages();
 }, [posterImages]);
+
+const handleApply = async () =>{
+
+}
  
   const renderTabContent = () => {
     switch (selectedTab) {
@@ -329,79 +356,75 @@ const AddDetail = ({navigation, route}) =>{
           <View style={styles.tabContent}>
           <Card elevation={5} style={styles.card}>
             <Card.Content>
-             <View>  
-              <Card style={styles.card}>
-                <Card.Content>
-                 <Paragraph>Select from saved messages:</Paragraph>
+
+
+            {messages.length > 0 ? (
+                  <>
+                  <Paragraph>Select from saved messages:</Paragraph>
                  <Picker
                   style={styles.input}
                   selectedValue={selectedOption}
                   onValueChange={(itemValue, itemIndex) => handleDropdownSelect(itemValue)}
                  >
-                  {dropdownOptions.map((option, index) => (
-                    <Picker.Item label={option.label} value={option.value} key={index} />
+                  {messages.map((message, index) => (
+                    <Picker.Item label={message.messagetitle} value={message.usepresavedmessageid} key={index} />
                   ))}
+
                 </Picker>
+                </>
+                    ) :(
+                     <View></View>
+                    )}
+                <View >
+                   <Text style={formStyles.label}>Message Title:</Text>
+                    <TextInput
+                        style={formStyles.input}
+                        placeholder="Enter Message Title"
+                        value={messageTitle}
+                        onChangeText={(text) => setMessageTitle(text)}
+                    />   
+                </View>
                    <TextInput
                     style={styles.input}
                     multiline
                     numberOfLines={5}   
                     placeholder="Type your bio here..."
                     label="Message"
-                    value={message}
+                    value={messageBody}
+                    onChangeText={(text) => setMessageBody(text)}
+                   
                   />
-                  <Button mode="contained" onPress={handleSendMessage} style={styles.button}>
-                    Apply To Ad
-                  </Button>
+                 <View style={styles.buttonContainer2}>
+                    <Button
+                        mode="contained"
+                        onPress={handleApply}
+                        style={ { marginRight: 10, borderRadius: 0 }} // Adjust margin as needed
+                      
+                    >
+                        Apply
+                    </Button>
+                    
+                    </View>
+                  
                 </Card.Content>
+
+
               </Card>
             </View>
-           </Card.Content>
-         </Card>
-       </View>
+           
+
         );
       default:
         return null;
     }
   };
 
-  const navigateImage = (step) => {
-    // Calculate the next image index
-    let newIndex = selectedImageIndex + step;
-    
-    // Ensure the index stays within bounds
-    if (newIndex < 0) {
-      newIndex = images.length - 1;
-    } else if (newIndex >= images.length) {
-      newIndex = 0;
-    }
-    
-    setSelectedImageIndex(newIndex);
-  };
-
-  return (
-    <ScrollView>
-    {isLoading?  
-      <View style={[styles.loadingContainer, {marginTop: 200}]}>
-        <ActivityIndicator size="large" color="#6200EE" />
-      </View>
-            : <>
-  
-    <View >
-    <Card elevation={5} style={styles.card}>
-              <Card.Content>
-                <View style={styles.header}>
-                  <IconButton
-                      icon="arrow-left"
-                      mode="text"
-                      size={30}
-                      style={{flex:1,alignItems: 'flex-end'}}
-                      onPress={() => navigation.goBack()}>
-                  </IconButton>
-                </View>
-              </Card.Content>
-            </Card>
-    <Card elevation={5} style={styles.card}>
+  const renderApplicationTabContent = () => {
+    switch (selectedApplicationTab) {
+      case 'Tab1':
+        return (
+          <View >
+            <Card elevation={5} style={styles.card}>
       <Card.Content style={{paddingTop: 0}}>
         <View style={styles.imageViewer}>
             <Image source={{ uri: images[selectedImageIndex].ImageURL }} style={[styles.fullScreenImage, {  height: 245}]} />
@@ -475,8 +498,94 @@ const AddDetail = ({navigation, route}) =>{
 
       {renderTabContent()}
     </View>
+            
+          </View>
+        );
+      case 'Tab2':
+        return (
+          <View style={styles.tabContent}>
+          
+       </View>
+        );
+      case 'Tab3':
+        return (
+          <View style={styles.tabContent}>
+         
+            </View>
+           
 
+        );
+      default:
+        return null;
+    }
+  };
+
+  const navigateImage = (step) => {
+    // Calculate the next image index
+    let newIndex = selectedImageIndex + step;
+    
+    // Ensure the index stays within bounds
+    if (newIndex < 0) {
+      newIndex = images.length - 1;
+    } else if (newIndex >= images.length) {
+      newIndex = 0;
+    }
+    
+    setSelectedImageIndex(newIndex);
+  };
+
+  return (
+    <ScrollView>
+    {isLoading?  
+      <View style={[styles.loadingContainer, {marginTop: 200}]}>
+        <ActivityIndicator size="large" color="#6200EE" />
+      </View>
+            : <>
+  
+    <View >
+    <Card elevation={5} style={styles.card}>
+              <Card.Content>
+                <View style={styles.header}>
+                
+                
+                {ad.useridentifier === uID && (
+                    <View style={[styles.tabButtons, { width: 250 }]}>
+                      <TouchableOpacity
+                        style={[
+                          styles.tabButton,
+                          selectedApplicationTab === 'Tab1' && styles.selectedTab,
+                        ]}
+                        onPress={() => setSelectedApplicationTab('Tab1')}
+                      >
+                        <Text>Advertisement</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[
+                          styles.tabButton,
+                          selectedApplicationTab === 'Tab2' && styles.selectedTab,
+                        ]}
+                        onPress={() => setSelectedApplicationTab('Tab2')}
+                      >
+                        <Text>Applications</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+
+
+
+                  <IconButton
+                      icon="arrow-left"
+                      mode="text"
+                      size={30}
+                      style={{flex:1,alignItems: 'flex-end'}}
+                      onPress={() => navigation.goBack()}>
+                  </IconButton>
+                </View>
+                
+              </Card.Content>
+            </Card>
     </View>
+    {renderApplicationTabContent()}
 
   </>}   
   </ScrollView>

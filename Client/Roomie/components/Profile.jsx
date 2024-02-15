@@ -58,13 +58,15 @@ const Profile = ({ navigation, route }) => {
         const adImages = userAdImages.filter((image) => image.AddID === ad.addid);
 
         return (
-          <TouchableOpacity key={ad.addid} onPress={() => nextPage(ad)}>
-            <Ad ad={ad} images={adImages} navigation={navigation} />
+          <TouchableOpacity key={ad.addid} >
+            <Ad ad={ad} images={adImages} navigation={navigation} uID={uID}/>
           </TouchableOpacity>
         );
       };
       
-     
+    const nextPage = () =>{
+      alert('test')
+    } 
   return (
     
     <ScrollView>

@@ -12,7 +12,7 @@ import { returnAdTypeText } from '../functions/CommonFunctions';
 
 const Search = ({navigation, route}) => {
 
-        const [searchQuery, setSearchQuery] = useState('');
+        const [searchQuery, setSearchQuery] = useState('Sligo');
         const [searchResult, setSearchResult] = useState(null);
         const [uploading, setUploading] = useState(false);
         const [locations, setLocations] = useState([]);
