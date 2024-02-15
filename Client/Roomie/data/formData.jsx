@@ -114,6 +114,13 @@ const genderOptions = [
     { label: 'Full Week', value: 'Full Week' }
   ];
 
+  const filterBy = [
+    { label:'Select an option', value:"" },
+    { label: 'Percentage Match', value: 'Percentage Match' },
+    { label: 'Review Rating', value: 'Review Rating' },
+    { label: 'Date', value: 'Date' }
+  ];
+
   const irishCounties = [
     { label:'Select county', value: "" },
     { label: 'Antrim', value: 'Antrim' },
@@ -166,5 +173,6 @@ const genderOptions = [
           days,
           irishCounties,
           orderBy,
-          radius
+          radius,
+          filterBy
         };

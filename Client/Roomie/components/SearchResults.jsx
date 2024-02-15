@@ -14,7 +14,7 @@ import { returnAdTypeNum } from '../functions/CommonFunctions';
 
 const SearchResults = ({navigation, route}) => {
 
-      const {searchValue, countyLocations} = route.params;
+      const {searchValue, countyLocations, uID} = route.params;
       let {detail, images } = route.params;
       countyLocations.sort((a, b) => a.locationvalue.length - b.locationvalue.length); // sort so county appears first
 
@@ -60,7 +60,7 @@ const SearchResults = ({navigation, route}) => {
 
         return (
           <TouchableOpacity key={ad.addid} >
-            <Ad ad={ad} images={adImages} navigation={navigation} />
+            <Ad ad={ad} images={adImages} navigation={navigation} uID={uID}/>
           </TouchableOpacity>
         );
       };

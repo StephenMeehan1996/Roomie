@@ -11,7 +11,7 @@ import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import { returnAdTypeText } from '../functions/CommonFunctions';
 
 const Search = ({navigation, route}) => {
-
+  const { uID } = route.params;
         const [searchQuery, setSearchQuery] = useState('Sligo');
         const [searchResult, setSearchResult] = useState(null);
         const [uploading, setUploading] = useState(false);
@@ -99,7 +99,8 @@ const Search = ({navigation, route}) => {
                   searchValue: searchValue,
                   countyLocations: countyLoc,
                   detail: detail,
-                  images: images
+                  images: images,
+                  uID: uID
                 });
               } else {
                 setUploading(false);

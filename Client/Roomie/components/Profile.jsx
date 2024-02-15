@@ -96,7 +96,8 @@ const Profile = ({ navigation, route }) => {
           <Text style={styles.infoText}>Active Adds: {userAdDetail.length}</Text>
           <Text style={styles.infoText}>Rating: {calculateReviewStats(userDetails.numreviews, userDetails.positivereview)}</Text>
         </View>
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginVertical: 10 }}>
+        {userDetails.useridentifier !== uID && (
           <Button
             icon="email"
             mode="outlined"
@@ -104,6 +105,7 @@ const Profile = ({ navigation, route }) => {
             onPress={() => console.log('Message button pressed')}>
             Message
           </Button>
+        )}
           <Button
             icon="text-box"
             mode="outlined"

@@ -130,6 +130,15 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: '#6200EE'
       },
+      button: {
+        backgroundColor: '#FFFFFF', 
+        padding: 10,
+        borderRadius: 10,
+        minWidth: 80,
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: '#6200EE'
+      },
       selectedButton: {
         backgroundColor: '#6200EE'
       },

@@ -12,6 +12,8 @@ import { calculateReviewStats, digsMeals, returnSelectedProfileImage,returnSelec
 import  styles  from '../styles/common.style';
 import callLambdaFunction from '../functions/PostAPI';
 import  formStyles  from '../styles/formStyle.style';
+import ManageAd from './ManageAd';
+import AdApplications from './AdApplications';
 
 
 const AddDetail = ({navigation, route}) =>{
@@ -191,7 +193,7 @@ const AddDetail = ({navigation, route}) =>{
 }, [posterImages]);
 
 const handleApply = async () =>{
-
+  //Post : https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/AdApplications
 }
  
   const renderTabContent = () => {
@@ -425,93 +427,95 @@ const handleApply = async () =>{
         return (
           <View >
             <Card elevation={5} style={styles.card}>
-      <Card.Content style={{paddingTop: 0}}>
-        <View style={styles.imageViewer}>
-            <Image source={{ uri: images[selectedImageIndex].ImageURL }} style={[styles.fullScreenImage, {  height: 245}]} />
-            <View style={styles.buttonContainer}>
-                <IconButton
-                        icon="chevron-left"
-                        mode="text"
-                        size={60}
-                        iconColor='white'
-                        style={{marginLeft: -40}}
-                        onPress={() => navigateImage(-1)}>
-                </IconButton>
+                <Card.Content style={{paddingTop: 0}}>
+                  <View style={styles.imageViewer}>
+                      <Image source={{ uri: images[selectedImageIndex].ImageURL }} style={[styles.fullScreenImage, {  height: 245}]} />
+                      <View style={styles.buttonContainer}>
+                          <IconButton
+                                  icon="chevron-left"
+                                  mode="text"
+                                  size={60}
+                                  iconColor='white'
+                                  style={{marginLeft: -40}}
+                                  onPress={() => navigateImage(-1)}>
+                          </IconButton>
+                          
+                          <IconButton
+                                  icon="chevron-right"
+                                  mode="text"
+                                  iconColor='white'
+                                  style={{marginRight: -40}}
+                                  size={60}
+                                  onPress={() => navigateImage(1)}>
+                          </IconButton>
+                      </View>
+                  </View>
+                  <View style={styles.counter}>
+                    <Text>{selectedImageIndex + 1}/{images.length}</Text>
+                  </View>
+                  <View>
+                    <Title>Beautiful Property</Title>
+                    <Paragraph>2 Bedrooms | 2 Bathrooms | 1500 sqft</Paragraph>
+                    <Paragraph>€{ad.price}</Paragraph>
+                    <Paragraph style={styles.addressText}>{ad.addressline1}</Paragraph>
+                    <Paragraph style={styles.addressText}>{ad.addressline2}</Paragraph>
+                    <Paragraph style={styles.addressText}>{ad.city}</Paragraph>
+                    <Paragraph style={styles.addressText}>{ad.county}</Paragraph>
+                    </View>
+                </Card.Content>
+             </Card>
+
+              <View >
+              {ad.useridentifier !== uID && (
+              <View style={styles.tabButtons}>
+                <TouchableOpacity
+                  style={[
+                    styles.tabButton,
+                    selectedTab === 'Tab1' && styles.selectedTab,
+                  ]}
+                  onPress={() => setSelectedTab('Tab1')}
+                >
+                        <Text>Description</Text>
+                      
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.tabButton,
+                    selectedTab === 'Tab2' && styles.selectedTab,
+                  ]}
+                  onPress={() => setSelectedTab('Tab2')}
+                >
+                  <Text>Add Poster</Text>
                 
-                <IconButton
-                        icon="chevron-right"
-                        mode="text"
-                        iconColor='white'
-                        style={{marginRight: -40}}
-                        size={60}
-                        onPress={() => navigateImage(1)}>
-                </IconButton>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.tabButton,
+                    selectedTab === 'Tab3' && styles.selectedTab,
+                  ]}
+                  onPress={() => setSelectedTab('Tab3')}
+                >
+                  <Text>Contact</Text>
+                </TouchableOpacity>
+              </View>
+              )}
+
+              {renderTabContent()}
             </View>
-        </View>
-        <View style={styles.counter}>
-          <Text>{selectedImageIndex + 1}/{images.length}</Text>
-        </View>
-        <View>
-          <Title>Beautiful Property</Title>
-          <Paragraph>2 Bedrooms | 2 Bathrooms | 1500 sqft</Paragraph>
-          <Paragraph>€{ad.price}</Paragraph>
-          <Paragraph style={styles.addressText}>{ad.addressline1}</Paragraph>
-          <Paragraph style={styles.addressText}>{ad.addressline2}</Paragraph>
-          <Paragraph style={styles.addressText}>{ad.city}</Paragraph>
-          <Paragraph style={styles.addressText}>{ad.county}</Paragraph>
-          </View>
-      </Card.Content>
-      </Card>
-
-      <View >
-      <View style={styles.tabButtons}>
-        <TouchableOpacity
-          style={[
-            styles.tabButton,
-            selectedTab === 'Tab1' && styles.selectedTab,
-          ]}
-          onPress={() => setSelectedTab('Tab1')}
-        >
-                <Text>Description</Text>
-              
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.tabButton,
-            selectedTab === 'Tab2' && styles.selectedTab,
-          ]}
-          onPress={() => setSelectedTab('Tab2')}
-        >
-          <Text>Add Poster</Text>
-        
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.tabButton,
-            selectedTab === 'Tab3' && styles.selectedTab,
-          ]}
-          onPress={() => setSelectedTab('Tab3')}
-        >
-          <Text>Contact</Text>
-        </TouchableOpacity>
-      </View>
-
-      {renderTabContent()}
-    </View>
             
           </View>
         );
       case 'Tab2':
         return (
-          <View style={styles.tabContent}>
-          
-       </View>
+        <View style={styles.tabContent}>
+          <AdApplications/>
+        </View>
         );
       case 'Tab3':
         return (
           <View style={styles.tabContent}>
-         
-            </View>
+            <ManageAd ad = {ad}/>
+         </View>
            
 
         );
@@ -541,15 +545,12 @@ const handleApply = async () =>{
         <ActivityIndicator size="large" color="#6200EE" />
       </View>
             : <>
-  
     <View >
     <Card elevation={5} style={styles.card}>
               <Card.Content>
                 <View style={styles.header}>
-                
-                
                 {ad.useridentifier === uID && (
-                    <View style={[styles.tabButtons, { width: 250 }]}>
+                    <View style={[styles.tabButtons, { width: 300 }]}>
                       <TouchableOpacity
                         style={[
                           styles.tabButton,
@@ -568,11 +569,17 @@ const handleApply = async () =>{
                       >
                         <Text>Applications</Text>
                       </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[
+                          styles.tabButton,
+                          selectedApplicationTab === 'Tab3' && styles.selectedTab,
+                        ]}
+                        onPress={() => setSelectedApplicationTab('Tab3')}
+                      >
+                        <Text>Manage</Text>
+                      </TouchableOpacity>
                     </View>
                   )}
-
-
-
                   <IconButton
                       icon="arrow-left"
                       mode="text"
@@ -586,7 +593,6 @@ const handleApply = async () =>{
             </Card>
     </View>
     {renderApplicationTabContent()}
-
   </>}   
   </ScrollView>
 
