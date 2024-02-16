@@ -61,7 +61,7 @@ const AddDetail = ({navigation, route}) =>{
 
   const handleChat = async ()  =>{
   let c;
-
+ //chats, ad, UUID
   if (!chats || chats.length === 0) {
     c = generateUUID();
     const chatRecord = {
@@ -110,10 +110,15 @@ const AddDetail = ({navigation, route}) =>{
   };
 
   useEffect(() => {
+
     setIsLoading(true)
 
     const fetchData = async () => {
      try {
+
+      const getChats = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${uID}`); //needed for both
+      setChats(getChats);
+
       if(ad.useridentifier !== uID){
 
         const getUserDetails = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUserDetailsForAd?uid=${ad.useridentifier}`); 
@@ -122,9 +127,6 @@ const AddDetail = ({navigation, route}) =>{
   
         const getUserImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${ad.useridentifier}`);
         setPosterImages(getUserImages);
-
-        const getChats = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${uID}`);
-        setChats(getChats);
 
         const m = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomiePresavedMessages?uid=${uID}`);
         setMessages(m);
@@ -143,6 +145,7 @@ const AddDetail = ({navigation, route}) =>{
       }
  
        setIsLoading(false);
+
      } catch (error) {
        console.error('Error fetching data:', error);
        // Handle error if needed
@@ -501,7 +504,7 @@ const handleApply = async () =>{
       case 'Tab2':
         return (
         <View style={styles.tabContent}>
-          <AdApplications applications = {applications}/>
+          <AdApplications applications = {applications} chat={chats}/>
         </View>
         );
       case 'Tab3':

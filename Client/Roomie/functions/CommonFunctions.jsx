@@ -1,5 +1,6 @@
 import {  StyleSheet, Text } from 'react-native';
 import { getStorage, ref, child, deleteObject } from 'firebase/storage';
+import callLambdaFunction from '../functions/PostAPI';
 
 export const returnAdTypeText =  (type) => {
     switch (type) {
@@ -189,6 +190,52 @@ export const deleteImage = async (imagePath) => {
     console.error('Error deleting image:', error.message);
   }
 }
+
+export const openChat = async (chats, ad, uID)  =>{
+  let c;
+ //chats, ad, UUID
+  if (!chats || chats.length === 0) {
+    c = generateUUID();
+    const chatRecord = {
+      chatID: c,
+      user1: uID,
+      user2: ad.useridentifier
+    };
+
+    let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
+    setForceRefresh(prev => !prev); // triggers refresh after post
+  }
+
+  else if(chats.length > 0){
+
+      const matchingChatRecord = chats.find(record => record.user1 === ad.useridentifier || record.user2 === ad.useridentifier);
+
+      if(matchingChatRecord){
+
+        c = matchingChatRecord.chatid
+        console.log(c);
+
+      }
+      else{
+        c = generateUUID();
+        const chatRecord = {
+          chatID: c,
+          user1: uID,
+          user2: ad.useridentifier
+        };
+      
+        let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
+        setForceRefresh(prev => !prev); // triggers refresh after post
+    }
+
+  }
+     let obj ={
+      chatID: c,
+      uID : uID
+     }
+  return obj
+     
+  }
 
 
 

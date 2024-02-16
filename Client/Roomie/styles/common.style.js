@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
       profileImage: {
         width: 50,
         height: 50,
-        borderRadius: 25,
+        borderRadius: 25
       },
       chatDetails: {
         flex: 1,
@@ -272,6 +272,16 @@ const styles = StyleSheet.create({
       lastMessageDate: {
         color: '#666',
       },
+      applicationContainer:{
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+      },
+      applicationBorder:{
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        paddingVertical: 15
+      }
  
   });
 

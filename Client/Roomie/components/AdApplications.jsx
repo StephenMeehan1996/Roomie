@@ -8,7 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { returnAdTypeText, references, smoking } from '../functions/CommonFunctions';
 import useFetchData from '../functions/GetAPI';
-import { calculateReviewStats, digsMeals, returnSelectedProfileImage,returnSelectedCoverImage, generateUUID } from '../functions/CommonFunctions';
+import { calculateReviewStats, digsMeals, returnSelectedProfileImage,returnSelectedCoverImage, generateUUID,convertToDateTimeString, openChat } from '../functions/CommonFunctions';
 import  styles  from '../styles/common.style';
 import callLambdaFunction from '../functions/PostAPI';
 import  formStyles  from '../styles/formStyle.style';
@@ -26,18 +26,35 @@ console.log(applications);
     const handleFilter = (value) =>{
         setFilter(value);
     }
-
+  
+    const handleMessage = async () =>{
+        
+    }
     
   const renderApplication = ({ item }) => (
-    <TouchableOpacity onPress={() => handleApplicationClick(item.useridentifier)}>
-        <View style={styles.chatItem}>
-        <Image source={{ uri: item.userprofileimage }} style={styles.profileImage} />
+    <TouchableOpacity style={styles.applicationBorder} onPress={() => handleApplicationClick(item.useridentifier)}>
+        <View style={styles.applicationContainer}>
+        <Image source={{ uri: item.profileimage }} style={[styles.profileImage, {alignSelf: 'flex-start'}]} />
         <View style={styles.chatDetails}>
-            <Text style={styles.username}>{item.firstname} {item.secondname}</Text>
+            <Text style={styles.username}>{item.firstname} {item.secondname}  </Text>
+            <Text style={styles.infoText}><Text style={styles.username}>Rating:</Text> {calculateReviewStats(item.numreviews, item.positivereviews)}</Text>
             <Text style={styles.lastMessageDate}>{convertToDateTimeString(item.appdate)}</Text>
-            <Paragraph>{item.appmessage}</Paragraph>
+            
         </View>
         </View>
+        <Paragraph style={{width: '100%'}}>{item.appmessage}</Paragraph>
+
+        <View style={[styles.buttonContainer2, {marginVertical: 10}]}>
+                    <Button
+                        mode="contained"
+                        onPress={handleMessage}
+                        style={ { marginRight: 10, borderRadius: 0 }} // Adjust margin as needed
+                      
+                    >
+                        Message
+                    </Button>
+                    
+                    </View>
     </TouchableOpacity>
   );
 
@@ -46,7 +63,7 @@ console.log(applications);
         <Card elevation={5} style={[styles.card]}>
            <Card.Content>
              <View style={[styles.header, {paddingHorizontal: 15}]}>
-                    <Paragraph>Applicants: 5</Paragraph>
+                    <Paragraph>Applicants: {applications.length}</Paragraph>
                  
                     <View style={styles.pickerContainer}>
                         <View style={{flexDirection: 'column',alignItems: 'flex-start'}}>
@@ -80,9 +97,9 @@ console.log(applications);
                 <Card.Content>
                 <View>  
                     <FlatList
-                        data={chats}
+                        data={applications}
                         renderItem={renderApplication}
-                        keyExtractor={(item) => item.addid}
+                        keyExtractor={(item) => item.useridentifier}
                     />
                 </View>
             </Card.Content>
