@@ -33,6 +33,7 @@ const AddDetail = ({navigation, route}) =>{
 
   const [chats, setChats] = useState([]);
   const [forceRefresh, setForceRefresh] = useState(false);
+  const [applications, setApplications] = useState([]);
 
 
   const [profileImage, setProfileImage] = useState(null);
@@ -57,50 +58,6 @@ const AddDetail = ({navigation, route}) =>{
     setMessageBody(mes.messagebody)
   };
 
-  useEffect(() => {
-    setIsLoading(true)
-
-    const fetchData = async () => { 
-     try {
-      const getChats = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${uID}`);
-      setChats(getChats);
-       setIsLoading(false);
-
-     } catch (error) {
-       console.error('Error fetching data:', error);
-       setIsLoading(false);
-     }
-   };
-
-   fetchData();
- },[uID]);
-
- useEffect(() => {
-  setIsLoading(true)
-
-  const fetchData = async () => { 
-   try {
-     const m = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomiePresavedMessages?uid=${uID}`);
-     setMessages(m);
-
-     if(m){
-       setSelectedOption(messages[0].usepresavedmessageid);
-       setMessageTitle(messages[0].messagetitle);
-       setMessageBody(messages[0].messagebody);
-     }
-   
- 
-     console.log('Mess' + m);
-     setIsLoading(false);
-
-   } catch (error) {
-     console.error('Error fetching data:', error);
-     setIsLoading(false);
-   }
- };
-
- fetchData();
-},[uID]);
 
   const handleChat = async ()  =>{
   let c;
@@ -157,13 +114,33 @@ const AddDetail = ({navigation, route}) =>{
 
     const fetchData = async () => {
      try {
-     
-      const getUserDetails = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUserDetailsForAd?uid=${ad.useridentifier}`);
-      setPosterDetail(getUserDetails[0]);
-      console.log(getUserDetails);
+      if(ad.useridentifier !== uID){
 
-      const getUserImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${ad.useridentifier}`);
-      setPosterImages(getUserImages);
+        const getUserDetails = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUserDetailsForAd?uid=${ad.useridentifier}`); 
+        setPosterDetail(getUserDetails[0]);
+        console.log(getUserDetails);
+  
+        const getUserImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${ad.useridentifier}`);
+        setPosterImages(getUserImages);
+
+        const getChats = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${uID}`);
+        setChats(getChats);
+
+        const m = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomiePresavedMessages?uid=${uID}`);
+        setMessages(m);
+   
+        if(m){
+          setSelectedOption(messages[0].usepresavedmessageid);
+          setMessageTitle(messages[0].messagetitle);
+          setMessageBody(messages[0].messagebody);
+        }
+
+      }
+      else if(ad.useridentifier === uID ){
+
+         const getApplications = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetApplications?id=${ad.addid}`);
+         setApplications(getApplications);
+      }
  
        setIsLoading(false);
      } catch (error) {
@@ -175,7 +152,7 @@ const AddDetail = ({navigation, route}) =>{
 
    // Call the fetchData function
    fetchData();
- }, []);
+ },[uID]);
 
  useEffect(() => {
   const setSelectedImages = async () => {
@@ -192,6 +169,9 @@ const AddDetail = ({navigation, route}) =>{
  setSelectedImages();
 }, [posterImages]);
 
+const handleApplicationClick = async () =>{
+
+}
 const handleApply = async () =>{
     let application = {
       adID : ad.addid,
@@ -521,7 +501,7 @@ const handleApply = async () =>{
       case 'Tab2':
         return (
         <View style={styles.tabContent}>
-          <AdApplications/>
+          <AdApplications applications = {applications}/>
         </View>
         );
       case 'Tab3':
@@ -536,6 +516,7 @@ const handleApply = async () =>{
         return null;
     }
   };
+
 
   const navigateImage = (step) => {
     // Calculate the next image index

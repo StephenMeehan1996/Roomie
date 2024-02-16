@@ -15,16 +15,31 @@ import  formStyles  from '../styles/formStyle.style';
 import { filterBy } from '../data/formData';
 
 
-const AdApplications = () => {
+const AdApplications = ({navigation, route, applications}) => {
 
 const [filter, setFilter] = useState('percentageMatch')
  
+console.log(applications);
 //Get https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetApplications?id=113
 // 
  
     const handleFilter = (value) =>{
         setFilter(value);
     }
+
+    
+  const renderApplication = ({ item }) => (
+    <TouchableOpacity onPress={() => handleApplicationClick(item.useridentifier)}>
+        <View style={styles.chatItem}>
+        <Image source={{ uri: item.userprofileimage }} style={styles.profileImage} />
+        <View style={styles.chatDetails}>
+            <Text style={styles.username}>{item.firstname} {item.secondname}</Text>
+            <Text style={styles.lastMessageDate}>{convertToDateTimeString(item.appdate)}</Text>
+            <Paragraph>{item.appmessage}</Paragraph>
+        </View>
+        </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View>
@@ -51,6 +66,30 @@ const [filter, setFilter] = useState('percentageMatch')
             </View>
           </Card.Content>
         </Card>
+        {applications.length === 0 ? (
+            <Card elevation={5} style={styles.card}>
+            <Card.Content>
+                <View style={styles.header}>
+                    <Title style={styles.title}>No Applications</Title>
+                    </View>
+                    </Card.Content>
+                    </Card>
+             ) : (
+            <>
+            <Card elevation={5} style={styles.card}>
+                <Card.Content>
+                <View>  
+                    <FlatList
+                        data={chats}
+                        renderItem={renderApplication}
+                        keyExtractor={(item) => item.addid}
+                    />
+                </View>
+            </Card.Content>
+            </Card>
+            </>
+           )}
+       
  </View>
   )
 }
