@@ -12,12 +12,21 @@ import { calculateReviewStats, digsMeals, returnSelectedProfileImage,returnSelec
 import  styles  from '../styles/common.style';
 import callLambdaFunction from '../functions/PostAPI';
 import  formStyles  from '../styles/formStyle.style';
+import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import { filterBy } from '../data/formData';
 
 
 const AdApplications = ({navigation, route, applications}) => {
 
-const [filter, setFilter] = useState('percentageMatch')
+const [filter, setFilter] = useState('percentageMatch');
+const [userDetails, setUserDetails] = useState(null);
+const [userImages, setUserImages] = useState(null);
+const [userAdImages, setUserAdImages] = useState(null);
+const [userAdDetail, setUserAdDetail] = useState(null);
+const [isLoading, setIsLoading] = useState(true);
+const fetchAds = useFetchDataBoth();
+
+let ud, ui, ua, uad;
  
 console.log(applications);
 //Get https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetApplications?id=113
@@ -28,33 +37,68 @@ console.log(applications);
     }
   
     const handleMessage = async () =>{
+
+    }
+    const handleApplicationClick = async (UUID) =>{
+        //uID, userDetails, userAdImages, userAdDetail,userImages
+        console.log(UUID);
+        setIsLoading(true);
+        try {
+            //uID, userDetails, userAdImages, userAdDetail
+            const getUserDetails = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUser?uid=${UUID}`);
+            let ud = getUserDetails[0];
+
+            const getUserAds = await fetchAds(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUsersAds?uid=${UUID}`);
+            let ua = getUserAds.images;
+            let uad = getUserAds.detail;
+
+            const getUserImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${UUID}`);
+            let ui = getUserImages;
+      
+            setIsLoading(false);
+
+            //  Navagation to profile effectivly signs in as selected user
+            // The new UID is used logically to display the profile view for that user
+           //  need to come up with new structure to handle this, or use new component. 
+
+            // navigation.navigate('_Profile', {  
+            //     uID: UUID,
+            //     userDetails: ud ,
+             
+            //     userAdImages: ua,
+            //     userAdDetail: uad,
+            //     userImages: ui
+            // });
+
+          } catch (error) {
+            console.error('Error fetching data:', error);
+            // Handle error if needed
+            setIsLoading(false);
+          }
         
+
     }
     
   const renderApplication = ({ item }) => (
     <TouchableOpacity style={styles.applicationBorder} onPress={() => handleApplicationClick(item.useridentifier)}>
         <View style={styles.applicationContainer}>
         <Image source={{ uri: item.profileimage }} style={[styles.profileImage, {alignSelf: 'flex-start'}]} />
-        <View style={styles.chatDetails}>
-            <Text style={styles.username}>{item.firstname} {item.secondname}  </Text>
-            <Text style={styles.infoText}><Text style={styles.username}>Rating:</Text> {calculateReviewStats(item.numreviews, item.positivereviews)}</Text>
-            <Text style={styles.lastMessageDate}>{convertToDateTimeString(item.appdate)}</Text>
-            
-        </View>
+            <View style={styles.chatDetails}>
+                <Text style={styles.username}>{item.firstname} {item.secondname}  </Text>
+                <Text style={styles.infoText}><Text style={styles.username}>Rating:</Text> {calculateReviewStats(item.numreviews, item.positivereviews)}</Text>
+                <Text style={styles.lastMessageDate}>{convertToDateTimeString(item.appdate)}</Text>
+            </View>
         </View>
         <Paragraph style={{width: '100%'}}>{item.appmessage}</Paragraph>
-
         <View style={[styles.buttonContainer2, {marginVertical: 10}]}>
-                    <Button
-                        mode="contained"
-                        onPress={handleMessage}
-                        style={ { marginRight: 10, borderRadius: 0 }} // Adjust margin as needed
-                      
-                    >
-                        Message
-                    </Button>
-                    
-                    </View>
+            <Button
+                mode="contained"
+                onPress={handleMessage}
+                style={ { marginRight: 10, borderRadius: 0 }}  
+             >
+                Message
+            </Button>        
+        </View>
     </TouchableOpacity>
   );
 

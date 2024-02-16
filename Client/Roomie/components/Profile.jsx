@@ -34,6 +34,7 @@ const Profile = ({ navigation, route }) => {
   }, [navigation]);
    
    useEffect(() => {
+ 
     const setSelectedImages = async () => {
      try {
       setProfileImage(returnSelectedProfileImage(userImages));
@@ -46,7 +47,7 @@ const Profile = ({ navigation, route }) => {
 
    // Call the fetchData function
    setSelectedImages();
- }, [userImages]);
+ }, [uID,userImages]);
 
 
     const toggleBio = () => {

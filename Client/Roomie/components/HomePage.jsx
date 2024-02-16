@@ -35,6 +35,7 @@ function SearchTabStackScreens({ route }) {
       <SecondTabStack.Screen name="_SearchResults" component={SearchResults} />
       <SecondTabStack.Screen name="_AddDetail" component={AddDetail} initialParams={{ uID: uID}} />
       <SecondTabStack.Screen name="_chat" component={Chat}initialParams={{ uID: uID, userDetails: userDetails,userImages: userImages}}/>
+      <SecondTabStack.Screen name="_Profile" component={Profile} />
     </SecondTabStack.Navigator>
   );
 }

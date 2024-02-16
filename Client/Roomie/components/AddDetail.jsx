@@ -504,7 +504,7 @@ const handleApply = async () =>{
       case 'Tab2':
         return (
         <View style={styles.tabContent}>
-          <AdApplications applications = {applications} chat={chats}/>
+          <AdApplications applications = {applications} chat={chats} navigation={navigation}/>
         </View>
         );
       case 'Tab3':
