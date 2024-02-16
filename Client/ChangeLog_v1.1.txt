@@ -1,0 +1,16 @@
+Change Log v1.1
+---------------
+- Added ability for user to save default messages, to apply to advertisements. 
+  Full CRUD functionality implemented.
+- Added Chat functionality.
+- Added Chat List Component, when selected a list of the user's active chats is
+  displayed
+- Added Ad Applications component, this lists the applications for current ad
+- Minor authorization based UI Changes
+
+AddedComponents
+----------
+Chat list
+Chat
+Ad Applications
+Mange Ad
