@@ -8,9 +8,21 @@ Change Log v1.1
 - Added Ad Applications component, this lists the applications for current ad
 - Minor authorization based UI Changes
 
-AddedComponents
+Added Components
 ----------
 Chat list
 Chat
 Ad Applications
 Mange Ad
+
+Added SP's
+---------
+RoomieDeletePresavedMessages
+RoomieGetAdApplications
+RoomieGetChatRecord
+RoomieGetChatsAndUserDetails
+RoomieGetPresavedMesssages
+RoomieInsertAdApplication
+RoomieInsertChatRecord
+RoomieInsertPresavedMessage
+RoomieUpdatePresavedMessage
