@@ -11,7 +11,7 @@ import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import { returnAdTypeText } from '../functions/CommonFunctions';
 
 const Search = ({navigation, route}) => {
-  const { uID } = route.params;
+  const { uID, userDetails } = route.params;
         const [searchQuery, setSearchQuery] = useState('Sligo');
         const [searchResult, setSearchResult] = useState(null);
         const [uploading, setUploading] = useState(false);
@@ -25,7 +25,7 @@ const Search = ({navigation, route}) => {
         const isButtonSelected = (buttonId) => selectedButton === buttonId;
         const fetchData = useFetchDataBoth();
 
-      
+      console.log(userDetails);
 
         useEffect(() => {
           setIsLoading(true)
@@ -108,7 +108,8 @@ const Search = ({navigation, route}) => {
                   searchValue: searchValue,
                   countyLocations: countyLocations, // Pass the current state if county is not found
                   detail: detail,
-                  images: images
+                  images: images,
+                  userDetails: userDetails
                 });
               }
             } catch (error) {

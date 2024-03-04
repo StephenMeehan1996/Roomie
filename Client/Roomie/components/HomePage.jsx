@@ -31,8 +31,8 @@ function SearchTabStackScreens({ route }) {
 
   return (
     <SecondTabStack.Navigator initialRouteName='_Search' screenOptions={{headerShown: false}}>
-      <SecondTabStack.Screen name="_Search" component={Search} initialParams={{ uID: uID}}/>
-      <SecondTabStack.Screen name="_SearchResults" component={SearchResults} />
+      <SecondTabStack.Screen name="_Search" component={Search} initialParams={{ uID: uID, userDetails: userDetails}}/>
+      <SecondTabStack.Screen name="_SearchResults" component={SearchResults} initialParams={{ userDetails: userDetails}}/>
       <SecondTabStack.Screen name="_AddDetail" component={AddDetail} initialParams={{ uID: uID}} />
       <SecondTabStack.Screen name="_chat" component={Chat}initialParams={{ uID: uID, userDetails: userDetails,userImages: userImages}}/>
       <SecondTabStack.Screen name="_Profile" component={Profile} />

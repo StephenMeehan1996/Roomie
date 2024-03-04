@@ -161,13 +161,12 @@ export const convertToDateTimeString = (val) =>{
 
 export const getStorageLocation = (directory, filename) => {
   const storage = getStorage();
-  // Create a reference to the file in Firebase Storage
+
 
   const x = directory+'/'+filename;
-  // Use the child method to specify the filename
+
   const fileLocation = ref(storage, x);
 
-  // Return the full storage location (URL or path)
   return fileLocation.toString();
 }
 
@@ -236,6 +235,35 @@ export const openChat = async (chats, ad, uID)  =>{
   return obj
      
   }
+
+  const propertyWeights = {
+    gender: 0.3,
+    age: 0.2,
+    rentalPreference: 0.5,
+
+  };
+  
+
+  export const calculateMatchPercentage = (advertisementPreferences, userProfilePreferences) => {
+    let totalWeight = 0;
+    let weightedScore = 0;
+  
+    
+    Object.keys(advertisementPreferences).forEach(property => {
+  
+      if (userProfilePreferences.hasOwnProperty(property)) {
+ 
+        weightedScore += Math.min(advertisementPreferences[property], userProfilePreferences[property]) * propertyWeights[property];
+      
+        totalWeight += propertyWeights[property];
+      }
+    });
+  
+   
+    const percentageMatch = (weightedScore / totalWeight) * 100;
+  
+    return percentageMatch.toFixed(2); // Round to 2 decimal places
+  };
 
 
 
