@@ -1,147 +1,147 @@
-import {  StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { getStorage, ref, child, deleteObject } from 'firebase/storage';
 import callLambdaFunction from '../functions/PostAPI';
 
-export const returnAdTypeText =  (type) => {
-    switch (type) {
-        case 1:
-            return 'House Share'
-            break;
-        case 2:
-            return 'House Rental'
-            break;
-        case 3:
-            return 'Digs'
-            break;
-        default:
-            return
-            break;
-    }
+export const returnAdTypeText = (type) => {
+  switch (type) {
+    case 1:
+      return 'House Share'
+      break;
+    case 2:
+      return 'House Rental'
+      break;
+    case 3:
+      return 'Digs'
+      break;
+    default:
+      return
+      break;
+  }
 };
 
-export const returnAdTypeNum =  (type) => {
-    switch (type) {
-        case 'House Share':
-            return 1
-            break;
-        case 'House Rental':
-            return 2
-            break;
-        case 'Digs':
-            return 3
-            break;
-        default:
-            return
-            break;
-    }
+export const returnAdTypeNum = (type) => {
+  switch (type) {
+    case 'House Share':
+      return 1
+      break;
+    case 'House Rental':
+      return 2
+      break;
+    case 'Digs':
+      return 3
+      break;
+    default:
+      return
+      break;
+  }
 };
 
-export const references =  (type) => {
-    switch (type) {
-        case 1:
-            return 'References Required'
-            break;
-        case 2:
-            return 'References not Required'
-            break;
-       
-        default:
-            return
-            break;
-    }
+export const references = (type) => {
+  switch (type) {
+    case 1:
+      return 'References Required'
+      break;
+    case 2:
+      return 'References not Required'
+      break;
+
+    default:
+      return
+      break;
+  }
 };
 
-export const digsMeals =  (type) => {
-    switch (type) {
-        case 1:
-            return 'Meals provided'
-            break;
-        case 2:
-            return 'Self Catering'
-            break;
-       
-        default:
-            return
-            break;
-    }
+export const digsMeals = (type) => {
+  switch (type) {
+    case 1:
+      return 'Meals provided'
+      break;
+    case 2:
+      return 'Self Catering'
+      break;
+
+    default:
+      return
+      break;
+  }
 };
 
-export const smoking =  (type) => {
-    switch (type) {
-        case 1:
-            return 'Smoking Permitted'
-            break;
-        case 2:
-            return 'No Smoking'
-            break;
-       
-        default:
-            return
-        break;
-    }
+export const smoking = (type) => {
+  switch (type) {
+    case 1:
+      return 'Smoking Permitted'
+      break;
+    case 2:
+      return 'No Smoking'
+      break;
+
+    default:
+      return
+      break;
+  }
 
 };
 
 export const calculateReviewStats = (numReviews, positiveReviews) => {
 
-    if(numReviews > 0){
+  if (numReviews > 0) {
 
-      const positivePercentage = (positiveReviews / numReviews) * 100;
+    const positivePercentage = (positiveReviews / numReviews) * 100;
 
-      if(positivePercentage > 60){
-
-        return (
-          <Text style={styles.greenText}>{positivePercentage}% Positive ({numReviews})</Text>
-        )
-      }
+    if (positivePercentage > 60) {
 
       return (
-        <Text style={styles.redText}>{positivePercentage}% Positive ({numReviews})</Text>
+        <Text style={styles.greenText}>{positivePercentage}% Positive ({numReviews})</Text>
       )
-
     }
+
     return (
-      <Text style={styles.redText}>No Reviews</Text>
+      <Text style={styles.redText}>{positivePercentage}% Positive ({numReviews})</Text>
     )
-  
 
-   }
+  }
+  return (
+    <Text style={styles.redText}>No Reviews</Text>
+  )
 
-   export const matchColor = (percent) => {
 
-      if(percent > 60){
+}
 
-        return (
-          <Text style={{textAlign: 'right',marginLeft: 30,fontSize: 16}}><Text style={{textDecorationLine:'underline'}}>Match:</Text> <Text style={styles.greenText}>{percent}%</Text></Text>
-        )
-      }
+export const matchColor = (percent) => {
 
-      if(percent > 50 && percent < 60){
+  if (percent > 60) {
 
-        return (
-          <Text style={{textAlign: 'right',marginLeft: 30,fontSize: 16}}><Text style={{textDecorationLine:'underline'}}>Match:</Text> <Text style={styles.orangeText}>{percent}%</Text></Text>
-        )
-      }
+    return (
+      <Text style={{ textAlign: 'right', marginLeft: 30, fontSize: 16 }}><Text style={{ textDecorationLine: 'underline' }}>Match:</Text> <Text style={styles.greenText}>{percent}%</Text></Text>
+    )
+  }
 
-      return (
-        <Text style={{textAlign: 'right',marginLeft: 30,fontSize: 16}}><Text style={{textDecorationLine:'underline'}}>Match:</Text> <Text style={styles.redText}>{percent}%</Text></Text>
-      )
-   }
+  if (percent > 50 && percent < 60) {
 
-   export const returnSelectedProfileImage =  (images) => {
-  
-    const selectedImage = images.find(image => image.imagetype === 1 && image.currentselected === 1);
+    return (
+      <Text style={{ textAlign: 'right', marginLeft: 30, fontSize: 16 }}><Text style={{ textDecorationLine: 'underline' }}>Match:</Text> <Text style={styles.orangeText}>{percent}%</Text></Text>
+    )
+  }
 
-    if(selectedImage)
+  return (
+    <Text style={{ textAlign: 'right', marginLeft: 30, fontSize: 16 }}><Text style={{ textDecorationLine: 'underline' }}>Match:</Text> <Text style={styles.redText}>{percent}%</Text></Text>
+  )
+}
+
+export const returnSelectedProfileImage = (images) => {
+
+  const selectedImage = images.find(image => image.imagetype === 1 && image.currentselected === 1);
+
+  if (selectedImage)
     return selectedImage
   return null;
 
 };
 
-export const returnSelectedCoverImage =  (images) => {
- 
+export const returnSelectedCoverImage = (images) => {
+
   const selectedImage = images.find(image => image.imagetype === 2 && image.currentselected === 1);
-  if(selectedImage)
+  if (selectedImage)
     return selectedImage
   return null;
 
@@ -149,7 +149,7 @@ export const returnSelectedCoverImage =  (images) => {
 
 export const generateUUID = () => {
 
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     const r = Math.random() * 16 | 0;
     const v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
@@ -158,33 +158,33 @@ export const generateUUID = () => {
 }
 
 export const generateChatID = () => {
-  return 'xxxxxx'.replace(/x/g, function() {
+  return 'xxxxxx'.replace(/x/g, function () {
     const r = Math.random() * 16 | 0;
     const v = r < 10 ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
 };
 
-export const convertToDateTimeString = (val) =>{
+export const convertToDateTimeString = (val) => {
 
   const date = new Date(val);
 
 
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1; 
-    const day = date.getDate();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
 
-    return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
 export const getStorageLocation = (directory, filename) => {
   const storage = getStorage();
 
 
-  const x = directory+'/'+filename;
+  const x = directory + '/' + filename;
 
   const fileLocation = ref(storage, x);
 
@@ -211,9 +211,9 @@ export const deleteImage = async (imagePath) => {
   }
 }
 
-export const openChat = async (chats, ad, uID)  =>{
+export const openChat = async (chats, ad, uID) => {
   let c;
- //chats, ad, UUID
+  //chats, ad, UUID
   if (!chats || chats.length === 0) {
     c = generateUUID();
     const chatRecord = {
@@ -226,262 +226,209 @@ export const openChat = async (chats, ad, uID)  =>{
     setForceRefresh(prev => !prev); // triggers refresh after post
   }
 
-  else if(chats.length > 0){
+  else if (chats.length > 0) {
 
-      const matchingChatRecord = chats.find(record => record.user1 === ad.useridentifier || record.user2 === ad.useridentifier);
+    const matchingChatRecord = chats.find(record => record.user1 === ad.useridentifier || record.user2 === ad.useridentifier);
 
-      if(matchingChatRecord){
+    if (matchingChatRecord) {
 
-        c = matchingChatRecord.chatid
-        console.log(c);
+      c = matchingChatRecord.chatid
+      console.log(c);
 
-      }
-      else{
-        c = generateUUID();
-        const chatRecord = {
-          chatID: c,
-          user1: uID,
-          user2: ad.useridentifier
-        };
-      
-        let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
-        setForceRefresh(prev => !prev); // triggers refresh after post
+    }
+    else {
+      c = generateUUID();
+      const chatRecord = {
+        chatID: c,
+        user1: uID,
+        user2: ad.useridentifier
+      };
+
+      let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
+      setForceRefresh(prev => !prev); // triggers refresh after post
     }
 
   }
-     let obj ={
-      chatID: c,
-      uID : uID
-     }
+  let obj = {
+    chatID: c,
+    uID: uID
+  }
   return obj
-     
-  }
 
-  const propertyWeights = {
-    gender: 0.3,
-    age: 0.2,
-    rentalPreference: 0.5,
+}
 
+const propertyWeights = {
+  gender: 0.3,
+  age: 0.2,
+  rentalPreference: 0.5,
+
+};
+
+export const calculateMatchPercentage = (userDetail, adDetail, adType) => {
+
+  const weights = {
+    price: 0.3,
+    gender: 0.2,
+    agebracket: 0.1,
+    occupation: 0.2,
+    smoking: 0.2,
+    standardWeight: 0.2
   };
-  
-
-  export const calculateMatchPercentage = (userDetail,adDetail, adType) => {
-    /*
-    - Ad
-    gender
-    price
-    agebracket
-    occupation
-    houserentalhousetype
-    smokingpermitted
-   houserentalnumrooms
-
-
-    
-
-    -User
-     gender
-     houserentalpricemax
-     houserentalpricemin
-     dob
-     occupation
-     propertytype
-     smoke
-     houserentalnumbedrooms
- 
-
-    
-  
-     houseexpectation
-    houseshareensuite
-    occupationdetail
-    houseshareenvoirnment
-    */
-    
-    
-    const weights = {
-      price: 0.3, 
-      gender: 0.2, 
-      agebracket: 0.1, 
-      occupation : 0.2,
-      smoking : 0.2,
-      propType : 0.2
-    };
-    let totalPossible = 1.2;
- 
-  if(adType === 1){
+  let totalPossible = 0;
 
     adDetail.forEach(detailObj => {
-      let totalWeight = 0;  
+      let totalWeight = 0;
       let matchedObjects = [];
 
-      if (userDetail.housesharepricemax && parseInt(detailObj.price) <= userDetail.housesharepricemax){
-        totalWeight += weights.price;
-        matchedObjects.push({id: 1, prop: 'Price', matched: 1});
-      }else
-        matchedObjects.push({id: 1, prop: 'Price', matched: 0});
-        
-      if (detailObj.gender === userDetail.gender){
+      if (detailObj.gender === userDetail.gender) {
         totalWeight += weights.gender;
-        matchedObjects.push({id: 2, prop: 'Gender', matched: 1});
-      }else
-        matchedObjects.push({id: 2, prop: 'Gender', matched: 0});
+        matchedObjects.push({ id: 2, prop: 'Gender', matched: 1 });
+      } else
+        matchedObjects.push({ id: 2, prop: 'Gender', matched: 0 });
 
-      if (userDetail.agebracket && detailObj.agebracket === userDetail.agebracket){
+      if (userDetail.agebracket && detailObj.agebracket === userDetail.agebracket) {
         totalWeight += weights.agebracket;
-        matchedObjects.push({id: 3, prop: 'Age', matched: 1});
-      }else
-        matchedObjects.push({id: 3, prop: 'Age', matched: 0});
+        matchedObjects.push({ id: 3, prop: 'Age', matched: 1 });
+      } else
+        matchedObjects.push({ id: 3, prop: 'Age', matched: 0 });
 
-      if (userDetail.occupation && detailObj.occupation === userDetail.occupation){
+      if (userDetail.occupation && detailObj.occupation === userDetail.occupation) {
         totalWeight += weights.occupation;
-        matchedObjects.push({id: 4, prop: 'Occupation', matched: 1});
-      }else
-        matchedObjects.push({id: 4, prop: 'Occupation', matched: 0});
-      if (userDetail.smoke && detailObj.smokingpermitted === userDetail.smoke){
+        matchedObjects.push({ id: 4, prop: 'Occupation', matched: 1 });
+      } else
+        matchedObjects.push({ id: 4, prop: 'Occupation', matched: 0 });
+      if (userDetail.smoke && detailObj.smokingpermitted === userDetail.smoke) {
         totalWeight += weights.smoking;
-        matchedObjects.push({id: 5, prop: 'Smoking Permitted', matched: 1});
-      }else
-        matchedObjects.push({id: 5, prop: 'Smoking Permitted', matched: 0});
+        matchedObjects.push({ id: 5, prop: 'Smoking Permitted', matched: 1 });
+      } else
+        matchedObjects.push({ id: 5, prop: 'Smoking Permitted', matched: 0 });
 
-      if (userDetail.housesharehousetype && detailObj.propertytype === userDetail.housesharehousetype){
-        totalWeight += weights.propType;
-        matchedObjects.push({id: 6, prop: 'Property Type', matched: 1});
-      }else
-        matchedObjects.push({id: 6, prop: 'Property Type', matched: 0});
+     if(adType === 1){
+        totalPossible = 1.2;
+        if (userDetail.housesharepricemax && parseInt(detailObj.price) <= userDetail.housesharepricemax) {
+          totalWeight += weights.price;
+          matchedObjects.push({ id: 6, prop: 'Price', matched: 1 });
+        } else
+          matchedObjects.push({ id: 6, prop: 'Price', matched: 0 });
+
+        if (userDetail.housesharehousetype && detailObj.propertytype === userDetail.housesharehousetype) {
+          totalWeight += weights.standardWeight;
+          matchedObjects.push({ id: 7, prop: 'Property Type', matched: 1 });
+        } else
+          matchedObjects.push({ id: 7, prop: 'Property Type', matched: 0 });
+     }
+
+     else if(adType === 2){
+      totalPossible = 1.4;
+      if (userDetail.houserentalpricemax && parseInt(detailObj.price) <= userDetail.houserentalpricemax) {
+        totalWeight += weights.price;
+        matchedObjects.push({ id: 6, prop: 'Price', matched: 1 });
+      } else
+        matchedObjects.push({ id: 6, prop: 'Price', matched: 0 });
+
+      if (userDetail.houserentalhousetype && detailObj.houserentalnumbedrooms === userDetail.houserentalhousetype) {
+          totalWeight += weights.standardWeight;
+          matchedObjects.push({ id: 7, prop: 'Property Type', matched: 1 });
+      } else
+         matchedObjects.push({ id: 7, prop: 'Property Type', matched: 0 });
+
+      if (userDetail.houserentalnumbedrooms && detailObj.propertytype === userDetail.houserentalnumbedrooms) {
+          totalWeight += weights.standardWeight;
+          matchedObjects.push({ id: 8, prop: 'Number of bedrooms', matched: 1 });
+      } else
+         matchedObjects.push({ id: 8, prop: 'Number of bedrooms', matched: 0 });
+
+     }else{
+
+      totalPossible = 1.6;
+      if (userDetail.digspricemax && parseInt(detailObj.price) <= userDetail.digspricemax) {
+        totalWeight += weights.price;
+        matchedObjects.push({ id: 6, prop: 'Price', matched: 1 });
+      } else
+        matchedObjects.push({ id: 6, prop: 'Price', matched: 0 });
+
+      if (userDetail.digshousetype && detailObj.propertytype === userDetail.digshousetype) {
+          totalWeight += weights.standardWeight;
+          matchedObjects.push({ id: 7, prop: 'Property Type', matched: 1 });
+      } else
+         matchedObjects.push({ id: 7, prop: 'Property Type', matched: 0 });
+
+      if (userDetail.digsroomtype && detailObj.propertytype === userDetail.digsroomtype) { // need to add to get 
+          totalWeight += weights.standardWeight;
+          matchedObjects.push({ id: 7, prop: 'Room Type', matched: 1 });
+      } else
+         matchedObjects.push({ id: 7, prop: 'Room Type', matched: 0 });
+
+      if (userDetail.digsmealsincluded && detailObj.digsmealsprovided === userDetail.digsmealsincluded) {
+          totalWeight += weights.standardWeight;
+          matchedObjects.push({ id: 8, prop: 'Meals Included', matched: 1 });
+      } else
+         matchedObjects.push({ id: 8, prop: 'Meals Included', matched: 0 });
+           
+     }
 
       detailObj.matchPercentage = (totalWeight / totalPossible) * 100;
       detailObj.matchPercentage = Math.round(detailObj.matchPercentage);
       detailObj.matchedProperties = matchedObjects;
     });
-    
+
     adDetail.forEach(detailObj => {
       console.log('Match Percentage:', detailObj.matchPercentage);
     });
-   
-   console.log(adDetail);
 
+    return adDetail;
 
-    
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  card: {
+    width: '100%',
+    backgroundColor: '#FFF',
+    marginBottom: 10
+  },
+  username: {
+    fontSize: 24,
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  bio: {
+    fontSize: 16,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  bioScroll: {
+    maxHeight: 100, // Adjust as needed
+    marginTop: 8,
+  },
+  bioButton: {
+    alignSelf: 'center',
+    marginVertical: 8,
+  },
+  info: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 12,
+  },
+  infoText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5
+  },
+  greenText: {
+    color: 'green', // Set the color to green
+    fontWeight: 'bold', // Optional: You can apply additional styles as needed
+  },
+  redText: {
+    color: 'red', // Set the color to green
+    fontWeight: 'bold', // Optional: You can apply additional styles as needed
+  },
+  orangeText: {
+    color: 'orange', // Set the color to green
+    fontWeight: 'bold', // Optional: You can apply additional styles as needed
   }
-  else if(adType == 2){
 
-    console.log(adDetail);
-    console.log(userDetail);
-
-
-    adDetail.forEach(detailObj => {
-      let totalWeight = 0;  
-      let matchedObjects = [];
-
-      if (userDetail.houserentalpricemax && parseInt(detailObj.price) <= userDetail.houserentalpricemax){
-        totalWeight += weights.price;
-        matchedObjects.push({id: 1, prop: 'Price', matched: 1});
-      }else
-        matchedObjects.push({id: 1, prop: 'Price', matched: 0});
-        
-      if (detailObj.gender === userDetail.gender){
-        totalWeight += weights.gender;
-        matchedObjects.push({id: 2, prop: 'Gender', matched: 1});
-      }else
-        matchedObjects.push({id: 2, prop: 'Gender', matched: 0});
-
-      if (userDetail.agebracket && detailObj.agebracket === userDetail.agebracket){
-        totalWeight += weights.agebracket;
-        matchedObjects.push({id: 3, prop: 'Age', matched: 1});
-      }else
-        matchedObjects.push({id: 3, prop: 'Age', matched: 0});
-
-      if (userDetail.occupation && detailObj.occupation === userDetail.occupation){
-        totalWeight += weights.occupation;
-        matchedObjects.push({id: 4, prop: 'Occupation', matched: 1});
-      }else
-        matchedObjects.push({id: 4, prop: 'Occupation', matched: 0});
-      if (userDetail.smoke && detailObj.smokingpermitted === userDetail.smoke){
-        totalWeight += weights.smoking;
-        matchedObjects.push({id: 5, prop: 'Smoking Permitted', matched: 1});
-      }else
-        matchedObjects.push({id: 5, prop: 'Smoking Permitted', matched: 0});
-
-      if (userDetail.housesharehousetype && detailObj.propertytype === userDetail.housesharehousetype){
-        totalWeight += weights.propType;
-        matchedObjects.push({id: 6, prop: 'Property Type', matched: 1});
-      }else
-        matchedObjects.push({id: 6, prop: 'Property Type', matched: 0});
-
-      detailObj.matchPercentage = (totalWeight / totalPossible) * 100;
-      detailObj.matchPercentage = Math.round(detailObj.matchPercentage);
-      detailObj.matchedProperties = matchedObjects;
-    });
-    
-    adDetail.forEach(detailObj => {
-      console.log('Match Percentage:', detailObj.matchPercentage);
-    });
-   
-   console.log(adDetail);
-
-  }
-  else{ // adtype == 3
-
-  }
-   
-  return adDetail;
-
-  };
-
-
-
-
-
-   const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-    },
-    card: {
-      width: '100%',
-      backgroundColor: '#FFF',
-      marginBottom: 10
-    },
-    username: {
-      fontSize: 24,
-      marginTop: 10,
-      textAlign: 'center',
-    },
-    bio: {
-      fontSize: 16,
-      marginTop: 8,
-      textAlign: 'center',
-    },
-    bioScroll: {
-        maxHeight: 100, // Adjust as needed
-        marginTop: 8,
-      },
-      bioButton: {
-        alignSelf: 'center',
-        marginVertical: 8,
-      },
-    info: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      marginTop: 12,
-    },
-    infoText: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      marginBottom: 5
-    },
-    greenText: {
-        color: 'green', // Set the color to green
-        fontWeight: 'bold', // Optional: You can apply additional styles as needed
-      },
-    redText: {
-        color: 'red', // Set the color to green
-        fontWeight: 'bold', // Optional: You can apply additional styles as needed
-      },
-    orangeText: {
-        color: 'orange', // Set the color to green
-        fontWeight: 'bold', // Optional: You can apply additional styles as needed
-      }
-      
-  });
+});

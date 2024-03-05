@@ -7,6 +7,8 @@ Change Log v1.1
   displayed
 - Added Ad Applications component, this lists the applications for current ad
 - Minor authorization based UI Changes
+-	Added basic match percentage logic.
+-	Implemented match percentage UI, popup screen when selected. 
 
 Added Components
 ----------

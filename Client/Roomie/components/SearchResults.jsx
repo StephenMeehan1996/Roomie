@@ -85,7 +85,7 @@ const SearchResults = ({ navigation, route }) => {
       }
   
       // Check if filtered[0] exists and its percentageMatch property is null
-      if (filtered[0] && filtered[0].percentageMatch === null) {
+      if (filtered[0] && filtered[0].percentageMatch === null || filtered[0].percentageMatch === undefined) {
         console.log('Calculating Match');
         const match = await calculateMatchPercentage(userDetails, filtered, adType);
         console.log(match);
