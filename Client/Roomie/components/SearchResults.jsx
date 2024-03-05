@@ -29,7 +29,7 @@ const SearchResults = ({ navigation, route }) => {
   const [rentalType, setRentalType] = useState(searchValue.rentalType);
 
   const fetchData = useFetchDataBoth();
-
+  
 
 
 
@@ -49,53 +49,32 @@ const SearchResults = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    let search = location.split(',')[0];
-    let adType = returnAdTypeNum(rentalType);
-    const filtered = detail.filter((ad) => `${ad.addressline1} ${ad.addressline2} ${ad.city} ${ad.county} `.toLowerCase().includes(search.toLowerCase())
-      && ad.addtype === adType)
-
-    setFilteredAds(filtered);
-
-  }, [location, detail, rentalType]);
-
-  // useEffect(() => {
-  //   let propertyName = 'percentageMatch';
-  //   let propertyValue = null;
-
-  //   // logic to stop 
-  //   const updatedDetail = detail.map(obj => {
-  //     // Check if property already exists
-  //     if (!(propertyName in obj)) {
-  //       console.log('test')
-  //       return { ...obj, [propertyName]: propertyValue };
-  //     }
-
-  //     return obj;
-  //   });
-
-  //   setDetail(updatedDetail);
-
-
-  // }, [uID,detail]);
-
+    const filterAds = () => {
+      let search = location.split(',')[0];
+      let adType = returnAdTypeNum(rentalType);
+      const filtered = detail.filter((ad) => `${ad.addressline1} ${ad.addressline2} ${ad.city} ${ad.county} `.toLowerCase().includes(search.toLowerCase())
+        && ad.addtype === adType && ad.useridentifier !== uID);
+      return filtered;
+    };
+  
+    const filteredAds = filterAds();
+    setFilteredAds(filteredAds);
+  }, [location, detail, rentalType, uID]); // Include uID in the dependency array
+  
   useEffect(() => {
+    const filterAds = () => {
+      let search = location.split(',')[0];
+      let adType = returnAdTypeNum(rentalType);
+      const filtered = detail.filter((ad) => `${ad.addressline1} ${ad.addressline2} ${ad.city} ${ad.county} `.toLowerCase().includes(search.toLowerCase())
+        && ad.addtype === adType && ad.useridentifier !== uID);
+      return filtered;
+    };
+  
     const cal = async () => {
       let propertyName = 'percentageMatch';
       let propertyValue = null;
       let adType = returnAdTypeNum(rentalType);
-      let filtered = [];
-  
-      switch (adType) {
-        case 1:
-          filtered = detail.filter(obj => obj.addtype === 1);
-          break;
-        case 2:
-          filtered = detail.filter(obj => obj.addtype === 2);
-          break;
-        case 3:
-          filtered = detail.filter(obj => obj.addtype === 3);
-          break;
-      }
+      let filtered = filterAds();
   
       // Check if filtered array is not empty and if it doesn't have the percentageMatch property
       if (filtered.length > 0 && !(propertyName in filtered[0])) {
@@ -108,18 +87,17 @@ const SearchResults = ({ navigation, route }) => {
       // Check if filtered[0] exists and its percentageMatch property is null
       if (filtered[0] && filtered[0].percentageMatch === null) {
         console.log('Calculating Match');
-        const match = await calculateMatchPercentage(userDetails, filtered);
-
-        console.log(match)
-       setFilteredAds(match)
-        //setfiltered add
+        const match = await calculateMatchPercentage(userDetails, filtered, adType);
+        console.log(match);
+        setFilteredAds(match);
       }
   
       console.log(filtered);
     };
   
     cal();
-  }, [uID, location, rentalType]);
+  }, [location, detail, rentalType, uID]); // Include uID in the dependency array
+  
 
   const renderAds = ({ item: ad }) => {
 
