@@ -107,6 +107,27 @@ export const calculateReviewStats = (numReviews, positiveReviews) => {
 
    }
 
+   export const matchColor = (percent) => {
+
+      if(percent > 60){
+
+        return (
+          <Text style={{textAlign: 'right',marginLeft: 30,fontSize: 16}}><Text style={{textDecorationLine:'underline'}}>Match:</Text> <Text style={styles.greenText}>{percent}%</Text></Text>
+        )
+      }
+
+      if(percent > 50 && percent < 60){
+
+        return (
+          <Text style={{textAlign: 'right',marginLeft: 30,fontSize: 16}}><Text style={{textDecorationLine:'underline'}}>Match:</Text> <Text style={styles.orangeText}>{percent}%</Text></Text>
+        )
+      }
+
+      return (
+        <Text style={{textAlign: 'right',marginLeft: 30,fontSize: 16}}><Text style={{textDecorationLine:'underline'}}>Match:</Text> <Text style={styles.redText}>{percent}%</Text></Text>
+      )
+   }
+
    export const returnSelectedProfileImage =  (images) => {
   
     const selectedImage = images.find(image => image.imagetype === 1 && image.currentselected === 1);
@@ -244,25 +265,106 @@ export const openChat = async (chats, ad, uID)  =>{
   };
   
 
-  export const calculateMatchPercentage = (advertisementPreferences, userProfilePreferences) => {
-    let totalWeight = 0;
-    let weightedScore = 0;
-  
+  export const calculateMatchPercentage = (userDetail,adDetail) => {
+    /*
+    - Ad
+    gender
+    price
+    agebracket
+    occupation
+    propertytype
+    smokingpermitted
+    houseshareroomtype
     
-    Object.keys(advertisementPreferences).forEach(property => {
+
+    -User
+     gender
+     houserentalpricemax
+     houserentalpricemin
+     dob
+     occupation
+     housesharehousetype
+     smoke
+     houseshareroomtype
+
+    
   
-      if (userProfilePreferences.hasOwnProperty(property)) {
- 
-        weightedScore += Math.min(advertisementPreferences[property], userProfilePreferences[property]) * propertyWeights[property];
-      
-        totalWeight += propertyWeights[property];
-      }
-    });
-  
+     houseexpectation
+    houseshareensuite
+    occupationdetail
+    houseshareenvoirnment
+    */
+    
+    
+    const weights = {
+      price: 0.3, // Example weight for price
+      gender: 0.2, // Example weight for gender
+      agebracket: 0.1, // Example weight for agebracket
+      occupation : 0.2,
+      smoking : 0.2,
+      propType : 0.2
+    };
+
+    let totalPossible = 1.2;
+    let matchedObjects = [];
    
-    const percentageMatch = (weightedScore / totalWeight) * 100;
+
+   
+    
   
-    return percentageMatch.toFixed(2); // Round to 2 decimal places
+    adDetail.forEach(detailObj => {
+      let totalWeight = 0;  
+      let matchedObjects = [];
+    
+  
+      if (userDetail.houserentalpricemax && parseInt(detailObj.price) <= userDetail.houserentalpricemax){
+        totalWeight += weights.price;
+        matchedObjects.push({id: 1, prop: 'Price', matched: 1});
+      }else
+        matchedObjects.push({id: 1, prop: 'Price', matched: 0});
+        
+      if (detailObj.gender === userDetail.gender){
+        totalWeight += weights.gender;
+        matchedObjects.push({id: 2, prop: 'Gender', matched: 1});
+      }else
+        matchedObjects.push({id: 2, prop: 'Gender', matched: 0});
+
+      if (userDetail.agebracket && detailObj.agebracket === userDetail.agebracket){
+        totalWeight += weights.agebracket;
+        matchedObjects.push({id: 3, prop: 'Age', matched: 1});
+      }else
+        matchedObjects.push({id: 3, prop: 'Age', matched: 0});
+
+      if (userDetail.occupation && detailObj.occupation === userDetail.occupation){
+        totalWeight += weights.occupation;
+        matchedObjects.push({id: 4, prop: 'Occupation', matched: 1});
+      }else
+        matchedObjects.push({id: 4, prop: 'Occupation', matched: 0});
+      if (userDetail.smoke && detailObj.smokingpermitted === userDetail.smoke){
+        totalWeight += weights.smoking;
+        matchedObjects.push({id: 5, prop: 'Smoking Permitted', matched: 1});
+      }else
+        matchedObjects.push({id: 5, prop: 'Smoking Permitted', matched: 0});
+
+      if (userDetail.housesharehousetype && detailObj.propertytype === userDetail.housesharehousetype){
+        totalWeight += weights.propType;
+        matchedObjects.push({id: 6, prop: 'Property Type', matched: 1});
+      }else
+        matchedObjects.push({id: 6, prop: 'Property Type', matched: 0});
+
+      detailObj.matchPercentage = (totalWeight / totalPossible) * 100;
+      detailObj.matchPercentage = Math.round(detailObj.matchPercentage);
+      detailObj.matchedProperties = matchedObjects;
+    });
+    
+    adDetail.forEach(detailObj => {
+      console.log('Match Percentage:', detailObj.matchPercentage);
+    });
+   
+   console.log(adDetail);
+
+   return adDetail;
+   
   };
 
 
@@ -314,5 +416,10 @@ export const openChat = async (chats, ad, uID)  =>{
     redText: {
         color: 'red', // Set the color to green
         fontWeight: 'bold', // Optional: You can apply additional styles as needed
+      },
+    orangeText: {
+        color: 'orange', // Set the color to green
+        fontWeight: 'bold', // Optional: You can apply additional styles as needed
       }
+      
   });

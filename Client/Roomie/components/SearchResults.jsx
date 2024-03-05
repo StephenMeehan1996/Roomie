@@ -9,7 +9,7 @@ import { Picker } from '@react-native-picker/picker';
 import { yesNO, priceRange, number, roomType, houseType, houseMatExpectations, environmentOptions, days, irishCounties, rentalPreference, orderBy, radius } from '../data/formData';
 import formStyles from '../styles/formStyle.style';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
-import { returnAdTypeNum } from '../functions/CommonFunctions';
+import { returnAdTypeNum, calculateMatchPercentage } from '../functions/CommonFunctions';
 
 
 const SearchResults = ({ navigation, route }) => {
@@ -79,37 +79,46 @@ const SearchResults = ({ navigation, route }) => {
   // }, [uID,detail]);
 
   useEffect(() => {
-    let propertyName = 'percentageMatch';
-    let propertyValue = null;
-    let adType = returnAdTypeNum(rentalType);
-    let filtered = [];
+    const cal = async () => {
+      let propertyName = 'percentageMatch';
+      let propertyValue = null;
+      let adType = returnAdTypeNum(rentalType);
+      let filtered = [];
+  
+      switch (adType) {
+        case 1:
+          filtered = detail.filter(obj => obj.addtype === 1);
+          break;
+        case 2:
+          filtered = detail.filter(obj => obj.addtype === 2);
+          break;
+        case 3:
+          filtered = detail.filter(obj => obj.addtype === 3);
+          break;
+      }
+  
+      // Check if filtered array is not empty and if it doesn't have the percentageMatch property
+      if (filtered.length > 0 && !(propertyName in filtered[0])) {
+        filtered = filtered.map(obj => {
+          console.log('in loop');
+          return { ...obj, [propertyName]: propertyValue };
+        });
+      }
+  
+      // Check if filtered[0] exists and its percentageMatch property is null
+      if (filtered[0] && filtered[0].percentageMatch === null) {
+        console.log('Calculating Match');
+        const match = await calculateMatchPercentage(userDetails, filtered);
 
-    switch (adType) {
-      case 1:
-        filtered = detail.filter(obj => obj.addtype === 1);
-        break;
-      case 2:
-        filtered = detail.filter(obj => obj.addtype === 2);
-        break;
-      case 3:
-        filtered = detail.filter(obj => obj.addtype === 3);
-        break;
-    }
-
-    // Check if filtered array is not empty and if it doesn't have the percentageMatch property
-    if (filtered.length > 0 && !(propertyName in filtered[0])) {
-      filtered = filtered.map(obj => {
-        console.log('in loop');
-        return { ...obj, [propertyName]: propertyValue };
-      });
-    }
-
-    // Check if filtered[0] exists and its percentageMatch property is null
-    if (filtered[0] && filtered[0].percentageMatch === null) {
-      console.log('Percentage match calculation has not been performed yet.');
-    }
-
-    console.log(filtered);
+        console.log(match)
+       setFilteredAds(match)
+        //setfiltered add
+      }
+  
+      console.log(filtered);
+    };
+  
+    cal();
   }, [uID, location, rentalType]);
 
   const renderAds = ({ item: ad }) => {
