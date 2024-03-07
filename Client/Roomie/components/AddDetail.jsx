@@ -100,7 +100,8 @@ const AddDetail = ({navigation, route}) =>{
  
       navigation.navigate('_chat', {  
         chatID: c,
-        uID: uID 
+        uID: uID,
+        recipientID: ad.useridentifier 
     });
   }
 

@@ -1,7 +1,9 @@
 import { StyleSheet, Text } from 'react-native';
-import { getStorage, ref, child, deleteObject,set, onValue, get } from 'firebase/storage';
+//import { getStorage, ref as r, child, deleteObject,set, onValue, get,update } from 'firebase/storage';
+import { getDatabase, ref, set, child, get, onValue, update } from "firebase/database";
 import callLambdaFunction from '../functions/PostAPI';
 import { FIREBASE_DATABASE } from '../FirebaseConfig';
+
 
 export const returnAdTypeText = (type) => {
   switch (type) {
@@ -192,68 +194,68 @@ export const getStorageLocation = (directory, filename) => {
   return fileLocation.toString();
 }
 
-export const deleteImage = async (imagePath) => {
+// export const deleteImage = async (imagePath) => {
 
-  const storage = getStorage();
+//   const storage = getStorage();
 
-  try {
-    // Create a reference to the file in Firebase Storage
-    const fileRef = ref(storage, imagePath);
+//   try {
+//     // Create a reference to the file in Firebase Storage
+//     const fileRef = ref(storage, imagePath);
 
-    // Delete the file
-    await deleteObject(fileRef);
+//     // Delete the file
+//     await deleteObject(fileRef);
 
-    console.log(`Image ${imagePath} deleted successfully.`);
-  } catch (error) {
-    console.error('Error deleting image:', error.message);
-  }
-}
+//     console.log(`Image ${imagePath} deleted successfully.`);
+//   } catch (error) {
+//     console.error('Error deleting image:', error.message);
+//   }
+// }
 
-export const openChat = async (chats, ad, uID) => {
-  let c;
-  //chats, ad, UUID
-  if (!chats || chats.length === 0) {
-    c = generateUUID();
-    const chatRecord = {
-      chatID: c,
-      user1: uID,
-      user2: ad.useridentifier
-    };
+// export const openChat = async (chats, ad, uID) => {
+//   let c;
+//   //chats, ad, UUID
+//   if (!chats || chats.length === 0) {
+//     c = generateUUID();
+//     const chatRecord = {
+//       chatID: c,
+//       user1: uID,
+//       user2: ad.useridentifier
+//     };
 
-    let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
-    setForceRefresh(prev => !prev); // triggers refresh after post
-  }
+//     let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
+//     setForceRefresh(prev => !prev); // triggers refresh after post
+//   }
 
-  else if (chats.length > 0) {
+//   else if (chats.length > 0) {
 
-    const matchingChatRecord = chats.find(record => record.user1 === ad.useridentifier || record.user2 === ad.useridentifier);
+//     const matchingChatRecord = chats.find(record => record.user1 === ad.useridentifier || record.user2 === ad.useridentifier);
 
-    if (matchingChatRecord) {
+//     if (matchingChatRecord) {
 
-      c = matchingChatRecord.chatid
-      console.log(c);
+//       c = matchingChatRecord.chatid
+//       console.log(c);
 
-    }
-    else {
-      c = generateUUID();
-      const chatRecord = {
-        chatID: c,
-        user1: uID,
-        user2: ad.useridentifier
-      };
+//     }
+//     else {
+//       c = generateUUID();
+//       const chatRecord = {
+//         chatID: c,
+//         user1: uID,
+//         user2: ad.useridentifier
+//       };
 
-      let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
-      setForceRefresh(prev => !prev); // triggers refresh after post
-    }
+//       let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
+//       setForceRefresh(prev => !prev); // triggers refresh after post
+//     }
 
-  }
-  let obj = {
-    chatID: c,
-    uID: uID
-  }
-  return obj
+//   }
+//   let obj = {
+//     chatID: c,
+//     uID: uID
+//   }
+//   return obj
 
-}
+// }
 
 const propertyWeights = {
   gender: 0.3,
@@ -377,6 +379,52 @@ export const calculateMatchPercentage = (userDetail, adDetail, adType) => {
     return adDetail;
 
 };
+
+export async function updateNotifications(id, uID, obj) {
+
+  const db = FIREBASE_DATABASE;
+
+  obj.forEach(async notification => {
+   
+    const notificationRef = ref(db, `notifications/${uID}/${notification.key}`);
+
+    try {
+      // Update the 'seen' property to 1
+      await update(notificationRef, { seen: 1 });
+      console.log(`Notification with key ${notification.key} updated successfully.`);
+    } catch (error) {
+      console.error(`Error updating notification with key ${notification.key}:`, error);
+    }
+  });
+}
+
+export const returnNotifications = () =>{
+  
+    const db = FIREBASE_DATABASE;
+
+     onValue(ref(db, `notifications/${uID}/`), (snapshot) => {
+      const notificationData = snapshot.val();
+      if (notificationData && typeof notificationData === 'object') {
+        // Convert the object into an array of objects
+        const notificationArray = Object.entries(notificationData).map(([key, value]) => ({
+          key, // Add the key as a property
+          ...value, // Spread the rest of the properties
+        }));
+        // Check if each item in the array is an object
+        const isValidArray = notificationArray.every(item => typeof item === 'object');
+        if (isValidArray) {
+
+          return notificationArray;
+        } else {
+          return console.error('Invalid notifications array:', notificationArray);
+        }
+      } else {
+       return console.error('Invalid notification data:', notificationData);
+      }
+    });
+
+
+} 
 
 export const returnNotificationMessage = (notType, name) =>{
 

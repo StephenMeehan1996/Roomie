@@ -4,13 +4,13 @@ import { getDatabase, ref, set,child, get , onValue} from "firebase/database";
 import { Modal, Portal, Title, Paragraph, Card,IconButton, MD3Colors, Chip, Avatar, Subheading  } from 'react-native-paper';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { FIREBASE_AUTH,FIREBASE_DATABASE } from '../FirebaseConfig';
-import { generateShortID,returnSelectedProfileImage,generateUUID} from '../functions/CommonFunctions';
+import { generateShortID,returnSelectedProfileImage,generateUUID, returnNotificationMessage} from '../functions/CommonFunctions';
 import  styles  from '../styles/common.style';
 
 
 
 const Chat = ({navigation, route}) => {
-  const {userDetails, userImages} = route?.params
+  const {userDetails, userImages, recipientID} = route?.params
   const [uID, setUID] = useState(route.params.uID)
   const [chatID, setChatID] = useState(route.params.chatID)
 
@@ -27,6 +27,18 @@ const Chat = ({navigation, route}) => {
         message: messages[0].text,
         name: messages[0].user?.name,
         image: messages[0].user?.avatar
+    });
+
+//Notifications
+
+    set(ref(db, `notifications/${recipientID}/` + generateShortID()), {
+      date: new Date().toISOString(), // needs to be refactored
+      message: returnNotificationMessage(1, messages[0].user?.name),
+      creatorID: uID,
+      creatorProfileImageURL: messages[0].user?.avatar,
+      seen: 0,
+      chatID: chatID, 
+      notificationType : 1
     });
 
   }
@@ -68,7 +80,7 @@ useEffect(() => {
       }); 
 
       setFormattedMessages(sortedMessages);
-      console.log('here' + JSON.stringify(sortedMessages))
+     
     }
     }, {
    

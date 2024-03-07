@@ -44,10 +44,16 @@ function SearchTabStackScreens({ route }) {
 
 function ProfileTabStackScreens({ route }) {
 
-  const { uID, userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail } = route.params;
+  const { uID, userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail, newMessages: newMessages  } = route.params;
   const userID = userDetails._userid;
   const uid = userDetails.useridentifier
+  const [messages, setMessages] = useState(newMessages);
 
+  const updateNewMessages = (messages) => {
+    setMessages(messages);
+  };
+ 
+  
   return (
     <SecondTabStack.Navigator initialRouteName='_Profile' screenOptions={{ headerShown: false }} >
       <SecondTabStack.Screen name="_Profile" component={Profile} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail }} />
@@ -55,7 +61,7 @@ function ProfileTabStackScreens({ route }) {
       <SecondTabStack.Screen name="_manageImages" component={ManageProfileImages} initialParams={{ userImages: userImages, userID: userID, uid: uid }} />
       <SecondTabStack.Screen name="_managePreferences" component={ManagePreferences} initialParams={{ uID: uID, userDetails: userDetails }} />
       <SecondTabStack.Screen name="_manageMessages" component={ManageMessages} initialParams={{ uID: uID, userDetails: userDetails }} />
-      <SecondTabStack.Screen name="_chatList" component={ChatList} initialParams={{ uID: uID }} />
+      <SecondTabStack.Screen name="_chatList" component={ChatList} initialParams={{ uID: uID, newMessages, newMessages, updateNewMessages }} />
       <SecondTabStack.Screen name="_chat" component={Chat} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages }} />
     </SecondTabStack.Navigator>
   );
@@ -84,6 +90,7 @@ const HomePage = ({ navigation, route }) => {
   const [userImages, setUserImages] = useState(null);
   const [userAdImages, setUserAdImages] = useState(null);
   const [userAdDetail, setUserAdDetail] = useState(null);
+  const [chats, setChats] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const fetchAds = useFetchDataBoth();
 
@@ -94,6 +101,7 @@ const HomePage = ({ navigation, route }) => {
 
   const [newNotifications, setNewNotifications] = useState([]);
   const [seenNotifications, setSeenNotifications] = useState([]);
+  const [newMessages, setNewMessages] = useState([]);
 
   const [showNotifications, setShowNotifications] = useState(false);
   //used to only remove notifications if bell previously clicked by user
@@ -104,36 +112,11 @@ const HomePage = ({ navigation, route }) => {
     setShowNotifications(!showNotifications);
   };
 
-  async function printKeys() {
-    if (showNotifications === false && prevShowNotifications === true) {
 
-      const db = FIREBASE_DATABASE;
-
-      newNotifications.forEach(async notification => {
-        console.log(`notifications/${uID}/${notification.key}`);
-        // change seen property for notifications to 1
-        const notificationRef = ref(db, `notifications/${uID}/${notification.key}`);
-
-        try {
-          // Update the 'seen' property to 1
-          await update(notificationRef, { seen: 1 });
-          console.log(`Notification with key ${notification.key} updated successfully.`);
-        } catch (error) {
-          console.error(`Error updating notification with key ${notification.key}:`, error);
-        }
-
-
-      });
-    }
-  }
-
-  useEffect(() => {
-    printKeys();
-    setPrevShowNotifications(showNotifications);
-  }, [showNotifications]);
 
   const nextPage = (route) => {
     setVisible(false)
+
     navigation.navigate(route, {
 
     });
@@ -159,6 +142,9 @@ const HomePage = ({ navigation, route }) => {
         setUserAdImages(getUserAds.images);
         setUserAdDetail(getUserAds.detail)
 
+        // const c = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${UUID}`);
+        // setChats(c);
+
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -172,8 +158,6 @@ const HomePage = ({ navigation, route }) => {
   }, [email]);
 
   useEffect(() => {
-
-
     const db = FIREBASE_DATABASE;
     return onValue(ref(db, `notifications/${uID}/`), (snapshot) => {
       const notificationData = snapshot.val();
@@ -187,13 +171,19 @@ const HomePage = ({ navigation, route }) => {
         const isValidArray = notificationArray.every(item => typeof item === 'object');
         if (isValidArray) {
 
-          const newNot = notificationArray.filter(n => n.seen === 0);
-          const seenNot = notificationArray.filter(n => n.seen === 1);
+          const newNotifications = notificationArray.filter(n => n.seen === 0 && n.notificationType !=1);
+          const newMessages = notificationArray.filter(n => n.seen === 0 && n.notificationType ===1);
+          const seenNotifications = notificationArray.filter(n => n.seen === 1);
 
-          console.log(newNot);
+          //console.log(newNot);
 
-          setNewNotifications(newNot);
-          setSeenNotifications(seenNot);
+          setNewNotifications(newNotifications);
+
+          //newMessages
+          setNewMessages(newMessages);
+
+          //newMessages added to seen notifications after opened
+          setSeenNotifications(seenNotifications);
 
           console.log(notificationArray);
         } else {
@@ -205,6 +195,31 @@ const HomePage = ({ navigation, route }) => {
     });
 
   }, [uID]);
+
+  async function updateNotifications() {
+    if (showNotifications === false && prevShowNotifications === true) {
+
+      const db = FIREBASE_DATABASE;
+
+      newNotifications.forEach(async notification => {
+       
+        const notificationRef = ref(db, `notifications/${uID}/${notification.key}`);
+
+        try {
+          // Update the 'seen' property to 1
+          await update(notificationRef, { seen: 1 });
+          console.log(`Notification with key ${notification.key} updated successfully.`);
+        } catch (error) {
+          console.error(`Error updating notification with key ${notification.key}:`, error);
+        }
+      });
+    }
+  }
+
+  useEffect(() => {
+    updateNotifications();
+    setPrevShowNotifications(showNotifications);
+  }, [showNotifications]);
 
   function writeNotification() { // passes message from chat UI component
 
@@ -220,8 +235,9 @@ const HomePage = ({ navigation, route }) => {
       message: returnNotificationMessage(1, name),
       creatorID: uID,
       creatorProfileImageURL: profileImage,
-      seen: 0
-
+      seen: 0,
+      chatID: '', 
+      notificationType : 2
     });
 
 
@@ -259,12 +275,17 @@ const HomePage = ({ navigation, route }) => {
         </View>
         : <>
           <View style={styles.header}>
-            <IconButton
-              icon="message"
-              size={30}
-              style={{ marginHorizontal: 0 }}
-              onPress={() => nextPage("_chatList")}
-            />
+            
+          <View>
+              {newMessages.length > 0 && (
+                <Badge style={{ position: 'absolute', top: 5, right: 1 }} size={22}>
+                  {newMessages.length}
+                </Badge>
+              )}
+              <Appbar.Action icon="message"  onPress={() => nextPage("_chatList")} size={30} />
+            </View>
+
+           
             <IconButton
               icon="cog"
               size={30}
@@ -382,7 +403,7 @@ const HomePage = ({ navigation, route }) => {
               tabBarInactiveTintColor: 'gray',
             })}
           >
-            <Tab.Screen name="Profile" component={ProfileTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail }} />
+            <Tab.Screen name="Profile" component={ProfileTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail, newMessages: newMessages }} />
             <Tab.Screen name="CreateAdd" component={CreateTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails }} />
             <Tab.Screen name="Search" component={SearchTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages, }} />
 
