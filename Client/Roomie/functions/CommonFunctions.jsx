@@ -398,33 +398,22 @@ export async function updateNotifications(id, uID, obj) {
   });
 }
 
-export const returnNotifications = () =>{
-  
-    const db = FIREBASE_DATABASE;
 
-     onValue(ref(db, `notifications/${uID}/`), (snapshot) => {
-      const notificationData = snapshot.val();
-      if (notificationData && typeof notificationData === 'object') {
-        // Convert the object into an array of objects
-        const notificationArray = Object.entries(notificationData).map(([key, value]) => ({
-          key, // Add the key as a property
-          ...value, // Spread the rest of the properties
-        }));
-        // Check if each item in the array is an object
-        const isValidArray = notificationArray.every(item => typeof item === 'object');
-        if (isValidArray) {
+export function writeNotification(recipientID, name,uID,pic,chatID,notificationType) { // passes message from chat UI component
 
-          return notificationArray;
-        } else {
-          return console.error('Invalid notifications array:', notificationArray);
-        }
-      } else {
-       return console.error('Invalid notification data:', notificationData);
-      }
-    });
+  const db = FIREBASE_DATABASE;
 
+  set(ref(db, `notifications/${recipientID}/` + generateShortID()), {
+    date: new Date().toISOString(), // needs to be refactored
+    message: returnNotificationMessage(1, name),
+    creatorID: uID,
+    creatorProfileImageURL: pic,
+    seen: 0,
+    chatID: chatID, 
+    notificationType : notificationType
+  });
 
-} 
+}
 
 export const returnNotificationMessage = (notType, name) =>{
 

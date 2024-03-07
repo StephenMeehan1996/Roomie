@@ -8,7 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { returnAdTypeText, references, smoking } from '../functions/CommonFunctions';
 import useFetchData from '../functions/GetAPI';
-import { calculateReviewStats, digsMeals, returnSelectedProfileImage,returnSelectedCoverImage, generateUUID } from '../functions/CommonFunctions';
+import { calculateReviewStats, digsMeals, returnSelectedProfileImage,returnSelectedCoverImage, generateUUID,writeNotification } from '../functions/CommonFunctions';
 import  styles  from '../styles/common.style';
 import callLambdaFunction from '../functions/PostAPI';
 import  formStyles  from '../styles/formStyle.style';
@@ -19,7 +19,7 @@ import AdApplications from './AdApplications';
 const AddDetail = ({navigation, route}) =>{
   //const route = useRoute(); // not sure why I need route here? 
 
-  const {ad, images} = route.params;
+  const {ad, images, userImages, userDetails} = route?.params; // from search results
   const [uID, setUID] = useState(route.params.uID);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedTab, setSelectedTab] = useState('Tab1');
@@ -39,8 +39,8 @@ const AddDetail = ({navigation, route}) =>{
   const [profileImage, setProfileImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
 
-  //console.log(JSON.stringify(ad));
-  //console.log(uID);
+  console.log(JSON.stringify(userDetails));
+  console.log(userImages);
 
 
     const [selectedMessage, setSelectedMessage] = useState('');
@@ -190,7 +190,17 @@ const handleApply = async () =>{
     } catch (error) {
         console.error('An error occurred:', error);
     }
-    setIsLoading(false);
+
+    // need imports and should work
+    
+    // let profileImage = userImages.find(image => image.imagetype === 1 && image.currentselected === 1);
+    // profileImage = profileImage.imageurl;
+
+    // let name = userDetails.firstname + ' ' + userDetails.secondname
+
+    // writeNotification(ad.useridentifier,name,uID,profileImage,ad.addid,2)
+
+    // setIsLoading(false);
 }
  
   const renderTabContent = () => {

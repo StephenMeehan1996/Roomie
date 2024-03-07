@@ -11,7 +11,7 @@ import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import { returnAdTypeText } from '../functions/CommonFunctions';
 
 const Search = ({navigation, route}) => {
-  const { uID, userDetails } = route.params;
+  const { uID, userDetails, userImages } = route.params;
         const [searchQuery, setSearchQuery] = useState('Sligo');
         const [searchResult, setSearchResult] = useState(null);
         const [uploading, setUploading] = useState(false);
@@ -100,7 +100,9 @@ const Search = ({navigation, route}) => {
                   countyLocations: countyLoc,
                   detail: detail,
                   images: images,
-                  uID: uID
+                  uID: uID,
+                  userDetails: userDetails,
+                  userImages: userImages
                 });
               } else {
                 setUploading(false);
@@ -109,7 +111,9 @@ const Search = ({navigation, route}) => {
                   countyLocations: countyLocations, // Pass the current state if county is not found
                   detail: detail,
                   images: images,
-                  userDetails: userDetails
+                  uID: uID,
+                  userDetails: userDetails,
+                  userImages: userImages
                 });
               }
             } catch (error) {

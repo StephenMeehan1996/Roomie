@@ -45,7 +45,12 @@ export default function ChatList({ navigation, route }) {
       console.log('called');
       let chatMessages = newMessages.filter(m => m.chatID === id);
 
-      updateNotifications(id, uID,chatMessages)
+      await updateNotifications(id, uID,chatMessages)
+
+      const updatedMessages = newMessages.filter(message => !chatMessages.includes(message));
+      setNewMessages(updatedMessages);
+
+      console.log(newMessages)
 
   }
 
