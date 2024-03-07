@@ -4,7 +4,7 @@ import { getDatabase, ref, set,child, get , onValue} from "firebase/database";
 import { Modal, Portal, Title, Paragraph, Card,IconButton, MD3Colors, Chip, Avatar, Subheading  } from 'react-native-paper';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { FIREBASE_AUTH,FIREBASE_DATABASE } from '../FirebaseConfig';
-import { generateChatID,returnSelectedProfileImage,generateUUID} from '../functions/CommonFunctions';
+import { generateShortID,returnSelectedProfileImage,generateUUID} from '../functions/CommonFunctions';
 import  styles  from '../styles/common.style';
 
 
@@ -21,7 +21,7 @@ const Chat = ({navigation, route}) => {
   function writeUserData(messages) { // passes message from chat UI component
 
     const db = FIREBASE_DATABASE;
-    set(ref(db, `chats/${chatID}/` + generateChatID()), {
+    set(ref(db, `chats/${chatID}/` + generateShortID()), {
         date : new Date(messages[0].createdAt).toISOString(), // needs to be refactored
         senderID: uID,
         message: messages[0].text,

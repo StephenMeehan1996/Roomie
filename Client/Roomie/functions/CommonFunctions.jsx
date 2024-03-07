@@ -1,6 +1,7 @@
 import { StyleSheet, Text } from 'react-native';
-import { getStorage, ref, child, deleteObject } from 'firebase/storage';
+import { getStorage, ref, child, deleteObject,set, onValue, get } from 'firebase/storage';
 import callLambdaFunction from '../functions/PostAPI';
+import { FIREBASE_DATABASE } from '../FirebaseConfig';
 
 export const returnAdTypeText = (type) => {
   switch (type) {
@@ -157,7 +158,7 @@ export const generateUUID = () => {
 
 }
 
-export const generateChatID = () => {
+export const generateShortID = () => {
   return 'xxxxxx'.replace(/x/g, function () {
     const r = Math.random() * 16 | 0;
     const v = r < 10 ? r : (r & 0x3 | 0x8);
@@ -190,9 +191,6 @@ export const getStorageLocation = (directory, filename) => {
 
   return fileLocation.toString();
 }
-
-
-
 
 export const deleteImage = async (imagePath) => {
 
@@ -379,6 +377,16 @@ export const calculateMatchPercentage = (userDetail, adDetail, adType) => {
     return adDetail;
 
 };
+
+export const returnNotificationMessage = (notType, name) =>{
+
+  switch(notType){
+    case 1:
+      return `${name}has sent you a message`
+    case 2: 
+      return `${name}has applied for your advertisement`
+  }
+}
 
 const styles = StyleSheet.create({
   container: {

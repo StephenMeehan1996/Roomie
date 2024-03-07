@@ -1,14 +1,16 @@
-import { View, Text, SafeAreaView, StyleSheet, ScrollView,TouchableOpacity,Image,ActivityIndicator } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, ScrollView,TouchableOpacity,Image,ActivityIndicator, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { FIREBASE_AUTH } from '../FirebaseConfig'
+import { getDatabase, ref, set,child, get , onValue} from "firebase/database";
+import { FIREBASE_AUTH,FIREBASE_DATABASE } from '../FirebaseConfig'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { generateShortID,returnNotificationMessage} from '../functions/CommonFunctions';
 
 import Profile from '../components/Profile';
 import Search from '../components/Search';
 import Login from './Login';
 import CreateAdd from './CreateAdd';
-import { Avatar, Card, Title, Paragraph, Button,IconButton,Modal, Portal, Dialog, Menu , ICon} from 'react-native-paper';
+import { Avatar, Card, Title, Paragraph, Button,IconButton,Modal, Portal, Dialog, Menu , ICon, Appbar, Badge} from 'react-native-paper';
 import SearchResults from './SearchResults';
 import { createNativeStackNavigator, Header } from '@react-navigation/native-stack';
 import AddDetail from './AddDetail';
@@ -89,6 +91,21 @@ const HomePage = ({navigation, route}) => {
   const hideDialog = () => setVisible(false);
   const [visible, setVisible] = useState(false);
 
+
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  // Dummy notifications for demonstration
+  const dummyNotifications = [
+    { id: 1, message: 'Notification 1' },
+    { id: 2, message: 'Notification 2' },
+    { id: 3, message: 'Notification 3' }
+  ];
+
+  const handleIconPress = () => {
+    setShowNotifications(!showNotifications);
+  };
+
   const nextPage = (route) => {
     setVisible(false)
     navigation.navigate(route, { 
@@ -99,7 +116,7 @@ const HomePage = ({navigation, route}) => {
   // Gets done here so I can pass the information to required components
         useEffect(() => {
          setIsLoading(true)
- 
+         // setNotifications(dummyNotifications);
          const fetchData = async () => {
           try {
             const getUUID = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUID?email=${email}`);
@@ -128,12 +145,70 @@ const HomePage = ({navigation, route}) => {
         fetchData();
       }, [email]);
 
-      // useEffect(() => {
-      //   // This useEffect will run when uID changes
-      //   console.log(uID);
-      //   console.log(userDetails);
-      //   console.log(userImages);
-      // }, [uID, userDetails, userImages]); // Run useEffect whenever uID changes
+      useEffect(() => {
+
+      
+        const db = FIREBASE_DATABASE;
+        return onValue(ref(db, `notifications/${uID}/`), (snapshot) => {
+          const notificationData = snapshot.val();
+          if (notificationData && typeof notificationData === 'object') {
+              // Convert the object into an array of objects
+              const notificationArray = Object.values(notificationData);
+              // Check if each item in the array is an object
+              const isValidArray = notificationArray.every(item => typeof item === 'object');
+              if (isValidArray) {
+                  setNotifications(notificationArray);
+                  console.log(notificationArray);
+              } else {
+                  console.error('Invalid notifications array:', notificationArray);
+              }
+          } else {
+              console.error('Invalid notification data:', notificationData);
+          }
+      });
+    
+    },[uID]);
+
+     function writeNotification() { // passes message from chat UI component
+
+      let profileImage = userImages.find(image => image.imagetype === 1 && image.currentselected === 1);
+      profileImage = profileImage.imageurl;
+
+      let name = userDetails.firstname + ' ' + userDetails.secondname
+
+      const db = FIREBASE_DATABASE;
+
+      set(ref(db, `notifications/${uID}/` + generateShortID()), {
+        date : new Date().toISOString(), // needs to be refactored
+        message: returnNotificationMessage(1, name),
+        creatorID: uID,
+        creatorProfileImageURL: profileImage,
+    });
+    
+  
+    }
+
+    const renderNotifications = ({ item}) => {
+
+      const date = new Date(item.date);
+      const formattedDateTimeString = `${date.toLocaleDateString('en-GB')} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+      
+      return (
+        <View style={styles.notificationItem}>
+        <View style={{paddingVertical: 10}}>
+          <Image
+            style={styles.notificationAvatar}
+            source={{ uri: item.creatorProfileImageURL }} // Replace with your actual image source
+          />
+        </View>
+        <View style={styles.notificationContent}>
+          <Text style={styles.notificationMessage}>{item.message}</Text>
+          <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
+        </View>
+      </View>
+      );
+    };
+
 
   return (
 
@@ -145,26 +220,65 @@ const HomePage = ({navigation, route}) => {
           </View>
                   : <>
      
-        <View style={styles.header}>
+     <View style={styles.header}>
         <IconButton
-            icon="message"  // Assuming "cog" is the name of your settings icon
-            size={30}
-            style={{marginHorizontal: 0}}
-            onPress={() => nextPage("_chatList")} 
-          />
-          <IconButton
-            icon="cog"  // Assuming "cog" is the name of your settings icon
-            size={30}
-            style={{marginHorizontal: 0}}
-            onPress={showDialog} 
-          />
-          <IconButton
-            icon="logout"
-            size={30}
-            style={{marginHorizontal: 0}}
-            onPress={() => FIREBASE_AUTH.signOut()}
-          />
+          icon="message"
+          size={30}
+          style={{ marginHorizontal: 0 }}
+          onPress={() => nextPage("_chatList")}
+        />
+        <IconButton
+          icon="cog"
+          size={30}
+          style={{ marginHorizontal: 0 }}
+          onPress={showDialog}
+        />
+        <IconButton
+          icon="logout"
+          size={30}
+          style={{ marginHorizontal: 0 }}
+          onPress={() => FIREBASE_AUTH.signOut()}
+        />
+        <IconButton
+          icon="test-tube"
+          size={30}
+          style={{ marginHorizontal: 0 }}
+          onPress={() => writeNotification()}
+        />
+        <View>
+          {notifications.length > 0 && (
+            <Badge style={{ position: 'absolute', top: 5, right: 2 }} size={22}>
+              {notifications.length}
+            </Badge>
+          )}
+          <Appbar.Action icon="bell" onPress={handleIconPress} size={30} />
         </View>
+      </View>
+      {showNotifications && (
+        <View style={styles.notificationContainer}>
+          {notifications.length === 0 ? (
+            <Text>No new notifications</Text>
+          ) : (
+            // notifications.map(notification => (
+            //   <Text key={notification.id}>{notification.message}</Text>
+            // ))
+
+            <View>
+            {notifications.length > 0 ? (
+              <FlatList
+                data={notifications}
+                renderItem={renderNotifications}
+                keyExtractor={item => item.key} // Ensure the key is a string
+                vertical
+              />
+            ) : (
+              <Text>No notifications available</Text>
+            )}
+          </View>
+            
+          )}
+        </View>
+        )}
         
         <Portal style={{ }}>
             <Dialog visible={visible} onDismiss={hideDialog} style={styles.popup}>
@@ -295,6 +409,42 @@ const styles = StyleSheet.create({
         justifyContent: 'end', 
         paddingVertical: 0,
         backgroundColor: '#fff'
+      },
+      notificationContainer: {
+        position: 'absolute',
+        top: 50, // Adjust as needed based on the height of the header
+        right: 0,
+        width: 300,
+        backgroundColor: '#ffffff',
+        padding: 10,
+        zIndex: 2,
+      },
+     
+      notificationItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+      },
+      notificationAvatarContainer: {
+        marginRight: 10,
+      },
+      notificationAvatar: {
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        marginRight: 10
+      },
+      notificationContent: {
+        flex: 1,
+      },
+      notificationMessage: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginBottom: 5,
+      },
+      notificationDate: {
+        fontSize: 12,
+        color: 'gray',
       },
       icon: {
         width: 30,
