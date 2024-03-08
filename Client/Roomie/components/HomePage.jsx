@@ -30,14 +30,14 @@ const Tab = createBottomTabNavigator();
 const SecondTabStack = createNativeStackNavigator();
 
 function SearchTabStackScreens({ route }) {
-  const { uID, userDetails, userImages } = route.params;
+  const { userImages } = route.params;
 
   return (
     <SecondTabStack.Navigator initialRouteName='_Search' screenOptions={{ headerShown: false }}>
-      <SecondTabStack.Screen name="_Search" component={Search} initialParams={{ uID: uID, userDetails: userDetails }} />
-      <SecondTabStack.Screen name="_SearchResults" component={SearchResults} initialParams={{ userDetails: userDetails }} />
-      <SecondTabStack.Screen name="_AddDetail" component={AddDetail} initialParams={{ uID: uID }} />
-      <SecondTabStack.Screen name="_chat" component={Chat} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages }} />
+      <SecondTabStack.Screen name="_Search" component={Search} initialParams={{}} />
+      <SecondTabStack.Screen name="_SearchResults" component={SearchResults}  />
+      <SecondTabStack.Screen name="_AddDetail" component={AddDetail} />
+      <SecondTabStack.Screen name="_chat" component={Chat} initialParams={{ userImages: userImages }} />
       <SecondTabStack.Screen name="_Profile" component={Profile} />
     </SecondTabStack.Navigator>
   );
@@ -45,20 +45,18 @@ function SearchTabStackScreens({ route }) {
 
 function ProfileTabStackScreens({ route }) {
 
-  const { uID, userDetails, userImages,  userAdImages,  userAdDetail, } = route.params;
-  const userID = userDetails._userid;
-  const uid = userDetails.useridentifier
+  const { userImages,  userAdImages,  userAdDetail} = route.params;
 
-  
+
   return (
     <SecondTabStack.Navigator initialRouteName='_Profile' screenOptions={{ headerShown: false }} >
-      <SecondTabStack.Screen name="_Profile" component={Profile} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail }} />
+      <SecondTabStack.Screen name="_Profile" component={Profile} initialParams={{ userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail }} />
       <SecondTabStack.Screen name="_AddDetail" component={AddDetail} />
-      <SecondTabStack.Screen name="_manageImages" component={ManageProfileImages} initialParams={{ userImages: userImages, userID: userID, uid: uid }} />
-      <SecondTabStack.Screen name="_managePreferences" component={ManagePreferences} initialParams={{ uID: uID, userDetails: userDetails }} />
-      <SecondTabStack.Screen name="_manageMessages" component={ManageMessages} initialParams={{ uID: uID, userDetails: userDetails }} />
-      <SecondTabStack.Screen name="_chatList" component={ChatList} initialParams={{ uID: uID }} />
-      <SecondTabStack.Screen name="_chat" component={Chat} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages }} />
+      <SecondTabStack.Screen name="_manageImages" component={ManageProfileImages} initialParams={{ userImages: userImages }} />
+      <SecondTabStack.Screen name="_managePreferences" component={ManagePreferences} initialParams={{ }} />
+      <SecondTabStack.Screen name="_manageMessages" component={ManageMessages}/>
+      <SecondTabStack.Screen name="_chatList" component={ChatList} />
+      <SecondTabStack.Screen name="_chat" component={Chat} initialParams={{ userImages: userImages }} />
     </SecondTabStack.Navigator>
   );
 }
@@ -79,10 +77,11 @@ function CreateTabStackScreens({ route }) {
 
 const HomePage = ({ navigation, route }) => {
 
-  const { email } = route.params;
+  const {signedInUserDetails, setSignedInUserDetails} = useAppContext();
+  const {newMessages, setNewMessages } = useAppContext();
 
+  const { email } = route.params;
   const [uID, setUID] = useState(null);
-  const [userDetails, setUserDetails] = useState(null);
   const [userImages, setUserImages] = useState(null);
   const [userAdImages, setUserAdImages] = useState(null);
   const [userAdDetail, setUserAdDetail] = useState(null);
@@ -97,7 +96,7 @@ const HomePage = ({ navigation, route }) => {
 
   const [newNotifications, setNewNotifications] = useState([]);
   const [seenNotifications, setSeenNotifications] = useState([]);
-  const { newMessages, setNewMessages } = useAppContext();
+
 
   const [showNotifications, setShowNotifications] = useState(false);
   //used to only remove notifications if bell previously clicked by user
@@ -141,7 +140,7 @@ const HomePage = ({ navigation, route }) => {
         setUID(getUUID[0].useridentifier);
 
         const getUserDetails = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUser?uid=${UUID}`);
-        setUserDetails(getUserDetails[0]);
+        setSignedInUserDetails(getUserDetails[0]);
 
         const getUserImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${UUID}`);
         setUserImages(getUserImages);
@@ -236,7 +235,7 @@ const HomePage = ({ navigation, route }) => {
     let profileImage = userImages.find(image => image.imagetype === 1 && image.currentselected === 1);
     profileImage = profileImage.imageurl;
 
-    let name = userDetails.firstname + ' ' + userDetails.secondname
+    let name = signedInUserDetails.firstname + ' ' + signedInUserDetails.secondname
 
     const db = FIREBASE_DATABASE;
 
@@ -411,9 +410,9 @@ const HomePage = ({ navigation, route }) => {
               tabBarInactiveTintColor: 'gray',
             })}
           >
-            <Tab.Screen name="Profile" component={ProfileTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail, newMessages: newMessages }} />
-            <Tab.Screen name="CreateAdd" component={CreateTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails }} />
-            <Tab.Screen name="Search" component={SearchTabStackScreens} options={{ headerShown: false }} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages, }} />
+            <Tab.Screen name="Profile" component={ProfileTabStackScreens} options={{ headerShown: false }} initialParams={{userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail}} />
+            <Tab.Screen name="CreateAdd" component={CreateTabStackScreens} options={{ headerShown: false }}  />
+            <Tab.Screen name="Search" component={SearchTabStackScreens} options={{ headerShown: false }} initialParams={{userImages: userImages }} />
 
           </Tab.Navigator>
 

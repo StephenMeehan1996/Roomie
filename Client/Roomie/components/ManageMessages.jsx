@@ -13,13 +13,14 @@ import  styles  from '../styles/common.style';
 import  formStyles  from '../styles/formStyle.style';
 import callLambdaFunction from '../functions/PostAPI';
 import putAPI from '../functions/PutAPI';
+import { useAppContext } from '../Providers/AppContext';
 
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
 export default function ManageMessages({navigation, route}) {
-    const {userDetails} = route.params;
-    const [uID, setUID] = useState(route.params.uID)
+  const {signedInUserDetails} = useAppContext();
+  const [uID, setUID] = useState(signedInUserDetails.useridentifier);
 
     const [selectedOption, setSelectedOption] = useState('');
 
@@ -86,8 +87,8 @@ export default function ManageMessages({navigation, route}) {
 
  const handleSubmit = async (values, {resetForm}) =>{
     setIsLoading(true);
-    values.userID = userDetails._userid;
-    values.userIdentifier = userDetails.useridentifier;
+    values.userID = signedInUserDetails._userid;
+    values.userIdentifier = signedInUserDetails.useridentifier;
     console.log(values);
 
     let url = "https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/presavedMessage"

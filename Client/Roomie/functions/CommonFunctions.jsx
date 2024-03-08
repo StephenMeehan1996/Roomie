@@ -1,6 +1,7 @@
 import { StyleSheet, Text } from 'react-native';
 //import { getStorage, ref as r, child, deleteObject,set, onValue, get,update } from 'firebase/storage';
 import { getDatabase, ref, set, child, get, onValue, update } from "firebase/database";
+import { getStorage, ref as r, deleteObject } from 'firebase/storage';
 import callLambdaFunction from '../functions/PostAPI';
 import { FIREBASE_DATABASE } from '../FirebaseConfig';
 
@@ -184,32 +185,32 @@ export const convertToDateTimeString = (val) => {
 }
 
 export const getStorageLocation = (directory, filename) => {
-  const storage = getStorage();
 
+  const storage = getStorage();
 
   const x = directory + '/' + filename;
 
-  const fileLocation = ref(storage, x);
+  const fileLocation = r(storage, x);
 
   return fileLocation.toString();
 }
 
-// export const deleteImage = async (imagePath) => {
+export const deleteImage = async (imagePath) => {
 
-//   const storage = getStorage();
+  const storage = getStorage();
 
-//   try {
-//     // Create a reference to the file in Firebase Storage
-//     const fileRef = ref(storage, imagePath);
+  try {
+    // Create a reference to the file in Firebase Storage
+    const fileRef = r(storage, imagePath);
 
-//     // Delete the file
-//     await deleteObject(fileRef);
+    // Delete the file
+    await deleteObject(fileRef);
 
-//     console.log(`Image ${imagePath} deleted successfully.`);
-//   } catch (error) {
-//     console.error('Error deleting image:', error.message);
-//   }
-// }
+    console.log(`Image ${imagePath} deleted successfully.`);
+  } catch (error) {
+    console.error('Error deleting image:', error.message);
+  }
+}
 
 // export const openChat = async (chats, ad, uID) => {
 //   let c;

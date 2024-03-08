@@ -6,12 +6,16 @@ import { GiftedChat } from 'react-native-gifted-chat';
 import { FIREBASE_AUTH,FIREBASE_DATABASE } from '../FirebaseConfig';
 import { generateShortID,returnSelectedProfileImage,generateUUID, returnNotificationMessage, writeNotification} from '../functions/CommonFunctions';
 import  styles  from '../styles/common.style';
+import { useAppContext } from '../Providers/AppContext';
 
 
 
 const Chat = ({navigation, route}) => {
-  const {userDetails, userImages, recipientID} = route?.params
-  const [uID, setUID] = useState(route.params.uID)
+  
+  const {signedInUserDetails} = useAppContext();
+  const [uID, setUID] = useState(signedInUserDetails.useridentifier);
+
+  const {userImages, recipientID} = route?.params
   const [chatID, setChatID] = useState(route.params.chatID)
 
   const [profileImage, setProfileImage] = useState(null);
@@ -125,7 +129,7 @@ useEffect(() => {
                 onSend={messages => onSend(messages)}
                 user={{
                     _id: uID,
-                     name: userDetails?.firstname +' ' + userDetails.secondname,
+                     name: signedInUserDetails?.firstname +' ' + signedInUserDetails.secondname,
                      avatar: profileImage?.imageurl
             }}
             keyboardShouldPersistTaps={'never'}

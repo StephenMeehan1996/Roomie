@@ -8,13 +8,19 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import  styles  from '../styles/formStyle.style';
 import callLambdaFunction from '../functions/PostAPI';
 import { generateUUID, returnAdTypeText } from '../functions/CommonFunctions';
+import { useAppContext } from '../Providers/AppContext';
 
 const PostAdd = ({navigation, route}) => {
+
+  const { signedInUserDetails } = useAppContext();
+  const [uID, setuID] = useState(signedInUserDetails.useridentifier);
+  const [userID, setuserID] = useState(signedInUserDetails._userid);
 
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const {formData, uID, userID} = route.params;
+
+  const {formData} = route.params;
 
   console.log(uID);
 

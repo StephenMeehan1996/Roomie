@@ -20,7 +20,8 @@ import { useAppContext } from '../Providers/AppContext';
 
 export default function ChatList({ navigation, route }) {
  
-  const [uID, setUID] = useState(route.params.uID);
+  const {signedInUserDetails} = useAppContext();
+  const [uID, setUID] = useState(signedInUserDetails.useridentifier);
 
   const { newMessages, setNewMessages } = useAppContext();
   const [isLoading, setIsLoading] = useState(false);

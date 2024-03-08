@@ -10,16 +10,22 @@ import Ad from './Ad';
 import  formStyles  from '../styles/formStyle.style';
 import { calculateReviewStats, returnSelectedProfileImage,returnSelectedCoverImage } from '../functions/CommonFunctions';
 import useFetchData from '../functions/GetAPI';
+import { useAppContext } from '../Providers/AppContext';
 
 
 const Profile = ({ navigation, route }) => {
 
-  const { uID, userDetails, userAdImages, userAdDetail } = route.params;
+  const {signedInUserDetails} = useAppContext();
+  const [uID, setUID] = useState(signedInUserDetails.useridentifier);
+  
+  const {userAdImages, userAdDetail } = route.params;
   const [userImages, setUserImages] = useState(route.params.userImages);
   const [isBioExpanded, setIsBioExpanded] = useState(false);
-  const [profileImage, setProfileImage] = useState(null);
+  const {profileImage, setProfileImage} = useAppContext();
   const [coverImage, setCoverImage] = useState(null);
   const [updating, setUpdating] = useState(false);
+
+
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
@@ -89,16 +95,16 @@ const Profile = ({ navigation, route }) => {
           size={80}
           source={profileImage != null ? { uri: profileImage.imageurl } : require('../assets/Icons/images/NoProfile.png')}
         />
-        <Title style={styles.username}>{userDetails.firstname} {userDetails.secondname}</Title>
+        <Title style={styles.username}>{signedInUserDetails.firstname} {signedInUserDetails.secondname}</Title>
         <Paragraph style={styles.bio}>
           Web Developer | Traveller | Foodie
         </Paragraph>
         <View style={styles.info}>
           <Text style={styles.infoText}>Active Adds: {userAdDetail.length}</Text>
-          <Text style={styles.infoText}>Rating: {calculateReviewStats(userDetails.numreviews, userDetails.positivereview)}</Text>
+          <Text style={styles.infoText}>Rating: {calculateReviewStats(signedInUserDetails.numreviews, signedInUserDetails.positivereview)}</Text>
         </View>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginVertical: 10 }}>
-        {userDetails.useridentifier !== uID && (
+        {signedInUserDetails.useridentifier !== uID && (
           <Button
             icon="email"
             mode="outlined"
@@ -116,7 +122,7 @@ const Profile = ({ navigation, route }) => {
           </Button>
         </View>
         <Collapsible collapsed={!isBioExpanded}>
-          <Paragraph style={styles.bio}>{userDetails.bio}</Paragraph>
+          <Paragraph style={styles.bio}>{signedInUserDetails.bio}</Paragraph>
         </Collapsible>
       </Card.Content>
     </>

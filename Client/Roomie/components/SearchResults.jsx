@@ -10,12 +10,18 @@ import { yesNO, priceRange, number, roomType, houseType, houseMatExpectations, e
 import formStyles from '../styles/formStyle.style';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import { returnAdTypeNum, calculateMatchPercentage } from '../functions/CommonFunctions';
+import { useAppContext } from '../Providers/AppContext';
 
 
 const SearchResults = ({ navigation, route }) => {
+  
+  const {signedInUserDetails} = useAppContext();
+  const [uID, setUID] = useState(signedInUserDetails.useridentifier);
+  
+  const { searchValue, countyLocations } = route.params;
+  let { images} = route.params;
 
-  const { searchValue, countyLocations, uID } = route.params;
-  let { images, userDetails } = route.params;
+
   const [detail, setDetail] = useState(route.params.detail);
   countyLocations.sort((a, b) => a.locationvalue.length - b.locationvalue.length); // sort so county appears first
 
@@ -30,10 +36,6 @@ const SearchResults = ({ navigation, route }) => {
 
   const fetchData = useFetchDataBoth();
   
-
-
-
-
   const [locations, setLocations] = useState([]);
 
   const [details, setDetails] = useState(detail);
@@ -75,7 +77,7 @@ const SearchResults = ({ navigation, route }) => {
       let propertyValue = null;
       let adType = returnAdTypeNum(rentalType);
       let filtered = filterAds();
-  
+    if(filtered.length > 0){
       // Check if filtered array is not empty and if it doesn't have the percentageMatch property
       if (filtered.length > 0 && !(propertyName in filtered[0])) {
         filtered = filtered.map(obj => {
@@ -87,13 +89,14 @@ const SearchResults = ({ navigation, route }) => {
       // Check if filtered[0] exists and its percentageMatch property is null
       if (filtered[0] && filtered[0].percentageMatch === null || filtered[0].percentageMatch === undefined) {
         console.log('Calculating Match');
-        const match = await calculateMatchPercentage(userDetails, filtered, adType);
+        const match = await calculateMatchPercentage(signedInUserDetails, filtered, adType);
         console.log(match);
         setFilteredAds(match);
       }
   
       console.log(filtered);
     };
+  }
   
     cal();
   }, [location, detail, rentalType, uID]); // Include uID in the dependency array

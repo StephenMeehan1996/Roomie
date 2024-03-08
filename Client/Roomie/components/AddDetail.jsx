@@ -14,13 +14,15 @@ import callLambdaFunction from '../functions/PostAPI';
 import  formStyles  from '../styles/formStyle.style';
 import ManageAd from './ManageAd';
 import AdApplications from './AdApplications';
+import { useAppContext } from '../Providers/AppContext';
 
 
 const AddDetail = ({navigation, route}) =>{
-  //const route = useRoute(); // not sure why I need route here? 
+  
+  const {signedInUserDetails} = useAppContext();
+  const [uID, setUID] = useState(signedInUserDetails.useridentifier);
 
   const {ad, images, userImages, userDetails} = route?.params; // from search results
-  const [uID, setUID] = useState(route.params.uID);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedTab, setSelectedTab] = useState('Tab1');
   const [selectedApplicationTab, setSelectedApplicationTab] = useState('Tab1');
@@ -39,13 +41,12 @@ const AddDetail = ({navigation, route}) =>{
   const [profileImage, setProfileImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
 
-  console.log(JSON.stringify(userDetails));
-  console.log(userImages);
 
 
-    const [selectedMessage, setSelectedMessage] = useState('');
-    const [messageTitle, setMessageTitle] = useState('');
-    const [messageBody, setMessageBody] = useState('');
+
+  const [selectedMessage, setSelectedMessage] = useState('');
+  const [messageTitle, setMessageTitle] = useState('');
+  const [messageBody, setMessageBody] = useState('');
 
 
 
@@ -192,7 +193,7 @@ const handleApply = async () =>{
     }
 
     // need imports and should work
-    
+
     // let profileImage = userImages.find(image => image.imagetype === 1 && image.currentselected === 1);
     // profileImage = profileImage.imageurl;
 
@@ -200,7 +201,7 @@ const handleApply = async () =>{
 
     // writeNotification(ad.useridentifier,name,uID,profileImage,ad.addid,2)
 
-    // setIsLoading(false);
+     setIsLoading(false);
 }
  
   const renderTabContent = () => {
