@@ -1,5 +1,5 @@
 import React, { useState, useEffect  } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Dimensions, TextInput, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Dimensions, TextInput, ActivityIndicator,Alert  } from 'react-native';
 import { Modal, Portal, Button, Title, Paragraph, Card, IconButton, MD3Colors, Chip, Avatar, Subheading, Badge } from 'react-native-paper';
 import { useRoute } from '@react-navigation/native';
 import {  ref, update } from "firebase/database";
@@ -18,16 +18,26 @@ import { FIREBASE_DATABASE } from '../FirebaseConfig'
 
 
 export default function ChatList({ navigation, route }) {
-
+ 
   const [uID, setUID] = useState(route.params.uID);
-  const [messages, setMessages] = useState(newMessages);
-  const [newMessages, setNewMessages] = useState(route.params.newMessages);
+
+
   const [isLoading, setIsLoading] = useState(false);
   const [chats, setChats] = useState([]);
   const [userDetails, setUserDetails] = useState([]);
 
   const [messageCounts, setMessageCounts] = useState({});
 
+  const [messages, setMessages] = useState(route.params.newMessages);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setMessages(route.params.newMessages);
+      Alert.alert('New messages updated!');
+    });
+
+    return unsubscribe;
+  }, [navigation, route.params.newMessages]);
 
   const handleChatPress = async (chatID, recipientID) => {
 
@@ -57,11 +67,11 @@ export default function ChatList({ navigation, route }) {
   useEffect(() => {
     // Calculate message counts for each chat ID
     const counts = {};
-    newMessages.forEach(message => {
+    messages.forEach(message => {
       counts[message.chatID] = (counts[message.chatID] || 0) + 1;
     });
     setMessageCounts(counts);
-  }, [newMessages]);
+  }, [messages]);
 
   const renderItem = ({ item }) => {
 

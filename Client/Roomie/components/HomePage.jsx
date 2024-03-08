@@ -44,15 +44,16 @@ function SearchTabStackScreens({ route }) {
 
 function ProfileTabStackScreens({ route }) {
 
-  const { uID, userDetails, userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail, newMessages: newMessages  } = route.params;
+  const { uID, userDetails, userImages,  userAdImages,  userAdDetail, } = route.params;
   const userID = userDetails._userid;
   const uid = userDetails.useridentifier
-  const [messages, setMessages] = useState(newMessages);
 
-  const updateNewMessages = (messages) => {
-    setMessages(messages);
-  };
- 
+  // console.log("Route params:", route.params); 
+
+  // useEffect(() => {
+  //   console.log("from ProfileTabStackScreens: ", newMessages);
+  //   // Your other code...
+  // }, [newMessages]);
   
   return (
     <SecondTabStack.Navigator initialRouteName='_Profile' screenOptions={{ headerShown: false }} >
@@ -61,7 +62,7 @@ function ProfileTabStackScreens({ route }) {
       <SecondTabStack.Screen name="_manageImages" component={ManageProfileImages} initialParams={{ userImages: userImages, userID: userID, uid: uid }} />
       <SecondTabStack.Screen name="_managePreferences" component={ManagePreferences} initialParams={{ uID: uID, userDetails: userDetails }} />
       <SecondTabStack.Screen name="_manageMessages" component={ManageMessages} initialParams={{ uID: uID, userDetails: userDetails }} />
-      <SecondTabStack.Screen name="_chatList" component={ChatList} initialParams={{ uID: uID, newMessages, newMessages, updateNewMessages }} />
+      <SecondTabStack.Screen name="_chatList" component={ChatList} initialParams={{ uID: uID }} />
       <SecondTabStack.Screen name="_chat" component={Chat} initialParams={{ uID: uID, userDetails: userDetails, userImages: userImages }} />
     </SecondTabStack.Navigator>
   );
@@ -112,6 +113,11 @@ const HomePage = ({ navigation, route }) => {
     setShowNotifications(!showNotifications);
   };
 
+  // useEffect(() => {
+  //   console.log("useEffect triggered with newMessages:", newMessages);
+  //   // Your other code...
+  // }, [newMessages]);
+
 
 
   const nextPage = (route) => {
@@ -119,6 +125,13 @@ const HomePage = ({ navigation, route }) => {
 
     navigation.navigate(route, {
 
+    });
+  };
+
+  const t = (m) => {
+  
+    navigation.navigate('_chatList', {  
+       newMessages: m 
     });
   };
 
@@ -185,7 +198,9 @@ const HomePage = ({ navigation, route }) => {
           //newMessages added to seen notifications after opened
           setSeenNotifications(seenNotifications);
 
-          console.log(notificationArray);
+       
+
+         
         } else {
           console.error('Invalid notifications array:', notificationArray);
         }
@@ -282,10 +297,8 @@ const HomePage = ({ navigation, route }) => {
                   {newMessages.length}
                 </Badge>
               )}
-              <Appbar.Action icon="message"  onPress={() => nextPage("_chatList")} size={30} />
+              <Appbar.Action icon="message"  onPress={() => t(newMessages)} size={30} />
             </View>
-
-           
             <IconButton
               icon="cog"
               size={30}
