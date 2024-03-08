@@ -23,6 +23,7 @@ import ManagePreferences from './ManagePreferences';
 import ManageMessages from './ManageMessages';
 import Chat from './Chat';
 import ChatList from './ChatList';
+import { useNewMessages } from '../Providers/NewMessagesProvider';
 
 const Tab = createBottomTabNavigator();
 
@@ -102,7 +103,7 @@ const HomePage = ({ navigation, route }) => {
 
   const [newNotifications, setNewNotifications] = useState([]);
   const [seenNotifications, setSeenNotifications] = useState([]);
-  const [newMessages, setNewMessages] = useState([]);
+  const { newMessages, setNewMessages } = useNewMessages();
 
   const [showNotifications, setShowNotifications] = useState(false);
   //used to only remove notifications if bell previously clicked by user

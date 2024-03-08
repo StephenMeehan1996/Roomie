@@ -14,6 +14,7 @@ import formStyles from '../styles/formStyle.style';
 import callLambdaFunction from '../functions/PostAPI';
 import putAPI from '../functions/PutAPI';
 import { FIREBASE_DATABASE } from '../FirebaseConfig'
+import { useNewMessages } from '../Providers/NewMessagesProvider';
 
 
 
@@ -21,7 +22,7 @@ export default function ChatList({ navigation, route }) {
  
   const [uID, setUID] = useState(route.params.uID);
 
-
+  const { newMessages, setNewMessages } = useNewMessages();
   const [isLoading, setIsLoading] = useState(false);
   const [chats, setChats] = useState([]);
   const [userDetails, setUserDetails] = useState([]);
@@ -29,15 +30,6 @@ export default function ChatList({ navigation, route }) {
   const [messageCounts, setMessageCounts] = useState({});
 
   const [messages, setMessages] = useState(route.params.newMessages);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      setMessages(route.params.newMessages);
-      Alert.alert('New messages updated!');
-    });
-
-    return unsubscribe;
-  }, [navigation, route.params.newMessages]);
 
   const handleChatPress = async (chatID, recipientID) => {
 
@@ -67,11 +59,11 @@ export default function ChatList({ navigation, route }) {
   useEffect(() => {
     // Calculate message counts for each chat ID
     const counts = {};
-    messages.forEach(message => {
+    newMessages.forEach(message => {
       counts[message.chatID] = (counts[message.chatID] || 0) + 1;
     });
     setMessageCounts(counts);
-  }, [messages]);
+  }, [newMessages]);
 
   const renderItem = ({ item }) => {
 
