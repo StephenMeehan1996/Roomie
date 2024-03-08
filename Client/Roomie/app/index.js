@@ -15,7 +15,7 @@ import CreateAdd from '../components/CreateAdd';
 import PostAdd from '../components/PostAdd';
 import AddDetail from '../components/AddDetail';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { NewMessagesProvider } from '../Providers/NewMessagesProvider';
+import { AppProvider } from '../Providers/AppContext';
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
@@ -67,13 +67,13 @@ const Home =  ({navigation, route}) =>{
     return (
       <PaperProvider>
         <SafeAreaView style={{flex: 1}}>
-          <NewMessagesProvider>
+          <AppProvider>
             <NavigationContainer  independent={true}>
                 <Stack.Navigator initialRouteName='Home' screenOptions={{headerShown: false}} >
                     {user ? <Stack.Screen name='Inside' component={InsideLayout}  initialParams={{ email: user.email }} /> : <Stack.Screen name='OutsideLayout' component={OutsideLayout}/> }
                 </Stack.Navigator>
             </NavigationContainer>
-            </NewMessagesProvider>
+            </AppProvider>
         </SafeAreaView>
         </PaperProvider>
     )

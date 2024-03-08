@@ -5,7 +5,7 @@ const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const [newMessages, setNewMessages] = useState([]);
   const [signedInUserDetails, setSignedInUserDetails] = useState([]);
-  const [signedInProfilePic, setSignedInProfilePic] = useState('');
+  const [signedInProfilePic, setSignedInProfilePic] = useState(null);
 
   return (
     <AppContext.Provider value={{ newMessages, setNewMessages, signedInUserDetails, setSignedInUserDetails,signedInProfilePic,setSignedInProfilePic }}>

@@ -14,7 +14,7 @@ import formStyles from '../styles/formStyle.style';
 import callLambdaFunction from '../functions/PostAPI';
 import putAPI from '../functions/PutAPI';
 import { FIREBASE_DATABASE } from '../FirebaseConfig'
-import { useNewMessages } from '../Providers/NewMessagesProvider';
+import { useAppContext } from '../Providers/AppContext';
 
 
 
@@ -22,7 +22,7 @@ export default function ChatList({ navigation, route }) {
  
   const [uID, setUID] = useState(route.params.uID);
 
-  const { newMessages, setNewMessages } = useNewMessages();
+  const { newMessages, setNewMessages } = useAppContext();
   const [isLoading, setIsLoading] = useState(false);
   const [chats, setChats] = useState([]);
   const [userDetails, setUserDetails] = useState([]);

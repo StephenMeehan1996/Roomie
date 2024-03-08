@@ -23,7 +23,7 @@ import ManagePreferences from './ManagePreferences';
 import ManageMessages from './ManageMessages';
 import Chat from './Chat';
 import ChatList from './ChatList';
-import { useNewMessages } from '../Providers/NewMessagesProvider';
+import { useAppContext } from '../Providers/AppContext';
 
 const Tab = createBottomTabNavigator();
 
@@ -49,12 +49,6 @@ function ProfileTabStackScreens({ route }) {
   const userID = userDetails._userid;
   const uid = userDetails.useridentifier
 
-  // console.log("Route params:", route.params); 
-
-  // useEffect(() => {
-  //   console.log("from ProfileTabStackScreens: ", newMessages);
-  //   // Your other code...
-  // }, [newMessages]);
   
   return (
     <SecondTabStack.Navigator initialRouteName='_Profile' screenOptions={{ headerShown: false }} >
@@ -103,7 +97,7 @@ const HomePage = ({ navigation, route }) => {
 
   const [newNotifications, setNewNotifications] = useState([]);
   const [seenNotifications, setSeenNotifications] = useState([]);
-  const { newMessages, setNewMessages } = useNewMessages();
+  const { newMessages, setNewMessages } = useAppContext();
 
   const [showNotifications, setShowNotifications] = useState(false);
   //used to only remove notifications if bell previously clicked by user
