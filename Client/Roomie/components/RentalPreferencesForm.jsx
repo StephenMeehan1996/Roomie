@@ -98,11 +98,13 @@ const RentalPreferencesForm = ({navigation, route}) => {
       const formsToCombine = {...formData, ...values}
       setLoading(true);
       try{
-          const responce = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-          console.log(responce); 
+       
           formsToCombine.selectedRentalPref = formsToCombine.selectedRentalPref.map(item => `'${item}'`).join(', ');
           formsToCombine.userIdentifier = generateUUID();
-          console.log(formsToCombine);
+        
+
+          const responce = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+          console.log(responce); 
 
           await insertUser(formsToCombine);       
 

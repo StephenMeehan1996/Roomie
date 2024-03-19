@@ -77,7 +77,7 @@ export default function ManageMessages({navigation, route}) {
 
      useEffect(() => {
         // Check if userMessages has items
-        if (userMessages.length > 0) {
+        if (userMessages) {
         } else {
           setSelectedOption('');
           setMessageTitle(''); // Set to null or an empty string as needed
@@ -229,7 +229,7 @@ const renderTabContent = () => {
              <View>  
               <Card style={styles.card}>
                 <Card.Content>
-                {userMessages.length > 0 ? (
+                {userMessages? (
                   <>
                   <Paragraph>Select from saved messages:</Paragraph>
                  <Picker

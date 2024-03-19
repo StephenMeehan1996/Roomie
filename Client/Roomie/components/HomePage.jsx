@@ -62,15 +62,15 @@ function ProfileTabStackScreens({ route }) {
 }
 function CreateTabStackScreens({ route }) {
 
-  const { uID, userDetails } = route.params;
+ // const { uID, userDetails } = route.params;
 
-  const userID = userDetails._userid;
+  //const userID = userDetails._userid;
 
   return (
     <SecondTabStack.Navigator initialRouteName='_CreateAdd' screenOptions={{ headerShown: false }}>
       <SecondTabStack.Screen name="_CreateAdd" component={CreateAdd} />
       <SecondTabStack.Screen name="_TestAPI" component={TestAPI} />
-      <SecondTabStack.Screen name="_PostAdd" component={PostAdd} initialParams={{ uID: uID, userID: userID }} />
+      <SecondTabStack.Screen name="_PostAdd" component={PostAdd} />
     </SecondTabStack.Navigator>
   );
 }
@@ -81,6 +81,7 @@ const HomePage = ({ navigation, route }) => {
   const {newMessages, setNewMessages } = useAppContext();
 
   const { email } = route.params;
+
   const [uID, setUID] = useState(null);
   const [userImages, setUserImages] = useState(null);
   const [userAdImages, setUserAdImages] = useState(null);
@@ -130,6 +131,7 @@ const HomePage = ({ navigation, route }) => {
       try {
         const getUUID = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUID?email=${email}`);
         const UUID = getUUID[0].useridentifier;
+
         setUID(getUUID[0].useridentifier);
 
         const getUserDetails = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUser?uid=${UUID}`);

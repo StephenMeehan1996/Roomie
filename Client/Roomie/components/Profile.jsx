@@ -18,7 +18,7 @@ const Profile = ({ navigation, route }) => {
   const {signedInUserDetails} = useAppContext();
   const [uID, setUID] = useState(signedInUserDetails.useridentifier);
   
-  const {userAdImages, userAdDetail } = route.params;
+  const { userAdImages, userAdDetail} = route.params;
   const [userImages, setUserImages] = useState(route.params.userImages);
   const [isBioExpanded, setIsBioExpanded] = useState(false);
   const {profileImage, setProfileImage} = useAppContext();
@@ -100,7 +100,7 @@ const Profile = ({ navigation, route }) => {
           Web Developer | Traveller | Foodie
         </Paragraph>
         <View style={styles.info}>
-        {userAdDetail.length > 0 && (
+        {userAdDetail && (
             <Text style={styles.infoText}>Active Adds: {userAdDetail.length}</Text>
           )}
           <Text style={styles.infoText}>Rating: {calculateReviewStats(signedInUserDetails.numreviews, signedInUserDetails.positivereview)}</Text>
@@ -136,7 +136,7 @@ const Profile = ({ navigation, route }) => {
         <Title style={styles.username}>Active adds</Title>
         <View >
        
-          {userAdDetail.length === 0 ? (
+          {userAdDetail.length == 0 ? (
           <Card elevation={5} style={[formStyles.card, {marginTop: 30, paddingVertical: 40}]}>
             <Card.Content>
               <View style={styles.noResultsContainer}>

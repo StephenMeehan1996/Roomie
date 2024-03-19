@@ -22,7 +22,6 @@ const AddDetail = ({navigation, route}) =>{
   const {signedInUserDetails, profileImage} = useAppContext();
   const [uID, setUID] = useState(signedInUserDetails.useridentifier);
 
-  console.log(profileImage)
   const {ad, images, userImages, userDetails} = route?.params; // from search results
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedTab, setSelectedTab] = useState('Tab1');
@@ -79,7 +78,7 @@ const AddDetail = ({navigation, route}) =>{
   else if(chats.length > 0){
 
       const matchingChatRecord = chats.find(record => record.user1 === ad.useridentifier || record.user2 === ad.useridentifier);
-
+  
       if(matchingChatRecord){
 
         c = matchingChatRecord.chatid
@@ -120,6 +119,7 @@ const AddDetail = ({navigation, route}) =>{
      try {
 
       const getChats = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${uID}`); //needed for both
+      console.log(getChats)
       setChats(getChats);
 
       if(ad.useridentifier !== uID){
@@ -135,9 +135,10 @@ const AddDetail = ({navigation, route}) =>{
         setMessages(m);
    
         if(m){
-          setSelectedOption(messages[0].usepresavedmessageid);
-          setMessageTitle(messages[0].messagetitle);
-          setMessageBody(messages[0].messagebody);
+        
+          setSelectedOption(m[0].usepresavedmessageid);
+          setMessageTitle(m[0].messagetitle);
+          setMessageBody(m[0].messagebody);
         }
 
       }
@@ -166,7 +167,6 @@ const AddDetail = ({navigation, route}) =>{
     console.log(posterImages)
     setPosterProfileImage(returnSelectedProfileImage(posterImages));
     setCoverImage(returnSelectedCoverImage(posterImages));
-    console.log('here :: ' + returnSelectedCoverImage(posterImages))
    } catch (error) {
      console.log(error);
    }

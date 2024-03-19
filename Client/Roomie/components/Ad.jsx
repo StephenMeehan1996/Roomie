@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     borderColor: 'black',
+    zIndex: 2
   },
   closeButton: {
     position: 'absolute',
