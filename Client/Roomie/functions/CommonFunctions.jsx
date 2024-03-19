@@ -400,13 +400,13 @@ export async function updateNotifications(id, uID, obj) {
 }
 
 
-export function writeNotification(recipientID, name,uID,pic,chatID,notificationType) { // passes message from chat UI component
+export function writeNotification(recipientID, name, uID, pic, chatID, notificationType) { // passes message from chat UI component
 
   const db = FIREBASE_DATABASE;
 
   set(ref(db, `notifications/${recipientID}/` + generateShortID()), {
     date: new Date().toISOString(), // needs to be refactored
-    message: returnNotificationMessage(1, name),
+    message: returnNotificationMessage(notificationType, name),
     creatorID: uID,
     creatorProfileImageURL: pic,
     seen: 0,
@@ -420,9 +420,9 @@ export const returnNotificationMessage = (notType, name) =>{
 
   switch(notType){
     case 1:
-      return `${name}has sent you a message`
+      return `${name} has sent you a message`
     case 2: 
-      return `${name}has applied for your advertisement`
+      return `${name} has applied for your advertisement`
   }
 }
 

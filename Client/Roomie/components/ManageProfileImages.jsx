@@ -52,20 +52,18 @@ const ManageProfileImages = ({ navigation, route }) => {
   const handleSetAsProfile = async () => {
     setUpdating(true);
     let imageID = userImages[0].profileimageid;
-    let uid = userImages[0]._useridentifier;
-    let id = userImages[0].userid;
+  
     closeMenu();
-    await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieUpdateProfileImages?imageID=${imageID}&imageType=1&uid=${uid}&id=${id}`);
+    await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieUpdateProfileImages?imageID=${imageID}&imageType=1&uid=${uid}&id=${userID}`);
     setUpdating(false);
   };
 
   const handleSetAsCover = async () => {
     setUpdating(true);
     let imageID = userImages[0].profileimageid;
-    let uid = userImages[0]._useridentifier;
-    let id = userImages[0].userid;
+ 
     closeMenu();
-    await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieUpdateProfileImages?imageID=${imageID}&imageType=2&uid=${uid}&id=${id}`);
+    await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieUpdateProfileImages?imageID=${imageID}&imageType=2&uid=${uid}&id=${userID}`);
     setUpdating(false);
   };
 

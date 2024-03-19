@@ -33,17 +33,6 @@ const Chat = ({navigation, route}) => {
         image: messages[0].user?.avatar
     });
 
-//Notifications
-
-    // set(ref(db, `notifications/${recipientID}/` + generateShortID()), {
-    //   date: new Date().toISOString(), // needs to be refactored
-    //   message: returnNotificationMessage(1, messages[0].user?.name),
-    //   creatorID: uID,
-    //   creatorProfileImageURL: messages[0].user?.avatar,
-    //   seen: 0,
-    //   chatID: chatID, 
-    //   notificationType : 1
-    // });
 
     writeNotification(recipientID,messages[0].user?.name,uID,messages[0].user?.avatar,chatID,1)
 

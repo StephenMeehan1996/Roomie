@@ -100,7 +100,9 @@ const Profile = ({ navigation, route }) => {
           Web Developer | Traveller | Foodie
         </Paragraph>
         <View style={styles.info}>
-          <Text style={styles.infoText}>Active Adds: {userAdDetail.length}</Text>
+        {userAdDetail.length > 0 && (
+            <Text style={styles.infoText}>Active Adds: {userAdDetail.length}</Text>
+          )}
           <Text style={styles.infoText}>Rating: {calculateReviewStats(signedInUserDetails.numreviews, signedInUserDetails.positivereview)}</Text>
         </View>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginVertical: 10 }}>

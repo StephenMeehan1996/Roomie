@@ -107,13 +107,6 @@ const HomePage = ({ navigation, route }) => {
     setShowNotifications(!showNotifications);
   };
 
-  // useEffect(() => {
-  //   console.log("useEffect triggered with newMessages:", newMessages);
-  //   // Your other code...
-  // }, [newMessages]);
-
-
-
   const nextPage = (route) => {
     setVisible(false)
 
@@ -149,9 +142,6 @@ const HomePage = ({ navigation, route }) => {
         setUserAdImages(getUserAds.images);
         setUserAdDetail(getUserAds.detail)
 
-        // const c = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${UUID}`);
-        // setChats(c);
-
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -169,10 +159,10 @@ const HomePage = ({ navigation, route }) => {
     return onValue(ref(db, `notifications/${uID}/`), (snapshot) => {
       const notificationData = snapshot.val();
       if (notificationData && typeof notificationData === 'object') {
-        // Convert the object into an array of objects
+       
         const notificationArray = Object.entries(notificationData).map(([key, value]) => ({
           key, // Add the key as a property
-          ...value, // Spread the rest of the properties
+          ...value, 
         }));
         // Check if each item in the array is an object
         const isValidArray = notificationArray.every(item => typeof item === 'object');
@@ -182,8 +172,6 @@ const HomePage = ({ navigation, route }) => {
           const newMessages = notificationArray.filter(n => n.seen === 0 && n.notificationType ===1);
           const seenNotifications = notificationArray.filter(n => n.seen === 1);
 
-          //console.log(newNot);
-
           setNewNotifications(newNotifications);
 
           //newMessages
@@ -191,9 +179,6 @@ const HomePage = ({ navigation, route }) => {
 
           //newMessages added to seen notifications after opened
           setSeenNotifications(seenNotifications);
-
-       
-
          
         } else {
           console.error('Invalid notifications array:', notificationArray);
@@ -230,27 +215,6 @@ const HomePage = ({ navigation, route }) => {
     setPrevShowNotifications(showNotifications);
   }, [showNotifications]);
 
-  function writeNotification() { // passes message from chat UI component
-
-    let profileImage = userImages.find(image => image.imagetype === 1 && image.currentselected === 1);
-    profileImage = profileImage.imageurl;
-
-    let name = signedInUserDetails.firstname + ' ' + signedInUserDetails.secondname
-
-    const db = FIREBASE_DATABASE;
-
-    set(ref(db, `notifications/${uID}/` + generateShortID()), {
-      date: new Date().toISOString(), // needs to be refactored
-      message: returnNotificationMessage(1, name),
-      creatorID: uID,
-      creatorProfileImageURL: profileImage,
-      seen: 0,
-      chatID: '', 
-      notificationType : 2
-    });
-
-
-  }
 
   const renderNotifications = ({ item }) => {
 
@@ -305,12 +269,7 @@ const HomePage = ({ navigation, route }) => {
               style={{ marginHorizontal: 0 }}
               onPress={() => FIREBASE_AUTH.signOut()}
             />
-            <IconButton
-              icon="test-tube"
-              size={30}
-              style={{ marginHorizontal: 0 }}
-              onPress={() => writeNotification()}
-            />
+          
             <View>
               {newNotifications.length > 0 && (
                 <Badge style={{ position: 'absolute', top: 5, right: 2 }} size={22}>

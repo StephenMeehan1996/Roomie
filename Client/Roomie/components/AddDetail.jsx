@@ -19,9 +19,10 @@ import { useAppContext } from '../Providers/AppContext';
 
 const AddDetail = ({navigation, route}) =>{
   
-  const {signedInUserDetails} = useAppContext();
+  const {signedInUserDetails, profileImage} = useAppContext();
   const [uID, setUID] = useState(signedInUserDetails.useridentifier);
 
+  console.log(profileImage)
   const {ad, images, userImages, userDetails} = route?.params; // from search results
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedTab, setSelectedTab] = useState('Tab1');
@@ -38,7 +39,7 @@ const AddDetail = ({navigation, route}) =>{
   const [applications, setApplications] = useState([]);
 
 
-  const [profileImage, setProfileImage] = useState(null);
+  const [posterProfileImage, setPosterProfileImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
 
 
@@ -163,7 +164,7 @@ const AddDetail = ({navigation, route}) =>{
   const setSelectedImages = async () => {
    try {
     console.log(posterImages)
-    setProfileImage(returnSelectedProfileImage(posterImages));
+    setPosterProfileImage(returnSelectedProfileImage(posterImages));
     setCoverImage(returnSelectedCoverImage(posterImages));
     console.log('here :: ' + returnSelectedCoverImage(posterImages))
    } catch (error) {
@@ -192,16 +193,12 @@ const handleApply = async () =>{
         console.error('An error occurred:', error);
     }
 
-    // need imports and should work
+  
+    let name = signedInUserDetails.firstname + ' ' + signedInUserDetails.secondname
 
-    // let profileImage = userImages.find(image => image.imagetype === 1 && image.currentselected === 1);
-    // profileImage = profileImage.imageurl;
+    writeNotification(ad.useridentifier,name,uID,profileImage.imageurl,ad.addid,2)
 
-    // let name = userDetails.firstname + ' ' + userDetails.secondname
-
-    // writeNotification(ad.useridentifier,name,uID,profileImage,ad.addid,2)
-
-     setIsLoading(false);
+    setIsLoading(false);
 }
  
   const renderTabContent = () => {
@@ -334,7 +331,7 @@ const handleApply = async () =>{
                       <View style={styles.avatarContainer}>
                       <Avatar.Image
                         size={80}
-                        source={profileImage != null ? { uri: profileImage.imageurl } : require('../assets/Icons/images/NoProfile.png')}
+                        source={posterProfileImage != null ? { uri: posterProfileImage.imageurl } : require('../assets/Icons/images/NoProfile.png')}
                       />
                       </View>
                       <Title>{posterDetail.firstname} {posterDetail.secondname}</Title>
