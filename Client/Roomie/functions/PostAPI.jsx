@@ -15,16 +15,6 @@ const callLambdaFunction = async (valueToInsert, url) => {
   }
 };
 
-// Example usage of the callLambdaFunction function
-const value = 'Value to insert'; // Replace with the value you want to insert
-callLambdaFunction(value)
-  .then((response) => {
-    // Handle the response here
-    console.log('Response from Lambda:', response);
-  })
-  .catch((error) => {
-    // Handle errors here
-    console.error('Error calling Lambda:', error);
-  });
+
 
 export default callLambdaFunction;

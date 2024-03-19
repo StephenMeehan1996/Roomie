@@ -105,7 +105,7 @@ const handleDeleteMessage = async (id) => {
     await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieDeletePresavedMessages?id=${selectedMessage.usepresavedmessageid}`);
     await setForceRefresh(prev => !prev); // triggers refresh after post
    
-   alert(selectedOption);
+   
     //const selectedMessage = userMessages.find((message) => message.usepresavedmessageid === selectedOption);
 
     setSelectedMessage(userMessages);
@@ -229,7 +229,7 @@ const renderTabContent = () => {
              <View>  
               <Card style={styles.card}>
                 <Card.Content>
-                {userMessages? (
+                {userMessages.length > 0? (
                   <>
                   <Paragraph>Select from saved messages:</Paragraph>
                  <Picker
@@ -263,8 +263,9 @@ const renderTabContent = () => {
                    
                   />
                  <View style={styles.buttonContainer2}>
+            
                     <Button
-                        mode="contained"
+                        mode="outlined"
                         onPress={handleUpdateMessage}
                         style={ { marginRight: 10, borderRadius: 0 }} // Adjust margin as needed
                         disabled={messageBody === selectedMessage.messagebody && messageTitle === selectedMessage.messagetitle}
