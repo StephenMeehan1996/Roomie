@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Platform, TextInput, Dimensions, TouchableOpacity, Image, ScrollView,FlatList, useWindowDimensions,ActivityIndicator } from 'react-native';
-import { Avatar, Card, Title, Paragraph, Button, IconButton, Checkbox, RadioButton,Provider,MD3Colors, Menu, } from 'react-native-paper';
+import { View, Text, StyleSheet, Platform, TextInput, Dimensions, TouchableOpacity, Image, ScrollView, FlatList, useWindowDimensions, ActivityIndicator } from 'react-native';
+import { Avatar, Card, Title, Paragraph, Button, IconButton, Checkbox, RadioButton, Provider, MD3Colors, Menu, } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -14,11 +14,12 @@ import callLambdaFunction from '../functions/PostAPI';
 import { genderOptions, workingHoursOptions, occupationOptions, yearOfStudyOptions, yesNO, rentalPreference, environmentOptions, houseMatExpectations, irishCounties, number, houseType, priceRange, days, roomType } from '../data/formData';
 import styles from '../styles/formStyle.style';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
+import useFetchData from '../functions/GetAPI';
 
 
 
 const ManageAd = ({ navigation, route, ad, images }) => {
-
+  // need select first image set first image
   const [imageArray, setImageArray] = useState(images);
   const windowWidth = useWindowDimensions().width;
   const [selectedButton, setSelectedButton] = useState(1);
@@ -31,7 +32,7 @@ const ManageAd = ({ navigation, route, ad, images }) => {
   const [updating, setUpdating] = useState(false);
   const fetchAds = useFetchDataBoth();
   const openMenu = () => setMenuVisible(true);
-  
+
   const closeMenu = () => setMenuVisible(false);
 
   const handleButtonPress = (buttonId) => {
@@ -39,19 +40,19 @@ const ManageAd = ({ navigation, route, ad, images }) => {
 
   };
 
-  console.log(selectedFiles);
+  console.log(imageArray);
+  console.log(currentImage);
 
   const handleDeleteImage = async (type) => {
     setUpdating(true);
-    let imageID = currentImage.profileimageid;
-    let uid = currentImage._useridentifier;
 
-    await deleteImage(getStorageLocation('images', currentImage.filename)); // deletes from firebase
-    await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieDeleteProfileImage?imageID=${imageID}&uid=${uid}`);
-    userImages.shift(); // removes image locally, to avoid refresh
+    await deleteImage(getStorageLocation('images', currentImage.Filename)); // deletes from firebase
+    let t = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieDeleteAdImage?imageID=${currentImage.AddImageID}`);
+    console.log(t);
+    imageArray.shift(); // removes image locally, to avoid refresh
     closeMenu();
-    setUserImages([...userImages]);
-    setCurrentImage(userImages[0]);
+    setImageArray([...imageArray]);
+    setCurrentImage(imageArray[0]);
     setUpdating(false);
   };
 
@@ -71,87 +72,86 @@ const ManageAd = ({ navigation, route, ad, images }) => {
 
   };
 
-  function imagePosition(file){
-    if(file == imageArray[0]){
-     return 1;
-    } 
-     return 0;
-   }
- 
-   const uploadFile = async () => {
-     if (selectedFiles) {
-       const storage = getStorage();
-       const imagesToPost = [];
-       setUploading(true);
-       const uploadPromises = [];
-       const imageArray = [];
- 
-       for (const file of selectedFiles) {
-         try {
-           const response = await fetch(file.uri);
-           const blob = await response.blob();
-           const storageRef = ref(storage, 'images/' + file.filename);
-   
-           const uploadPromise = new Promise((resolve, reject) => {
-             uploadBytes(storageRef, blob)
-               .then(async (snapshot) => {
-                 console.log('Uploaded a blob or file!');
-                 const url = await getDownloadURL(snapshot.ref);
-   
-                 let imageObj = [ad.addid, url, file.filename, imagePosition(file)];
-              
-                 imageArray.push(imageObj);
-                 resolve(); 
-               })
-               .catch((error) => {
-                 console.error('Error uploading image:', error);
-                 reject(error); 
-               });
-           });
-   
-           uploadPromises.push(uploadPromise);
-         } catch (error) {
-           console.error('Error uploading image:', error);
-         }
-       }
-   
-       try {
-         await Promise.all(uploadPromises);
-        
-    
-         setSelectedFiles([]); 
-         let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/addimages'; // end point for form post
-         callLambdaFunction(imageArray, signUpUrl); // working 
+  function imagePosition(file) {
+    if (file == imageArray[0]) {
+      return 1;
+    }
+    return 0;
+  }
 
-         const getUserAds = await fetchAds(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUsersAds?uid=${ad.useridentifier}`);
-         let i = getUserAds.images;
-         setImageArray(i.filter((image) => image.AddID === ad.addid));
-        
-         setUploading(false);
+  const uploadFile = async () => {
+    if (selectedFiles) {
+      const storage = getStorage();
+      const imagesToPost = [];
+      setUploading(true);
+      const uploadPromises = [];
+      const imageArray = [];
 
-       } catch (error) {
-         console.error('Error occurred during file uploads:', error);
-       }
-     } else {
-       console.log('No image selected for upload.');
-     }
-   };
+      for (const file of selectedFiles) {
+        try {
+          const response = await fetch(file.uri);
+          const blob = await response.blob();
+          const storageRef = ref(storage, 'images/' + file.filename);
 
- 
+          const uploadPromise = new Promise((resolve, reject) => {
+            uploadBytes(storageRef, blob)
+              .then(async (snapshot) => {
+                console.log('Uploaded a blob or file!');
+                const url = await getDownloadURL(snapshot.ref);
 
-   const pickImage = async () =>{
-    
+                let imageObj = [ad.addid, url, file.filename, imagePosition(file)];
+
+                imageArray.push(imageObj);
+                resolve();
+              })
+              .catch((error) => {
+                console.error('Error uploading image:', error);
+                reject(error);
+              });
+          });
+
+          uploadPromises.push(uploadPromise);
+        } catch (error) {
+          console.error('Error uploading image:', error);
+        }
+      }
+
+      try {
+        await Promise.all(uploadPromises);
+
+        setSelectedFiles([]);
+        let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/addimages'; // end point for form post
+        callLambdaFunction(imageArray, signUpUrl); // working 
+
+        const getUserAds = await fetchAds(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUsersAds?uid=${ad.useridentifier}`);
+        let i = getUserAds.images;
+        setImageArray(i.filter((image) => image.AddID === ad.addid));
+
+        setUploading(false);
+
+      } catch (error) {
+        console.error('Error occurred during file uploads:', error);
+      }
+    } else {
+      console.log('No image selected for upload.');
+    }
+  };
+
+
+
+  const pickImage = async () => {
+
     let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4,3],
-        quality: 1,
-        base64: false,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      base64: false,
     })
     if (!result.canceled) {
       let uri = result.assets[0].uri;
       let filename = generateUUID();
-      const newImage = {uri: uri, filename: filename };
+      const newImage = { uri: uri, filename: filename };
       setSelectedFiles([...selectedFiles, newImage]);
     }
   }
@@ -670,7 +670,10 @@ const ManageAd = ({ navigation, route, ad, images }) => {
                       <View>
                         <Title style={styles.title}>House Rental:</Title>
                         <View style={styles.imageContainer}>
-                          <Image source={{ uri: imageArray[0].ImageURL }} style={styles.image} />
+                          <Image
+                            source={imageArray.length > 0 ? { uri: imageArray[0].ImageURL } : require('../assets/Icons/images/noCover.png')}
+                            style={styles.image}
+                          />
                           <View style={styles.addressContainer}>
                             <Text style={styles.addressText}>{ad.addressline1},</Text>
                             <Text style={styles.addressText}>{ad.addressline2},</Text>
@@ -958,124 +961,133 @@ const ManageAd = ({ navigation, route, ad, images }) => {
                       <Card.Content>
                         <Provider>
                           <View>
-                      
-                              <Title style={styles.title}>Manage Images</Title>
-                                {imageArray.length === 1 ? (
-                                  <>
-                                    <View>
-                                      <Image source={{ uri: currentImage.ImageURL }} style={styles2.largeImage} />
-                                      <View style={{ position: 'absolute', top: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.7)', borderRadius: 5 }}>
-                                        <IconButton
-                                          icon="dots-vertical"
-                                          size={30}
-                                          iconColor={MD3Colors.neutralVariant100}
-                                          onPress={openMenu}>
-                                        </IconButton>
-                                      </View>
-                                      {updating ? <View style={{ marginVertical: 10 }}><ActivityIndicator size="large" color="#6200EE" /></View>
-                                        : <>
-                                        </>}
-                                    </View>
-                                  
-                                      <Menu
-                                        visible={menuVisible}
-                                        onDismiss={closeMenu}
-                                        contentStyle={{ backgroundColor: 'white' }}
-                                        anchor={{ x: windowWidth - 60, y: 42 }} // Adjust the position as needed
-                                      >
-                                        <Menu.Item onPress={() => handleSetAsProfile()} title="Set as first Image" />
-                                        <Menu.Item onPress={() => handleDeleteImage()} title="Delete" />
-                                      </Menu>
-                                  </>
-                                ) : imageArray.length > 1 ? (
-                                  <>
-                                    <View >
-                                      <Image source={{ uri: currentImage.ImageURL }} style={styles2.largeImage} />
-                                      <View style={{ position: 'absolute', top: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.7)', borderRadius: 5 }}>
-                                        <IconButton
-                                          icon="dots-vertical"
-                                          size={30}
-                                          iconColor={MD3Colors.neutralVariant100}
-                                          onPress={openMenu}>
-                                        </IconButton>
-                                      </View>
-                                      {updating ? <View style={{ marginVertical: 10 }}><ActivityIndicator size="large" color="#6200EE" /></View>
-                                        : <>
-                                        </>}
-                                    </View>
 
-                                    <FlatList
-                                      data={imageArray.slice(1)}
-                                      renderItem={renderImageItem}
-                                      keyExtractor={(item) => item.AddImageID}
-                                      horizontal={false}
-                                      numColumns={3}
-                                    />
-                                  </>
-                                ) : (
-                                  <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
+                            <Title style={styles.title}>Manage Images</Title>
+                            {imageArray.length === 1 ? (
+                              <>
+                                <View>
+                                  <Image source={{ uri: currentImage.ImageURL }} style={styles2.largeImage} />
+                                  <View style={{ position: 'absolute', top: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.7)', borderRadius: 5 }}>
+                                    <IconButton
+                                      icon="dots-vertical"
+                                      size={30}
+                                      iconColor={MD3Colors.neutralVariant100}
+                                      onPress={openMenu}>
+                                    </IconButton>
+                                  </View>
+                                  {updating ? <View style={{ marginVertical: 10 }}><ActivityIndicator size="large" color="#6200EE" /></View>
+                                    : <>
+                                    </>}
+                                </View>
+
+                                <Menu
+                                  visible={menuVisible}
+                                  onDismiss={closeMenu}
+                                  contentStyle={{ backgroundColor: 'white' }}
+                                  anchor={{ x: windowWidth - 60, y: 42 }} // Adjust the position as needed
+                                >
+                                  <Menu.Item onPress={() => handleSetAsProfile()} title="Set as first Image" />
+                                  <Menu.Item onPress={() => handleDeleteImage()} title="Delete" />
+                                </Menu>
+                              </>
+                            ) : imageArray.length > 1 ? (
+                              <>
+                                <View >
+                                  <Image source={{ uri: currentImage.ImageURL }} style={styles2.largeImage} />
+                                  <View style={{ position: 'absolute', top: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.7)', borderRadius: 5 }}>
+                                    <IconButton
+                                      icon="dots-vertical"
+                                      size={30}
+                                      iconColor={MD3Colors.neutralVariant100}
+                                      onPress={openMenu}>
+                                    </IconButton>
+                                  </View>
+                                  {updating ? <View style={{ marginVertical: 10 }}><ActivityIndicator size="large" color="#6200EE" /></View>
+                                    : <>
+                                    </>}
+                                  <Menu
+                                    visible={menuVisible}
+                                    onDismiss={closeMenu}
+                                    contentStyle={{ backgroundColor: 'white' }}
+                                    anchor={{ x: windowWidth - 60, y: 42 }} // Adjust the position as needed
+                                  >
+                                    <Menu.Item onPress={() => handleSetAsProfile()} title="Set as first Image" />
+                                    <Menu.Item onPress={() => handleDeleteImage()} title="Delete" />
+                                  </Menu>
+                                </View>
+
+                                <FlatList
+                                  data={imageArray.slice(1)}
+                                  renderItem={renderImageItem}
+                                  keyExtractor={(item) => item.AddImageID}
+                                  horizontal={false}
+                                  numColumns={3}
+                                />
+                              </>
+                            ) : (
+                              <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
+                            )}
+
+                            <View style={{ marginTop: 20 }}>
+                              <FlatList
+                                data={selectedFiles}
+                                keyExtractor={(item, index) => index.toString()}
+                                horizontal={false}
+                                numColumns={3} // Set the number of columns
+                                contentContainerStyle={styles.listContainer}
+                                renderItem={({ item }) => (
+                                  <View key={item.id}>
+                                    <Image source={item} style={{ width: 100, height: 100, margin: 5 }} />
+                                    <IconButton
+                                      icon="trash-can-outline"
+                                      size={30}
+                                      iconColor="red"
+                                      style={{ position: 'absolute', top: -5, right: -5 }}
+                                      onPress={() => removeImage(item.uri)}>
+                                    </IconButton>
+                                  </View>
                                 )}
+                              />
+                            </View>
+                            {uploading ? <View style={{ marginVertical: 10 }}><ActivityIndicator size="large" color="#6200EE" /></View>
+                              : <>
+                              </>}
+                            <View style={{ marginVertical: 15 }}>
 
-                                <View style={{ marginTop: 20 }}>
-                                  <FlatList
-                                    data={selectedFiles}
-                                    keyExtractor={(item, index) => index.toString()}
-                                    horizontal={false}
-                                    numColumns={3} // Set the number of columns
-                                    contentContainerStyle={styles.listContainer}
-                                    renderItem={({ item }) => (
-                                      <View key={item.id}>
-                                        <Image source={item} style={{ width: 100, height: 100, margin: 5 }} />
-                                        <IconButton
-                                          icon="trash-can-outline"
-                                          size={30}
-                                          iconColor="red"
-                                          style={{ position: 'absolute', top: -5, right: -5 }}
-                                          onPress={() => removeImage(item.uri)}>
-                                        </IconButton>
-                                      </View>
-                                    )}
-                                  />
-                                </View>
-                                {uploading ? <View style={{ marginVertical: 10 }}><ActivityIndicator size="large" color="#6200EE" /></View>
-                                  : <>
-                                  </>}
-                                <View style={{ marginVertical: 15 }}>
+                              {selectedFiles.length === 0 ? (
+                                <>
+                                  <TouchableOpacity
+                                    style={[styles2.button]}
+                                    onPress={() => pickImage()}
+                                  >
+                                    <Text style={[styles2.buttonText]}>Upload Images</Text>
+                                  </TouchableOpacity>
+                                </>
+                              ) : selectedFiles.length > 0 ? (
 
-                                  {selectedFiles.length === 0 ? (
-                                    <>
-                                      <TouchableOpacity
-                                        style={[styles2.button]}
-                                        onPress={() => pickImage()}
-                                      >
-                                        <Text style={[styles2.buttonText]}>Upload Images</Text>
-                                      </TouchableOpacity>
-                                    </>
-                                  ) : selectedFiles.length > 0 ? (
+                                <>
+                                  <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
+                                    <TouchableOpacity
+                                      style={[styles2.button, { marginRight: 5 }]}
+                                      onPress={() => pickImage()}
+                                    >
+                                      <Text style={[styles2.buttonText]}>Select Image </Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                      style={[styles2.button, { marginLeft: 5 }]}
+                                      onPress={() => uploadFile()}
+                                    >
+                                      <Text style={[styles2.buttonText]}>Upload ({selectedFiles.length})</Text>
+                                    </TouchableOpacity>
+                                  </View>
+                                </>
+                              ) : (
+                                <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
+                              )}
 
-                                    <>
-                                      <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
-                                        <TouchableOpacity
-                                          style={[styles2.button, { marginRight: 5 }]}
-                                          onPress={() => pickImage()}
-                                        >
-                                          <Text style={[styles2.buttonText]}>Select Image </Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                          style={[styles2.button, { marginLeft: 5 }]}
-                                          onPress={() => uploadFile()}
-                                        >
-                                          <Text style={[styles2.buttonText]}>Upload ({selectedFiles.length})</Text>
-                                        </TouchableOpacity>
-                                      </View>
-                                    </>
-                                  ) : (
-                                    <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
-                                  )}
 
-                              
-                                </View>
-                             
+                            </View>
+
                           </View>
                         </Provider>
 
