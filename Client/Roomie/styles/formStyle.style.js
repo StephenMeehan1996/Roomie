@@ -35,6 +35,12 @@ const styles = StyleSheet.create({
       marginBottom: 16,
       backgroundColor: '#FFFFFF'
     },
+    text_input: {
+      fontSize: 14,
+      paddingVertical: 8,
+     
+      marginBottom: 16,
+    },
     card: {
       width: '100%',
       backgroundColor: '#FFF',
@@ -193,6 +199,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 5,
     paddingHorizontal: 5
+  },
+  imageContainer: {
+    position: 'relative',
+  },
+  image: {
+    height: 200,
+    width: '100%',
+  },
+  addressContainer: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    padding: 10,
+    borderRadius: 5,
+  },
+  addressText: {
+    fontSize: 15,
   },
  
   });

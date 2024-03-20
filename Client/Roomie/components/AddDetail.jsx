@@ -519,7 +519,7 @@ const handleApply = async () =>{
       case 'Tab3':
         return (
           <View style={styles.tabContent}>
-            <ManageAd ad = {ad}/>
+            <ManageAd ad = {ad} images = {images}/>
          </View>
            
 

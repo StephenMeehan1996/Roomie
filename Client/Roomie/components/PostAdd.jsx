@@ -119,8 +119,6 @@ const PostAdd = ({navigation, route}) => {
       setUploading(true);
       const uploadPromises = [];
       const imageArray = [];
-
-    
   
       for (const file of selectedFiles) {
         try {

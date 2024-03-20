@@ -5,6 +5,8 @@ import { Picker } from '@react-native-picker/picker';
 import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import callLambdaFunction from '../functions/PostAPI';
+import { useAppContext } from '../Providers/AppContext';
+
 
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -13,8 +15,9 @@ import { yesNO, priceRange, number, roomType, houseType, houseMatExpectations, e
 import styles from '../styles/formStyle.style';
 import { generateUUID } from '../functions/CommonFunctions';
 
-export default function ManagePreferences() {
+export default function ManagePreferences({navigation, route}) {
 
+  const {signedInUserDetails} = useAppContext();
 
 
   const [loading, setLoading] = useState(false);
@@ -25,10 +28,14 @@ export default function ManagePreferences() {
 
   const handleButtonPress = (buttonId) => {
     setSelectedButton(buttonId);
-
+  console.log(signedInUserDetails)
   };
 
-  const SignupSchema = Yup.object().shape({
+  const updatePreferences = (values) =>{
+    console.log(values);
+  }
+
+  const PrefSchema = Yup.object().shape({
 
     houseSharePriceRangeMin: Yup.string()
       .notOneOf(['Select an option'], 'Please enter a minimum price')
@@ -90,31 +97,31 @@ export default function ManagePreferences() {
     <ScrollView>
       <Formik
         initialValues={{
-          houseSharePriceRangeMin: '700',
-          houseSharePriceRangeMax: '1200',
-          houseShareRoomType: 'Double',
-          houseShareHouseType: 'Apartment',
+          houseSharePriceRangeMin: signedInUserDetails.housesharepricemin,
+          houseSharePriceRangeMax: signedInUserDetails.housesharepricemax,
+          houseShareRoomType: signedInUserDetails.houseshareroomtype,
+          houseShareHouseType: signedInUserDetails.housesharehousetype,
           houseShareEnsuite: '1',
-          houseMateExpect: 'Friendly',
-          environment: 'Social',
+          houseMateExpect: signedInUserDetails.housemateexpact,
+          environment: signedInUserDetails.houseshareenvoirnment,
 
-          houseRentalPriceRangeMin: '500',
-          houseRentalPriceRangeMax: '1200',
-          numRooms: '3',
-          houseRentalHouseType: 'Apartment',
+          houseRentalPriceRangeMin: signedInUserDetails.houserentalpricemin,
+          houseRentalPriceRangeMax: signedInUserDetails.houserentalpricemax,
+          numRooms: signedInUserDetails.houserentalnumrooms,
+          houseRentalHouseType: signedInUserDetails.houserentalhousetype,
 
-          digsPriceRangeMin: '200',
-          digsPriceRangeMax: '600',
-          digsRoomType: 'Double',
-          digsHouseType: 'Apartment',
-          digsDays: 'Mon-Friday',
-          digsMealIncluded: '1'
+          digsPriceRangeMin: signedInUserDetails.digspricemin,
+          digsPriceRangeMax: signedInUserDetails.digspricemax,
+          digsRoomType: signedInUserDetails.digsroomtype,
+          digsHouseType: signedInUserDetails.digshousetype,
+          digsDays: signedInUserDetails.digsdays,
+          digsMealIncluded: signedInUserDetails.digsmealsincluded
         }}
-        validationSchema={SignupSchema}
-        onSubmit={values => signUp(values)}
+        validationSchema={PrefSchema}
+        onSubmit={values => updatePreferences(values)}
       >
 
-        {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit }) => (
+        {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit, dirty }) => (
 
           <View style={styles.container}>
 
@@ -301,7 +308,7 @@ export default function ManagePreferences() {
                     mode="contained"
                     color="#FF5733"
                     labelStyle={styles.buttonLabel}
-                    disabled={!isValid}
+                    disabled={!isValid || !dirty}
                     style={{marginVertical: 10}}
                     onPress={handleSubmit}>
                     Save Changes
@@ -390,7 +397,7 @@ export default function ManagePreferences() {
                     mode="contained"
                     color="#FF5733"
                     labelStyle={styles.buttonLabel}
-                    disabled={!isValid}
+                    disabled={!isValid || !dirty}
                     style={{marginVertical: 10}}
                     onPress={handleSubmit}>
                     Save Changes
@@ -512,7 +519,7 @@ export default function ManagePreferences() {
                     mode="contained"
                     color="#FF5733"
                     labelStyle={styles.buttonLabel}
-                    disabled={!isValid}
+                    disabled={!isValid || !dirty}
                     style={{marginVertical: 10}}
                     onPress={handleSubmit}>
                     Save Changes
