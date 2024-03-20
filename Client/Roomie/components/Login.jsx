@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, ActivityIndicator,  KeyboardAvoidingView } from 'react-native'
 import React, { useState } from 'react'
 import { FIREBASE_AUTH } from '../FirebaseConfig';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword} from 'firebase/auth';
 import { TextInput } from 'react-native-gesture-handler';
 import { Avatar, Card, Title, Paragraph, Button,IconButton } from 'react-native-paper';
 
@@ -11,6 +11,9 @@ const Login = ({navigation}) => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const auth = FIREBASE_AUTH;
+
+    const [user, setUser] = useState(null);
+    const [profilePicture, setProfilePicture] = useState(null);
 
     const signIn = async () =>{
         setLoading(true)
@@ -24,6 +27,8 @@ const Login = ({navigation}) => {
            setLoading(false); 
         }
     }
+
+
 
   return (
     <View style={styles.container}>
@@ -49,6 +54,12 @@ const Login = ({navigation}) => {
                 onPress={() => navigation.navigate('SignupForm')}>
                 Create Account
             </Button>
+            {/* <Button 
+             mode="outlined" 
+             onPress={() => handleFacebookLogin()}
+            >
+                  Sign In With Facebook
+            </Button> */}
             </>}
        </KeyboardAvoidingView>
     </View>

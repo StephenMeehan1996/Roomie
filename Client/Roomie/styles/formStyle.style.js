@@ -186,8 +186,14 @@ const styles = StyleSheet.create({
   selectedButtonText: {
     color: 'white',
     fontWeight: 'bold',
-  }
-
+  },
+  searchBtnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginTop: 5,
+    paddingHorizontal: 5
+  },
  
   });
 
