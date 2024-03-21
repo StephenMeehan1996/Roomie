@@ -189,6 +189,14 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: 'bold',
   },
+  iconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  icon: {
+    alignSelf: 'center',
+  },
   selectedButtonText: {
     color: 'white',
     fontWeight: 'bold',

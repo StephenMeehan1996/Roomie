@@ -529,7 +529,7 @@ const AddDetail = ({ navigation, route }) => {
       case 'Tab3':
         return (
           <View style={styles.tabContent}>
-            <ManageAd ad={ad} images={images} />
+            <ManageAd ad={ad} images={images} navigation={navigation} />
           </View>
 
 

@@ -13,3 +13,8 @@ Added Components
 Added SP's
 ---------
 RoomieDeleteAdImages
+RoomieDeleteAD
+RoomieToggleAdStatus
+RoomieUpdateAd
+RoomieUpdateRentalPreferences
+RoomieUpdateUserDetails
