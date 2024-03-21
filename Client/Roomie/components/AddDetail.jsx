@@ -447,14 +447,14 @@ const AddDetail = ({ navigation, route }) => {
                             mode="text"
                             size={60}
                             iconColor="white"
-                            style={{ marginLeft: -40 }}
+                            style={{ marginLeft: -10 }}
                             onPress={() => navigateImage(-1)}
                           />
                           <IconButton
                             icon="chevron-right"
                             mode="text"
                             iconColor="white"
-                            style={{ marginRight: -40 }}
+                            style={{ marginRight: -10 }}
                             size={60}
                             onPress={() => navigateImage(1)}
                           />

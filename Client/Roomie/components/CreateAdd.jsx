@@ -495,7 +495,6 @@ const CreateAdd = ({navigation, route}) => {
                         </RadioButton.Group>
 
                         {values.houseMateDetailOption === "1" && (
-
                             <View>
                                 <View style={styles.sameLineContainer}>
                                     <View style={styles.lineInput}>
