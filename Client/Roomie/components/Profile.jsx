@@ -28,7 +28,7 @@ const Profile = ({ navigation, route }) => {
   const [updating, setUpdating] = useState(false);
   const fetchAds = useFetchDataBoth();
 
-  const [iconDirection, setIconDirection] = useState('chevron-down'); // Initial icon direction
+  const [iconDirection, setIconDirection] = useState('chevron-up'); // Initial icon direction
 
   const toggleIconDirection = () => {
     // Toggle the icon direction

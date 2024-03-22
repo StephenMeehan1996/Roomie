@@ -24,6 +24,7 @@ import ManageMessages from './ManageMessages';
 import Chat from './Chat';
 import ChatList from './ChatList';
 import { useAppContext } from '../Providers/AppContext';
+import VerifyAccount from './VerifyAccount';
 
 const Tab = createBottomTabNavigator();
 
@@ -35,7 +36,7 @@ function SearchTabStackScreens({ route }) {
   return (
     <SecondTabStack.Navigator initialRouteName='_Search' screenOptions={{ headerShown: false }}>
       <SecondTabStack.Screen name="_Search" component={Search} initialParams={{}} />
-      <SecondTabStack.Screen name="_SearchResults" component={SearchResults}  />
+      <SecondTabStack.Screen name="_SearchResults" component={SearchResults} />
       <SecondTabStack.Screen name="_AddDetail" component={AddDetail} />
       <SecondTabStack.Screen name="_chat" component={Chat} initialParams={{ userImages: userImages }} />
       <SecondTabStack.Screen name="_Profile" component={Profile} />
@@ -45,16 +46,17 @@ function SearchTabStackScreens({ route }) {
 
 function ProfileTabStackScreens({ route }) {
 
-  const { userImages,  userAdImages,  userAdDetail} = route.params;
+  const { userImages, userAdImages, userAdDetail } = route.params;
 
-
+//_verifyAccount
   return (
     <SecondTabStack.Navigator initialRouteName='_Profile' screenOptions={{ headerShown: false }} >
       <SecondTabStack.Screen name="_Profile" component={Profile} initialParams={{ userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail }} />
       <SecondTabStack.Screen name="_AddDetail" component={AddDetail} />
       <SecondTabStack.Screen name="_manageImages" component={ManageProfileImages} initialParams={{ userImages: userImages }} />
-      <SecondTabStack.Screen name="_managePreferences" component={ManagePreferences} initialParams={{ }} />
-      <SecondTabStack.Screen name="_manageMessages" component={ManageMessages}/>
+      <SecondTabStack.Screen name="_managePreferences" component={ManagePreferences} initialParams={{}} />
+      <SecondTabStack.Screen name="_manageMessages" component={ManageMessages} />
+      <SecondTabStack.Screen name="_verifyAccount" component={VerifyAccount} />
       <SecondTabStack.Screen name="_chatList" component={ChatList} />
       <SecondTabStack.Screen name="_chat" component={Chat} initialParams={{ userImages: userImages }} />
     </SecondTabStack.Navigator>
@@ -62,7 +64,7 @@ function ProfileTabStackScreens({ route }) {
 }
 function CreateTabStackScreens({ route }) {
 
- // const { uID, userDetails } = route.params;
+  // const { uID, userDetails } = route.params;
 
   //const userID = userDetails._userid;
 
@@ -77,8 +79,8 @@ function CreateTabStackScreens({ route }) {
 
 const HomePage = ({ navigation, route }) => {
 
-  const {signedInUserDetails, setSignedInUserDetails} = useAppContext();
-  const {newMessages, setNewMessages } = useAppContext();
+  const { signedInUserDetails, setSignedInUserDetails } = useAppContext();
+  const { newMessages, setNewMessages } = useAppContext();
 
   const { email } = route.params;
 
@@ -117,9 +119,9 @@ const HomePage = ({ navigation, route }) => {
   };
 
   const t = (m) => {
-  
-    navigation.navigate('_chatList', {  
-       newMessages: m 
+
+    navigation.navigate('_chatList', {
+      newMessages: m
     });
   };
 
@@ -161,17 +163,17 @@ const HomePage = ({ navigation, route }) => {
     return onValue(ref(db, `notifications/${uID}/`), (snapshot) => {
       const notificationData = snapshot.val();
       if (notificationData && typeof notificationData === 'object') {
-       
+
         const notificationArray = Object.entries(notificationData).map(([key, value]) => ({
           key, // Add the key as a property
-          ...value, 
+          ...value,
         }));
         // Check if each item in the array is an object
         const isValidArray = notificationArray.every(item => typeof item === 'object');
         if (isValidArray) {
 
-          const newNotifications = notificationArray.filter(n => n.seen === 0 && n.notificationType !=1);
-          const newMessages = notificationArray.filter(n => n.seen === 0 && n.notificationType ===1);
+          const newNotifications = notificationArray.filter(n => n.seen === 0 && n.notificationType != 1);
+          const newMessages = notificationArray.filter(n => n.seen === 0 && n.notificationType === 1);
           const seenNotifications = notificationArray.filter(n => n.seen === 1);
 
           setNewNotifications(newNotifications);
@@ -181,7 +183,7 @@ const HomePage = ({ navigation, route }) => {
 
           //newMessages added to seen notifications after opened
           setSeenNotifications(seenNotifications);
-         
+
         } else {
           console.error('Invalid notifications array:', notificationArray);
         }
@@ -198,7 +200,7 @@ const HomePage = ({ navigation, route }) => {
       const db = FIREBASE_DATABASE;
 
       newNotifications.forEach(async notification => {
-       
+
         const notificationRef = ref(db, `notifications/${uID}/${notification.key}`);
 
         try {
@@ -250,28 +252,15 @@ const HomePage = ({ navigation, route }) => {
         </View>
         : <>
           <View style={styles.header}>
-            
-          <View>
+
+            <View>
               {newMessages.length > 0 && (
                 <Badge style={{ position: 'absolute', top: 5, right: 1 }} size={22}>
                   {newMessages.length}
                 </Badge>
               )}
-              <Appbar.Action icon="message"  onPress={() => t(newMessages)} size={30} />
+              <Appbar.Action icon="message" onPress={() => t(newMessages)} size={30} />
             </View>
-            <IconButton
-              icon="cog"
-              size={30}
-              style={{ marginHorizontal: 0 }}
-              onPress={showDialog}
-            />
-            <IconButton
-              icon="logout"
-              size={30}
-              style={{ marginHorizontal: 0 }}
-              onPress={() => FIREBASE_AUTH.signOut()}
-            />
-          
             <View>
               {newNotifications.length > 0 && (
                 <Badge style={{ position: 'absolute', top: 5, right: 2 }} size={22}>
@@ -280,6 +269,12 @@ const HomePage = ({ navigation, route }) => {
               )}
               <Appbar.Action icon="bell" onPress={handleIconPress} size={30} />
             </View>
+            <IconButton
+              icon="cog"
+              size={30}
+              style={{ marginHorizontal: 0 }}
+              onPress={showDialog}
+            />
           </View>
           {showNotifications && (
             <View style={styles.notificationContainer}>
@@ -314,35 +309,67 @@ const HomePage = ({ navigation, route }) => {
             <Dialog visible={visible} onDismiss={hideDialog} style={styles.popup}>
               <Dialog.Title>Settings</Dialog.Title>
               <Dialog.Content>
-                <View>
+
+                <View >
                   <TouchableOpacity
-                    style={[styles.button]}
+                    style={[
+                      styles.menuButton,
+                    ]}
                     onPress={() => nextPage("_manageImages")}
                   >
-                    <Text style={[styles.buttonText]}>Manage Images</Text>
+                    <Text >Manage Images</Text>
 
                   </TouchableOpacity>
                 </View>
 
                 <View>
                   <TouchableOpacity
-                    style={[styles.button]}
+                    style={[
+                      styles.menuButton,
+                    ]}
                     onPress={() => nextPage("_managePreferences")}
                   >
-                    <Text style={[styles.buttonText]}>Manage Preferences</Text>
+                    <Text >Manage Preferences</Text>
 
                   </TouchableOpacity>
                 </View>
 
                 <View>
                   <TouchableOpacity
-                    style={[styles.button]}
+                    style={[
+                      styles.menuButton,
+                    ]}
                     onPress={() => nextPage("_manageMessages")}
                   >
-                    <Text style={[styles.buttonText]}>Manage Messages</Text>
+                    <Text >Manage Messages</Text>
 
                   </TouchableOpacity>
                 </View>
+
+                <View>
+                  <TouchableOpacity
+                    style={[
+                      styles.menuButton,
+                    ]}
+                    onPress={() => nextPage("_verifyAccount")}
+                  >
+                    <Text>Verify Account</Text>
+
+                  </TouchableOpacity>
+                </View>
+
+                <View>
+                  <TouchableOpacity
+                    style={[
+                      styles.menuButton,
+                    ]}
+                    onPress={() => FIREBASE_AUTH.signOut()}
+                  >
+                    <Text>Logout</Text>
+                  
+                  </TouchableOpacity>
+                </View>
+
 
               </Dialog.Content>
               <Dialog.Actions>
@@ -371,9 +398,9 @@ const HomePage = ({ navigation, route }) => {
               tabBarInactiveTintColor: 'gray',
             })}
           >
-            <Tab.Screen name="Profile" component={ProfileTabStackScreens} options={{ headerShown: false }} initialParams={{userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail}} />
-            <Tab.Screen name="CreateAdd" component={CreateTabStackScreens} options={{ headerShown: false }}  />
-            <Tab.Screen name="Search" component={SearchTabStackScreens} options={{ headerShown: false }} initialParams={{userImages: userImages }} />
+            <Tab.Screen name="Profile" component={ProfileTabStackScreens} options={{ headerShown: false }} initialParams={{ userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail }} />
+            <Tab.Screen name="CreateAdd" component={CreateTabStackScreens} options={{ headerShown: false }} />
+            <Tab.Screen name="Search" component={SearchTabStackScreens} options={{ headerShown: false }} initialParams={{ userImages: userImages }} />
 
           </Tab.Navigator>
 
@@ -408,11 +435,29 @@ const styles = StyleSheet.create({
 
   },
 
+  tabButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    height: 50,
+  },
+  tabButton: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 2,
+    borderColor: 'transparent',
+  },
+  selectedTab: {
+    borderColor: 'blue',
+  },
+
   popup: {
     position: 'absolute',
     right: -25,
     flex: 1,
-    width: '85%',
+    width: '60%',
     padding: 5,
     borderLeftWidth: 1,
     backgroundColor: '#fff',
@@ -516,7 +561,32 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  tabButtonsV: {
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    height: 50,
+  },
+  menuButton: {
+    flex: 1,
+    padding: 10,
+    marginBottom: 5,
+    borderColor: 'black',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5, //
+  },
+  selectedTab: {
+    borderColor: 'blue',
+  },
+
 });
 
 export default HomePage
