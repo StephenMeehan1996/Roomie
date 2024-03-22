@@ -19,7 +19,6 @@ const Profile = ({ navigation, route }) => {
   const { signedInUserDetails } = useAppContext();
   const [uID, setUID] = useState(signedInUserDetails.useridentifier);
 
-
   const [userImages, setUserImages] = useState(route.params.userImages);
   const [userAdImages, setUserAdImages] = useState(route.params.userAdImages);
   const [userAdDetail, setUserAdDetail] = useState(route.params.userAdDetail);
@@ -46,6 +45,9 @@ const Profile = ({ navigation, route }) => {
       const getUserAds = await fetchAds(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUsersAds?uid=${uID}`);
       setUserAdImages(getUserAds.images);
       setUserAdDetail(getUserAds.detail)
+
+      // const getUserDetails = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUser?uid=${uID}`);
+      // setSignedInUserDetails(getUserDetails[0]);
 
 
       setUpdating(false);

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-
+import useFetchData from '../functions/GetAPI';
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
@@ -7,8 +7,15 @@ export const AppProvider = ({ children }) => {
   const [signedInUserDetails, setSignedInUserDetails] = useState([]);
   const [profileImage, setProfileImage] = useState(null);
 
+  const refreshDetails = async () =>{
+  
+    const getUserDetails = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUser?uid=${signedInUserDetails.useridentifier}`);
+    setSignedInUserDetails(getUserDetails[0]);
+   
+  }
+
   return (
-    <AppContext.Provider value={{ newMessages, setNewMessages, signedInUserDetails, setSignedInUserDetails,profileImage,setProfileImage }}>
+    <AppContext.Provider value={{ newMessages, setNewMessages, signedInUserDetails, setSignedInUserDetails,profileImage,setProfileImage, refreshDetails }}>
       {children}
     </AppContext.Provider>
   );
