@@ -15,3 +15,15 @@ export const AppProvider = ({ children }) => {
 };
 
 export const useAppContext = () => useContext(AppContext);
+
+// export const MyProvider = ({ children }) => {
+//   // Declare variables that cannot be changed
+//   const variable1 = 'value1';
+//   const variable2 = 'value2';
+
+//   return (
+//     <MyContext.Provider value={{ variable1, variable2 }}>
+//       {children}
+//     </MyContext.Provider>
+//   );
+// };

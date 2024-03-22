@@ -15,6 +15,7 @@ import { genderOptions, workingHoursOptions, occupationOptions, yearOfStudyOptio
 import styles from '../styles/formStyle.style';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import useFetchData from '../functions/GetAPI';
+import putAPI from '../functions/PutAPI';
 
 
 
@@ -211,6 +212,117 @@ const ManageAd = ({ navigation, route, ad, images }) => {
     hideDialog();
 };
 
+const saveChanges = async (values) => {
+  console.log(values);
+  //https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add
+
+  setUpdating(true);
+  let res = await putAPI(`https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add`, values);
+  console.log(res)
+  setUpdating(false);
+
+}
+
+const HouseShareSchema = Yup.object().shape({
+  addType: Yup.number().integer(),
+  id: Yup.number().integer(),
+  numOccupants: Yup.number().integer()
+    .required('Please select the current number of occupants'),
+  houseShareHouseType: Yup.string()
+    .required('Please select a property type'),
+  houseSharePrice: Yup.string()
+    .required('Please select a price'),
+  houseShareRoomType: Yup.string()
+    .required('Please select a room type'),
+  houseShareHouseType: Yup.string()
+    .required('Please select a house type'),
+  houseShareEnsuite: Yup.number().integer()
+    .required('Please select a value'),
+  bio: Yup.string(),
+  referenceRequired: Yup.number().integer()
+    .required('Please select an option'),
+  deposit: Yup.string()
+    .required('Please enter deposit detail'),
+  houseMateDetailOption: Yup.number().integer()
+    .required('Please select a option'),
+  houseMateGender: Yup.string()
+    .required('Please select a gender'),
+  houseMateAge: Yup.string()
+    .required('Please select a age'),
+  houseMateOccupation: Yup.string()
+    .required('Please select an occupation'),
+  occupationDropdownValue: Yup.string()
+    .required('Please select a value'),
+  houseMateSmoking: Yup.number().integer()
+    .required('Please select an option'),
+  houseMateExpect: Yup.string()
+    .required('Please select an option'),
+  environment: Yup.string()
+    .required('Please select an option')
+});
+
+const HouseRentalSchema = Yup.object().shape({
+  addType: Yup.string(),
+  numRooms: Yup.string()
+    .required('Please enter the city for the address'),
+  houseRentalHouseType: Yup.string()
+    .required('Please select a house type'),
+  houseRentalPrice: Yup.string()
+    .required('Please select a price'),
+  bio: Yup.string(),
+
+  tenantDetailOption: Yup.string()
+    .required('Please select an option'),
+  tenantGender: Yup.string()
+    .required('Please select a gender'),
+  tenantAgeBracket: Yup.string()
+    .required('Please select an age bracket'),
+  tenantOccupation: Yup.string()
+    .required('Please select a occupation'),
+  occupationDropdownValue: Yup.string()
+    .required('Please select a value'),
+  tenantSmoking: Yup.string()
+    .required('Please select an option'),
+  referenceRequired: Yup.string()
+    .required('Please select an option'),
+  deposit: Yup.string()
+    .required('Please deposit details')
+});
+
+const DigsSchema = Yup.object().shape({
+  addType: Yup.string(),
+  numOccupants: Yup.string()
+    .required('Please enter the city for the address'),
+  digsHouseType: Yup.string()
+    .required('Please select a house type'),
+  digsPrice: Yup.string()
+    .required('Please select a price'),
+  digsDays: Yup.string()
+    .required('Please select an option'),
+  digsMealIncluded: Yup.string()
+    .required('Please select an option'),
+  referenceRequired: Yup.string()
+    .required('Please select an option'),
+  deposit: Yup.string()
+    .required('Please enter deposit detail'),
+  bio: Yup.string(),
+  digsDetailOption: Yup.string()
+    .required('Please select an option'),
+  digsGender: Yup.string()
+    .required('Please select a gender'),
+  digsAge: Yup.string()
+    .required('Please select a age'),
+  digsOccupation: Yup.string()
+    .required('Please select a occupation'),
+  occupationDropdownValue: Yup.string()
+    .required('Please select an option'),
+  digsSmoking: Yup.string()
+    .required('Please select an option')
+});
+
+console.log(ad);
+const [showForm, setShowForm] = useState(ad.addtype);
+
   const renderApplicationTabContent = () => {
     switch (selectedApplicationTab) {
       case 'Tab1':
@@ -278,15 +390,16 @@ const ManageAd = ({ navigation, route, ad, images }) => {
               {showForm === 1 && (
                 <Formik initialValues={{
                   addType: ad.addtype,
-                  numOccupants: ad.housesharecurrentoccupants,
-                  houseShareHouseType: ad.propertytype,
+                  id: ad.addid,
                   houseSharePrice: ad.price,
-                  houseShareRoomType: ad.houseshareroomtype,
-                  houseShareEnsuite: ad.houseshareensuite,
+                  houseShareHouseType: ad.propertytype,
                   bio: ad.description,
                   referenceRequired: ad.referencerequired,
                   deposit: ad.deposit,
                   houseMateDetailOption: ad.preferenceset.toString(),
+                  numOccupants: ad.housesharecurrentoccupants,
+                  houseShareRoomType: ad.houseshareroomtype,
+                  houseShareEnsuite: ad.houseshareensuite,
                   houseMateGender: ad.gender,
                   houseMateAge: ad.agebracket,
                   houseMateOccupation: ad.occupation,
@@ -621,13 +734,14 @@ const ManageAd = ({ navigation, route, ad, images }) => {
               {showForm === 2 && (
                 <Formik initialValues={{
                   addType: ad.addtype,
-                  numRooms: ad.houserentalnumbedrooms,
-                  houseRentalHouseType: ad.propertytype,
+                  id: ad.addid,
                   houseRentalPrice: ad.price,
+                  houseRentalHouseType: ad.propertytype,
                   bio: ad.description,
                   referenceRequired: ad.referencerequired,
                   deposit: ad.deposit,
                   tenantDetailOption: ad.preferenceset.toString(),
+                  numRooms: ad.houserentalnumbedrooms,
                   tenantGender: ad.gender,
                   tenantAgeBracket: ad.agebracket,
                   tenantOccupation: ad.occupation,
@@ -898,16 +1012,18 @@ const ManageAd = ({ navigation, route, ad, images }) => {
               {/* Digs Form */}
               {showForm === 3 && (
                 <Formik initialValues={{
+
                   addType: ad.addtype,
-                  numOccupants: ad.digscurrentoccupants,
-                  digsHouseType: ad.propertytype,
+                  id: ad.addid,
                   digsPrice: ad.price,
+                  digsHouseType: ad.propertytype,
                   bio: ad.description,
-                  digsDays: ad.digsdaysavailable,
-                  digsMealIncluded: ad.digsmealsprovided,
                   referenceRequired: ad.referencerequired,
                   deposit: ad.deposit,
                   digsDetailOption: ad.preferenceset.toString(),
+                  numOccupants: ad.digscurrentoccupants,
+                  digsMealIncluded: ad.digsmealsprovided,
+                  digsDays: ad.digsdaysavailable,
                   digsGender: ad.gender,
                   digsAge: ad.agebracket,
                   digsOccupation: ad.occupation,
@@ -1395,109 +1511,7 @@ const ManageAd = ({ navigation, route, ad, images }) => {
     }
   };
 
-  const saveChanges = (values) => {
-    console.log(values);
-  }
 
-  const HouseShareSchema = Yup.object().shape({
-    addType: Yup.number().integer(),
-    numOccupants: Yup.number().integer()
-      .required('Please select the current number of occupants'),
-    houseShareHouseType: Yup.string()
-      .required('Please select a property type'),
-    houseSharePrice: Yup.string()
-      .required('Please select a price'),
-    houseShareRoomType: Yup.string()
-      .required('Please select a room type'),
-    houseShareHouseType: Yup.string()
-      .required('Please select a house type'),
-    houseShareEnsuite: Yup.number().integer()
-      .required('Please select a value'),
-    bio: Yup.string(),
-    referenceRequired: Yup.number().integer()
-      .required('Please select an option'),
-    deposit: Yup.string()
-      .required('Please enter deposit detail'),
-
-    houseMateDetailOption: Yup.number().integer()
-      .required('Please select a option'),
-    houseMateGender: Yup.string()
-      .required('Please select a gender'),
-    houseMateAge: Yup.string()
-      .required('Please select a age'),
-    houseMateOccupation: Yup.string()
-      .required('Please select an occupation'),
-    occupationDropdownValue: Yup.string()
-      .required('Please select a value'),
-    houseMateSmoking: Yup.number().integer()
-      .required('Please select an option'),
-    houseMateExpect: Yup.string()
-      .required('Please select an option'),
-    environment: Yup.string()
-      .required('Please select an option')
-  });
-
-  const HouseRentalSchema = Yup.object().shape({
-    addType: Yup.string(),
-    numRooms: Yup.string()
-      .required('Please enter the city for the address'),
-    houseRentalHouseType: Yup.string()
-      .required('Please select a house type'),
-    houseRentalPrice: Yup.string()
-      .required('Please select a price'),
-    bio: Yup.string(),
-
-    tenantDetailOption: Yup.string()
-      .required('Please select an option'),
-    tenantGender: Yup.string()
-      .required('Please select a gender'),
-    tenantAgeBracket: Yup.string()
-      .required('Please select an age bracket'),
-    tenantOccupation: Yup.string()
-      .required('Please select a occupation'),
-    occupationDropdownValue: Yup.string()
-      .required('Please select a value'),
-    tenantSmoking: Yup.string()
-      .required('Please select an option'),
-    referenceRequired: Yup.string()
-      .required('Please select an option'),
-    deposit: Yup.string()
-      .required('Please deposit details')
-  });
-
-  const DigsSchema = Yup.object().shape({
-    addType: Yup.string(),
-    numOccupants: Yup.string()
-      .required('Please enter the city for the address'),
-    digsHouseType: Yup.string()
-      .required('Please select a house type'),
-    digsPrice: Yup.string()
-      .required('Please select a price'),
-    digsDays: Yup.string()
-      .required('Please select an option'),
-    digsMealIncluded: Yup.string()
-      .required('Please select an option'),
-    referenceRequired: Yup.string()
-      .required('Please select an option'),
-    deposit: Yup.string()
-      .required('Please enter deposit detail'),
-    bio: Yup.string(),
-    digsDetailOption: Yup.string()
-      .required('Please select an option'),
-    digsGender: Yup.string()
-      .required('Please select a gender'),
-    digsAge: Yup.string()
-      .required('Please select a age'),
-    digsOccupation: Yup.string()
-      .required('Please select a occupation'),
-    occupationDropdownValue: Yup.string()
-      .required('Please select an option'),
-    digsSmoking: Yup.string()
-      .required('Please select an option')
-  });
-
-  console.log(ad);
-  const [showForm, setShowForm] = useState(ad.addtype);
   return (
     <ScrollView>
 

@@ -150,10 +150,11 @@ const PostAdd = ({navigation, route}) => {
   
       try {
         await Promise.all(uploadPromises);
-        setUploading(false);
         setSelectedFiles([]); 
         let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/addimages'; // end point for form post
-        callLambdaFunction(imageArray, signUpUrl); // working 
+        await callLambdaFunction(imageArray, signUpUrl); // working 
+        setUploading(false);
+        navigation.navigate('_Profile');
       } catch (error) {
         console.error('Error occurred during file uploads:', error);
       }

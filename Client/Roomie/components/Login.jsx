@@ -6,6 +6,11 @@ import { TextInput } from 'react-native-gesture-handler';
 import { Avatar, Card, Title, Paragraph, Button,IconButton } from 'react-native-paper';
 
 const Login = ({navigation}) => {
+
+    /* Security improvments
+        Use UID from firebase
+        Ad UID to images and ads pass that with query string
+    */
    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -27,8 +32,6 @@ const Login = ({navigation}) => {
            setLoading(false); 
         }
     }
-
-
 
   return (
     <View style={styles.container}>
