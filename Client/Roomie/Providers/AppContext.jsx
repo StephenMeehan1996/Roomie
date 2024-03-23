@@ -6,6 +6,7 @@ export const AppProvider = ({ children }) => {
   const [newMessages, setNewMessages] = useState([]);
   const [signedInUserDetails, setSignedInUserDetails] = useState([]);
   const [profileImage, setProfileImage] = useState(null);
+  const [firebaseUser, setFirebaseUser] = useState(null);
 
   const refreshDetails = async () =>{
   
@@ -15,7 +16,7 @@ export const AppProvider = ({ children }) => {
   }
 
   return (
-    <AppContext.Provider value={{ newMessages, setNewMessages, signedInUserDetails, setSignedInUserDetails,profileImage,setProfileImage, refreshDetails }}>
+    <AppContext.Provider value={{ newMessages, setNewMessages, signedInUserDetails, setSignedInUserDetails,profileImage,setProfileImage, refreshDetails, firebaseUser, setFirebaseUser }}>
       {children}
     </AppContext.Provider>
   );

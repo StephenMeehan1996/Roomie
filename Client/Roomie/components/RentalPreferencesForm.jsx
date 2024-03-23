@@ -3,7 +3,7 @@ import { View, Text, StyleSheet,Platform,TextInput,Dimensions,TouchableOpacity,I
 import { Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButton  } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import { FIREBASE_AUTH } from '../FirebaseConfig';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import callLambdaFunction from '../functions/PostAPI';
 
 import { Formik, Form, Field } from 'formik';
@@ -12,6 +12,8 @@ import * as Yup from 'yup';
 import { yesNO, priceRange, number, roomType, houseType, houseMatExpectations, environmentOptions, days } from '../data/formData';
 import  styles  from '../styles/formStyle.style';
 import { generateUUID } from '../functions/CommonFunctions';
+import { useAppContext } from '../Providers/AppContext';
+
 
 const RentalPreferencesForm = ({navigation, route}) => {
 
@@ -19,6 +21,7 @@ const RentalPreferencesForm = ({navigation, route}) => {
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
     const auth = FIREBASE_AUTH;
+    const { firebaseUser, setFirebaseUser } = useAppContext();
 
     // {uploading? <View style={{marginBottom: 10}}><ActivityIndicator size="large" color="#0000ff"/></View>
     // : <>
@@ -103,8 +106,10 @@ const RentalPreferencesForm = ({navigation, route}) => {
           formsToCombine.userIdentifier = generateUUID();
         
 
-          const responce = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-          console.log(responce); 
+          const r = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+          console.log(r); 
+
+          setFirebaseUser(r.user);
 
           await insertUser(formsToCombine);       
 

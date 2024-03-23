@@ -4,6 +4,7 @@ import { FIREBASE_AUTH } from '../FirebaseConfig';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword} from 'firebase/auth';
 import { TextInput } from 'react-native-gesture-handler';
 import { Avatar, Card, Title, Paragraph, Button,IconButton } from 'react-native-paper';
+import { useAppContext } from '../Providers/AppContext';
 
 const Login = ({navigation}) => {
 
@@ -11,7 +12,7 @@ const Login = ({navigation}) => {
         Use UID from firebase
         Ad UID to images and ads pass that with query string
     */
-   
+    const { firebaseUser, setFirebaseUser } = useAppContext();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -23,8 +24,9 @@ const Login = ({navigation}) => {
     const signIn = async () =>{
         setLoading(true)
         try{
-           const responce = await signInWithEmailAndPassword(auth, email, password);
-           console.log(responce); 
+           const r = await signInWithEmailAndPassword(auth, email, password);
+           console.log('here' + r); 
+           setFirebaseUser(r);
         } catch (error){
            console.log(error);
            alert('Sign in failed: ' + error.message);
