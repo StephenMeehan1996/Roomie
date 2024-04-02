@@ -465,16 +465,16 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   greenText: {
-    color: 'green', // Set the color to green
-    fontWeight: 'bold', // Optional: You can apply additional styles as needed
+    color: 'green', 
+    fontWeight: 'bold',
   },
   redText: {
-    color: 'red', // Set the color to green
-    fontWeight: 'bold', // Optional: You can apply additional styles as needed
+    color: 'red', 
+    fontWeight: 'bold', 
   },
   orangeText: {
-    color: 'orange', // Set the color to green
-    fontWeight: 'bold', // Optional: You can apply additional styles as needed
+    color: 'orange', 
+    fontWeight: 'bold', 
   }
 
 });

@@ -3,9 +3,12 @@ Change Log v1.2
 -	Added Notifications, after ad applications, user gets a notification in their nav bar informing them. More notification types can be expanded on later. 
 -	Added UI and backend code to manage rental preferences and personal details, allowing users to update the data they entered at sign up.
 -	Added UI and backend code, to manage advertisements, users can: 
-	    Update ad properties.
-	    Add and delete ad images.
-        Delete the ad or set it to inactive, so they can use it again in the future. 
+		- Update ad properties.
+		- Add and delete ad images.
+    	- Delete the ad or set it to inactive, so they can use it again in the future. 
+- 	Added Jest library for unit testing. 
+		-	Added Input validation function, and wrote unit test, simulating security risks.
+		-	Wrote Unit tests for common functions.
 
 Added Components
 ----------
