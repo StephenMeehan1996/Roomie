@@ -22,7 +22,24 @@ describe('validateInput function', () => {
     it('should return true for input containing spaces', () => {
       expect(validateInput('hello world')).toBe(true);
     });
+
+
+
   });
+
+  describe('Edge case inputs', () => {
+    it('should return error - Outside alphanumeric range', () => {
+        expect(() => validateInput("'abc123$%^&'")).toThrow('Input contains invalid characters');
+      });
+
+    it('should return error - Unicode characters', () => {
+        expect(() => validateInput("ａｂｃ１２３")).toThrow('Input contains invalid characters');
+      });
+
+    it('should return error - Special characters', () => {
+        expect(() => validateInput("abc123<>")).toThrow('Input contains invalid characters');
+      });
+});
 
   // Test cases for specific vulnerability checks
   describe('specific vulnerability checks', () => {
@@ -30,7 +47,7 @@ describe('validateInput function', () => {
       expect(() => validateInput("'; DROP TABLE users; --")).toThrow('Input contains invalid characters');
     });
 
-    it('should throw an error for invalid characters -  XSS attack', () => {
+    it('should throw an error for invalid characters - XSS attack', () => {
       expect(() => validateInput('<script>alert("XSS")</script>')).toThrow('Input contains invalid characters');
     });
 
