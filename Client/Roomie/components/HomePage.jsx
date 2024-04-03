@@ -25,6 +25,7 @@ import Chat from './Chat';
 import ChatList from './ChatList';
 import { useAppContext } from '../Providers/AppContext';
 import VerifyAccount from './VerifyAccount';
+import ViewUserProfile from './ViewUserProfile';
 
 const Tab = createBottomTabNavigator();
 
@@ -40,6 +41,7 @@ function SearchTabStackScreens({ route }) {
       <SecondTabStack.Screen name="_AddDetail" component={AddDetail} />
       <SecondTabStack.Screen name="_chat" component={Chat} initialParams={{ userImages: userImages }} />
       <SecondTabStack.Screen name="_Profile" component={Profile} />
+      <SecondTabStack.Screen name="_ViewProfile" component={ViewUserProfile} />
     </SecondTabStack.Navigator>
   );
 }
@@ -59,6 +61,7 @@ function ProfileTabStackScreens({ route }) {
       <SecondTabStack.Screen name="_verifyAccount" component={VerifyAccount} />
       <SecondTabStack.Screen name="_chatList" component={ChatList} />
       <SecondTabStack.Screen name="_chat" component={Chat} initialParams={{ userImages: userImages }} />
+      <SecondTabStack.Screen name="_ViewProfile" component={ViewUserProfile} />
     </SecondTabStack.Navigator>
   );
 }

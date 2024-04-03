@@ -133,6 +133,7 @@ const Profile = ({ navigation, route }) => {
         return null;
     }
   };
+  
   return (
 
     <ScrollView>
