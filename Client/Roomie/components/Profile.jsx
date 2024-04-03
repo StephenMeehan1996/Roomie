@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, FlatList, ActivityIndicator } from 'react-native';
 import { Avatar, Card, Title, Paragraph, Button, IconButton } from 'react-native-paper';
+import { Video, ResizeMode } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import Collapsible from 'react-native-collapsible';
@@ -14,7 +15,11 @@ import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import { useAppContext } from '../Providers/AppContext';
 
 
+
 const Profile = ({ navigation, route }) => {
+
+  const video = React.useRef(null);
+  const [status, setStatus] = useState({});
 
   const { signedInUserDetails } = useAppContext();
   const [uID, setUID] = useState(signedInUserDetails.useridentifier);
@@ -26,6 +31,7 @@ const Profile = ({ navigation, route }) => {
   const { profileImage, setProfileImage } = useAppContext();
   const [coverImage, setCoverImage] = useState(null);
   const [updating, setUpdating] = useState(false);
+  const [selectedApplicationTab, setSelectedApplicationTab] = useState('Tab1');
   const fetchAds = useFetchDataBoth();
 
   const [iconDirection, setIconDirection] = useState('chevron-up'); // Initial icon direction
@@ -89,9 +95,44 @@ const Profile = ({ navigation, route }) => {
     );
   };
 
-  const nextPage = () => {
-    alert('test')
-  }
+  const renderApplicationTabContent = () => {
+    switch (selectedApplicationTab) {
+      case 'Tab1':
+        return (
+          <View >
+            <Paragraph style={styles.bio}>{signedInUserDetails.bio}</Paragraph>
+          </View>
+
+        );
+      case 'Tab2':
+        return (
+          <View >
+            <Video
+              ref={video}
+              style={styles.video}
+              source={{ //
+               // uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+                uri: 'https://firebasestorage.googleapis.com/v0/b/roomie-a0158.appspot.com/o/video%2FWIN_20240403_10_34_28_Pro.mp4?alt=media&token=29242532-6241-442a-bc6c-2783c4f2f5ea',
+              }}
+              useNativeControls
+              resizeMode="contain"
+              isLooping
+              onPlaybackStatusUpdate={status => setStatus(() => status)}
+            />
+            <View style={styles.buttons}>
+              <Button
+                title={status.isPlaying ? 'Pause' : 'Play'}
+                onPress={() =>
+                  status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
+                }
+              />
+            </View>
+          </View>
+        );
+      default:
+        return null;
+    }
+  };
   return (
 
     <ScrollView>
@@ -114,7 +155,7 @@ const Profile = ({ navigation, route }) => {
                   source={profileImage != null ? { uri: profileImage.imageurl } : require('../assets/Icons/images/NoProfile.png')}
                 />
                 <Title style={styles.username}>{signedInUserDetails.firstname} {signedInUserDetails.secondname}</Title>
-                <Paragraph style={styles.bio}>
+                <Paragraph style={styles.tagLine}>
                   Web Developer | Traveller | Foodie
                 </Paragraph>
                 <View style={styles.info}>
@@ -133,13 +174,31 @@ const Profile = ({ navigation, route }) => {
                       Message
                     </Button>
                   )}
-                  <Button
-                    icon="text-box"
-                    mode="outlined"
-                    onPress={toggleBio}
-                    style={[styles.bioButton, { width: 150 }]}>
-                    Bio
-                  </Button>
+
+                  <View style={{  flexDirection: 'row', marginVertical: 10 }}>
+                    <Button
+                      icon="text-box"
+                      mode="outlined"
+                      onPress={() => setSelectedApplicationTab('Tab1')}
+                      style={[styles.bioButton, { width: 150, borderRadius: 0, marginRight: 10 },
+                      selectedApplicationTab === 'Tab1' ? styles.selectedTab : null,]}>
+                      Bio
+                    </Button>
+                    <Button
+                      icon="video-outline"
+                      mode="outlined"
+                      onPress={() => setSelectedApplicationTab('Tab2')}
+                      style={[styles.bioButton, { width: 150, borderRadius: 0, marginLeft: 10 },
+                      selectedApplicationTab === 'Tab2' ? styles.selectedTab : null,]}>
+                      Video
+                    </Button>
+
+                  </View>
+
+                  <View>
+                    {renderApplicationTabContent()}
+                  </View>
+
                 </View>
                 <Collapsible collapsed={!isBioExpanded}>
                   <Paragraph style={styles.bio}>{signedInUserDetails.bio}</Paragraph>
@@ -185,16 +244,16 @@ const Profile = ({ navigation, route }) => {
                         />
                       </View>
                       {iconDirection == 'chevron-down' ? (
-                      <View>
-                        <FlatList
-                          data={userAdDetail.filter(ad => ad.active === 0)}
-                          renderItem={renderAds}
-                          keyExtractor={(userAdDetail) => userAdDetail.addid.toString()}
-                        />
-                      </View>
-                       ) : (
-                         <View></View>
-                       )}
+                        <View>
+                          <FlatList
+                            data={userAdDetail.filter(ad => ad.active === 0)}
+                            renderItem={renderAds}
+                            keyExtractor={(userAdDetail) => userAdDetail.addid.toString()}
+                          />
+                        </View>
+                      ) : (
+                        <View></View>
+                      )}
                     </View>
                   )}
 
@@ -215,6 +274,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  vidContainer: {
+    
+    justifyContent: 'center',
+ 
+  },
+  video: {
+    alignSelf: 'center',
+    width: 320,
+    height: 200,
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   card: {
     width: '100%',
@@ -223,10 +298,27 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 24,
-    marginTop: 10,
+   
     textAlign: 'center',
   },
+  selectedTab: {
+    //backgroundColor: '#4a90e2', // A shade of blue for elegance
+    borderRadius: 5, // Rounded corners for a polished look
+    borderWidth: 1.5, // Add border for distinction
+    borderColor: 'black', // Darker shade of blue for border
+    shadowColor: '#000', // Add shadow for depth
+    shadowOffset: { width: 2, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 2, // Add// Change to your desired selected tab color
+  },
   bio: {
+    fontSize: 16,
+    marginTop: 8,
+    textAlign: 'left',
+    padding: 10
+  },
+  tagLine: {
     fontSize: 16,
     marginTop: 8,
     textAlign: 'center',

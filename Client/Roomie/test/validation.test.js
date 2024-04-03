@@ -24,7 +24,6 @@ describe('validateInput function', () => {
     });
 
 
-
   });
 
   describe('Edge case inputs', () => {

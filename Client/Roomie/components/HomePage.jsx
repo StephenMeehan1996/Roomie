@@ -48,7 +48,7 @@ function ProfileTabStackScreens({ route }) {
 
   const { userImages, userAdImages, userAdDetail } = route.params;
 
-//_verifyAccount
+  //_verifyAccount
   return (
     <SecondTabStack.Navigator initialRouteName='_Profile' screenOptions={{ headerShown: false }} >
       <SecondTabStack.Screen name="_Profile" component={Profile} initialParams={{ userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail }} />
@@ -252,29 +252,31 @@ const HomePage = ({ navigation, route }) => {
         </View>
         : <>
           <View style={styles.header}>
+            <View style={styles.iconContainer}>
 
-            <View>
-              {newMessages.length > 0 && (
-                <Badge style={{ position: 'absolute', top: 5, right: 1 }} size={22}>
-                  {newMessages.length}
-                </Badge>
-              )}
-              <Appbar.Action icon="message" onPress={() => t(newMessages)} size={30} />
+              <View>
+                {newMessages.length > 0 && (
+                  <Badge style={{ position: 'absolute', top: 5, right: 1 }} size={22}>
+                    {newMessages.length}
+                  </Badge>
+                )}
+                <Appbar.Action icon="message" onPress={() => t(newMessages)} size={30} />
+              </View>
+              <View>
+                {newNotifications.length > 0 && (
+                  <Badge style={{ position: 'absolute', top: 5, right: 2 }} size={22}>
+                    {newNotifications.length}
+                  </Badge>
+                )}
+                <Appbar.Action icon="bell" onPress={handleIconPress} size={30} />
+              </View>
+              <IconButton
+                icon="cog"
+                size={30}
+                style={{ marginHorizontal: 0 }}
+                onPress={showDialog}
+              />
             </View>
-            <View>
-              {newNotifications.length > 0 && (
-                <Badge style={{ position: 'absolute', top: 5, right: 2 }} size={22}>
-                  {newNotifications.length}
-                </Badge>
-              )}
-              <Appbar.Action icon="bell" onPress={handleIconPress} size={30} />
-            </View>
-            <IconButton
-              icon="cog"
-              size={30}
-              style={{ marginHorizontal: 0 }}
-              onPress={showDialog}
-            />
           </View>
           {showNotifications && (
             <View style={styles.notificationContainer}>
@@ -366,7 +368,7 @@ const HomePage = ({ navigation, route }) => {
                     onPress={() => FIREBASE_AUTH.signOut()}
                   >
                     <Text>Logout</Text>
-                  
+
                   </TouchableOpacity>
                 </View>
 
@@ -481,11 +483,14 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'end',
-    paddingVertical: 0,
-    backgroundColor: '#fff'
+    alignItems: 'center',
+    justifyContent: 'flex-end', // Align items to the end of the container
+    paddingHorizontal: 2,
+    backgroundColor: '#ffffff',
   },
-
+  iconContainer: {
+    flexDirection: 'row', // Arrange icons horizontally
+  },
 
   notificationContainer: {
     position: 'absolute',

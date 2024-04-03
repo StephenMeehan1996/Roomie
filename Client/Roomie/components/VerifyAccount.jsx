@@ -17,6 +17,7 @@ import { MultiSelect, Dropdown } from 'react-native-element-dropdown';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { useAppContext } from '../Providers/AppContext';
 import { sendEmailVerification, PhoneAuthProvider,multiFactor  } from 'firebase/auth';
+import formStyles from '../styles/formStyle.style';
 
 
 const VerifyAccount = ({ navigation, route }) => {
@@ -131,25 +132,25 @@ const VerifyAccount = ({ navigation, route }) => {
         }
     };
 
-    const phoneInfoOptions = {
-        phoneNumber: '0862081923',
-        session: multiFactorSession
-      };
+    // const phoneInfoOptions = {
+    //     phoneNumber: '0862081923',
+    //     session: multiFactorSession
+    //   };
 
-    const verifyNum = async () => {
+    // const verifyNum = async () => {
 
-        multiFactor(user).getSession().then(function (multiFactorSession) {
-            // ...
-        });
+    //     multiFactor(user).getSession().then(function (multiFactorSession) {
+    //         // ...
+    //     });
 
-        const phoneAuthProvider = new PhoneAuthProvider(FIREBASE_AUTH);
-        phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
-            .then(function (verificationId) {
-                // verificationId will be needed to complete enrollment.
-            });
+    //     const phoneAuthProvider = new PhoneAuthProvider(FIREBASE_AUTH);
+    //     phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
+    //         .then(function (verificationId) {
+    //             // verificationId will be needed to complete enrollment.
+    //         });
 
 
-    }
+    // }
 
     return (
         <ScrollView>

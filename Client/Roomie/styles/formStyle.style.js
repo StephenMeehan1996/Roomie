@@ -226,6 +226,23 @@ const styles = StyleSheet.create({
   addressText: {
     fontSize: 15,
   },
+  tabButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    height: 50,
+},
+tabButton: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 2,
+    borderColor: 'transparent',
+},
+selectedTab: {
+    borderColor: 'blue',
+},
  
   });
 
