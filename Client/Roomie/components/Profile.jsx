@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 2, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 2,
-    elevation: 2, // Add// Change to your desired selected tab color
+    elevation: 3, // Add// Change to your desired selected tab color
   },
   bio: {
     fontSize: 16,

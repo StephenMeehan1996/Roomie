@@ -22,15 +22,7 @@ const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
 const OutsideStack = createNativeStackNavigator();
 
-Stack.Navigator.defaultProps = {
-  headerMode: 'none',
-};
-InsideStack.Navigator.defaultProps = {
-  headerMode: 'none',
-};
-OutsideStack.Navigator.defaultProps = {
-  headerMode: 'none',
-};
+
 
 const InsideLayout = ({ route }) => {
 
@@ -38,7 +30,7 @@ const InsideLayout = ({ route }) => {
 
   return (
     <InsideStack.Navigator initialRouteName='HomePage' screenOptions={{ headerShown: false }}>
-      <InsideStack.Screen name="HomePage" options={{ headerShown: false }} component={HomePage} initialParams={{ email: email}} />
+      <InsideStack.Screen name="HomePage"  component={HomePage} initialParams={{ email: email}} />
     </InsideStack.Navigator>
   );
 };
@@ -46,9 +38,9 @@ const InsideLayout = ({ route }) => {
 const OutsideLayout = () =>{
    return(
     <OutsideStack.Navigator initialRouteName='Login' screenOptions={{headerShown: false}}>
-        <OutsideStack.Screen name = "Login" component={Login} options={{ headerShown: false }}/>
-        <OutsideStack.Screen name = "SignupForm" component={SignUpForm} options={{ headerShown: false }}/>
-        <OutsideStack.Screen name = "RentalPreferences" component={RentalPreferencesForm} options={{ headerShown: false }}/>
+        <OutsideStack.Screen name = "Login" component={Login} />
+        <OutsideStack.Screen name = "SignupForm" component={SignUpForm} />
+        <OutsideStack.Screen name = "RentalPreferences" component={RentalPreferencesForm} />
     </OutsideStack.Navigator>
     )
 }
@@ -83,9 +75,7 @@ const Home =  ({navigation, route}) =>{
                 <Stack.Navigator initialRouteName='Home'  
                   screenOptions={{
                     headerShown: false, // If you want to show the header globally
-                    headerTitle: null, // Set headerTitle to null to hide it for all screens
                   }}>
-
                     {user ? <Stack.Screen name='Inside' component={InsideLayout}  initialParams={{ email: user.email }} /> : 
                     <Stack.Screen name='OutsideLayout' component={OutsideLayout}/> }
                 </Stack.Navigator>

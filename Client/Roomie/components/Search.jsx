@@ -147,7 +147,7 @@ const Search = ({ navigation, route }) => {
           <ActivityIndicator size="large" color="#6200EE" />
         </View>
         : <>
-          <Card style={styles.card}>
+          <Card style={[styles.card, {paddingTop: 10, paddingBottom: 80}]}>
             <Card.Content>
               <View style={styles.header}>
                 <Title style={styles.title}>Add Type:</Title>

@@ -586,7 +586,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    elevation: 5, //
+    elevation: 2, //
   },
   selectedTab: {
     borderColor: 'blue',
