@@ -4,7 +4,7 @@ import { getDatabase, ref, set, child, get, onValue, update } from "firebase/dat
 import { FIREBASE_AUTH, FIREBASE_DATABASE } from '../FirebaseConfig'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { generateShortID, returnNotificationMessage } from '../functions/CommonFunctions';
+import { generateShortID, returnNotificationMessage, handleChat } from '../functions/CommonFunctions';
 
 import Profile from '../components/Profile';
 import Search from '../components/Search';
@@ -83,15 +83,15 @@ function CreateTabStackScreens({ route }) {
 const HomePage = ({ navigation, route }) => {
 
   const { signedInUserDetails, setSignedInUserDetails } = useAppContext();
-  const { newMessages, setNewMessages } = useAppContext();
-
+  const { newMessages, setNewMessages, chats } = useAppContext();
+  const { refreshChats } = useAppContext();
   const { email } = route.params;
 
   const [uID, setUID] = useState(null);
   const [userImages, setUserImages] = useState(null);
   const [userAdImages, setUserAdImages] = useState(null);
   const [userAdDetail, setUserAdDetail] = useState(null);
-  const [chats, setChats] = useState([]);
+  //const [chats, setChats] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const fetchAds = useFetchDataBoth();
 
@@ -222,6 +222,15 @@ const HomePage = ({ navigation, route }) => {
     setPrevShowNotifications(showNotifications);
   }, [showNotifications]);
 
+  const openChatFromNotification = async (item) => {
+    //setIsLoading(true)
+    const chats = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${signedInUserDetails.useridentifier}`); 
+    // setIsLoading(false)
+    setShowNotifications(false);
+    handleChat(chats, navigation, signedInUserDetails.useridentifier, item.creatorID)
+   
+  }
+
 
   const renderNotifications = ({ item }) => {
 
@@ -240,6 +249,15 @@ const HomePage = ({ navigation, route }) => {
           <Text style={styles.notificationMessage}>{item.message}</Text>
           <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
         </View>
+
+        <Button
+          mode="outlined"
+          onPress={() => openChatFromNotification(item)}
+          style={{ marginRight: 10, borderRadius: 0 }}
+        >
+          View
+        </Button>
+
       </View>
     );
   };

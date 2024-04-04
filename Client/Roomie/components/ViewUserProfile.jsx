@@ -139,7 +139,7 @@ const ViewUserProfile = ({ navigation, route }) => {
                         </View>
 
                         <View style={[styles.chipContainer, { marginTop: 15 }]}>
-                            <Chip style={styles.chip}>Email Confirmed Verified</Chip>
+                            <Chip style={styles.chip}>Email Verified</Chip>
                             <Chip style={styles.chip}>Mobile Number Verified</Chip>
                         </View>
 

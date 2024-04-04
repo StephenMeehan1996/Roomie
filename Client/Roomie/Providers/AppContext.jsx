@@ -7,6 +7,7 @@ export const AppProvider = ({ children }) => {
   const [signedInUserDetails, setSignedInUserDetails] = useState([]);
   const [profileImage, setProfileImage] = useState(null);
   const [firebaseUser, setFirebaseUser] = useState(null);
+  const [chats, setChats] = useState([]);
 
   const refreshDetails = async () =>{
   
@@ -15,8 +16,15 @@ export const AppProvider = ({ children }) => {
    
   }
 
+  const refreshChats = async () =>{
+
+    const getChats = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${signedInUserDetails.useridentifier}`); //needed for both
+    setChats(getChats);
+
+  }
+
   return (
-    <AppContext.Provider value={{ newMessages, setNewMessages, signedInUserDetails, setSignedInUserDetails,profileImage,setProfileImage, refreshDetails, firebaseUser, setFirebaseUser }}>
+    <AppContext.Provider value={{ newMessages, setNewMessages, signedInUserDetails, setSignedInUserDetails,profileImage,setProfileImage, refreshDetails, firebaseUser, setFirebaseUser, refreshChats, chats }}>
       {children}
     </AppContext.Provider>
   );

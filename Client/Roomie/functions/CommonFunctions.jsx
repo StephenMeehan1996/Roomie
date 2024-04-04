@@ -426,6 +426,51 @@ export const returnNotificationMessage = (notType, name) =>{
   }
 }
 
+export const handleChat = async (chats,navigation, uID, uID2) => {
+  let c;
+  console.log(chats);
+  if (!chats || chats.length === 0) {
+    c = generateUUID();
+    const chatRecord = {
+      chatID: c,
+      user1: uID,
+      user2: uID2
+    };
+
+    let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
+  }
+
+  else if (chats.length > 0) {
+
+    const matchingChatRecord = chats.find(record => record.user1 === uID2 || record.user2 === uID2);
+
+    if (matchingChatRecord) {
+
+      c = matchingChatRecord.chatid
+      console.log(c);
+
+    }
+    else {
+      c = generateUUID();
+      const chatRecord = {
+        chatID: c,
+        user1: uID,
+        user2: uID2
+      };
+
+      let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
+
+    }
+
+  }
+
+  navigation.replace('_chat', { // replaces navigation, so can open new chat
+    chatID: c,
+    uID: uID,
+    recipientID: uID2
+  });
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
