@@ -10,12 +10,14 @@ Change Log v1.2
 		-	Added Input validation function, and wrote unit test, simulating security risks.
 		-	Wrote Unit tests for common functions.
 - Moved navigate to chat out to common functions.
-- Added ability for user to redirect to chat from notification. 
-
+- Added ability for user to redirect to chat from notification.
+-Added profile view from advertisement applications.
+-Added front end UI and backend logic for reviews, rental history.
 
 Added Components
 ----------
 ManagePersonalDetails – contains form to update personal profile details 
+RentalHistory – User will be able to confirm, rent has taken place, to access reviews.
 
 Added SP's
 ---------
@@ -25,3 +27,9 @@ RoomieToggleAdStatus
 RoomieUpdateAd
 RoomieUpdateRentalPreferences
 RoomieUpdateUserDetails
+RoomieUpdateAcceptStatus
+RoomieGetUserReviews
+RoomieGetRentalHistory
+RoomieInsertReview
+RoomieInsertAcceptRequest
+
