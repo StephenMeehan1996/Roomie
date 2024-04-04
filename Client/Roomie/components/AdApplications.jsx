@@ -8,16 +8,18 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { returnAdTypeText, references, smoking } from '../functions/CommonFunctions';
 import useFetchData from '../functions/GetAPI';
-import { calculateReviewStats, digsMeals, returnSelectedProfileImage, returnSelectedCoverImage, generateUUID, convertToDateTimeString, openChat } from '../functions/CommonFunctions';
+import { calculateReviewStats, digsMeals, returnSelectedProfileImage, returnSelectedCoverImage, generateUUID, convertToDateTimeString, openChat, handleChat } from '../functions/CommonFunctions';
 import styles from '../styles/common.style';
 import callLambdaFunction from '../functions/PostAPI';
 import formStyles from '../styles/formStyle.style';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import { filterBy } from '../data/formData';
+import { useAppContext } from '../Providers/AppContext';
 
 
 const AdApplications = ({ navigation, route, applications }) => {
 
+    const { signedInUserDetails, setSignedInUserDetails } = useAppContext();
     const [filter, setFilter] = useState('percentageMatch');
     const [userDetails, setUserDetails] = useState(null);
     const [userImages, setUserImages] = useState(null);
@@ -40,54 +42,22 @@ const AdApplications = ({ navigation, route, applications }) => {
 
     }
     const handleApplicationClick = async (UUID) => {
-        // //uID, userDetails, userAdImages, userAdDetail,userImages
-        // console.log(UUID);
-        // setIsLoading(true);
-        // try {
-        //     //uID, userDetails, userAdImages, userAdDetail
-        //     const getUserDetails = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUser?uid=${UUID}`);
-        //     let ud = getUserDetails[0];
 
-        //     const getUserAds = await fetchAds(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUsersAds?uid=${UUID}`);
-        //     let ua = getUserAds.images;
-        //     let uad = getUserAds.detail;
-
-        //     const getUserImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${UUID}`);
-        //     let ui = getUserImages;
-
-        //     setIsLoading(false);
-
-        //     //  Navagation to profile effectivly signs in as selected user
-        //     // The new UID is used logically to display the profile view for that user
-        //     //  need to come up with new structure to handle this, or use new component. 
-
-        //     // navigation.navigate('_Profile', {  
-        //     //     uID: UUID,
-        //     //     userDetails: ud ,
-
-        //     //     userAdImages: ua,
-        //     //     userAdDetail: uad,
-        //     //     userImages: ui
-        //     // });
-
-        // } catch (error) {
-        //     console.error('Error fetching data:', error);
-        //     // Handle error if needed
-        //     setIsLoading(false);
-        // }
-
-        
-        
-        
-            navigation.navigate('_ViewProfile', {  
-                uID: UUID,
-               
-            });
+        navigation.navigate('_ViewProfile', {
+            uID: UUID,
+        });
 
     }
 
+    const message = async (UUID) =>{
+        const chats = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${signedInUserDetails.useridentifier}`); 
+    
+        handleChat(chats, navigation, signedInUserDetails.useridentifier, UUID)
+    
+    }
+
     const renderApplication = ({ item }) => (
-        <TouchableOpacity style={styles.applicationBorder} onPress={() => handleApplicationClick(item.useridentifier)}>
+        <View style={styles.applicationBorder} >
             <View style={styles.applicationContainer}>
                 <Image source={{ uri: item.profileimage }} style={[styles.profileImage, { alignSelf: 'flex-start' }]} />
                 <View style={styles.chatDetails}>
@@ -100,20 +70,20 @@ const AdApplications = ({ navigation, route, applications }) => {
             <View style={[styles.buttonContainer2, { marginVertical: 10, paddingHorizontal: 50 }]}>
                 <Button
                     mode="outlined"
-                    onPress={handleMessage}
+                    onPress={() => handleApplicationClick(item.useridentifier)}
                     style={{ marginRight: 10, borderRadius: 0 }}
                 >
                     Profile
                 </Button>
                 <Button
                     mode="outlined"
-                    onPress={handleMessage}
+                    onPress={() => message(item.useridentifier)}
                     style={{ marginRight: 10, borderRadius: 0 }}
                 >
                     Message
                 </Button>
             </View>
-        </TouchableOpacity>
+        </View>
     );
 
     return (

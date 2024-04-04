@@ -26,6 +26,7 @@ import ChatList from './ChatList';
 import { useAppContext } from '../Providers/AppContext';
 import VerifyAccount from './VerifyAccount';
 import ViewUserProfile from './ViewUserProfile';
+import RentalHistory from './RentalHistory';
 
 const Tab = createBottomTabNavigator();
 
@@ -58,6 +59,7 @@ function ProfileTabStackScreens({ route }) {
       <SecondTabStack.Screen name="_manageImages" component={ManageProfileImages} initialParams={{ userImages: userImages }} />
       <SecondTabStack.Screen name="_managePreferences" component={ManagePreferences} initialParams={{}} />
       <SecondTabStack.Screen name="_manageMessages" component={ManageMessages} />
+      <SecondTabStack.Screen name="_rentalHistory" component={RentalHistory} />
       <SecondTabStack.Screen name="_verifyAccount" component={VerifyAccount} />
       <SecondTabStack.Screen name="_chatList" component={ChatList} />
       <SecondTabStack.Screen name="_chat" component={Chat} initialParams={{ userImages: userImages }} />
@@ -231,6 +233,9 @@ const HomePage = ({ navigation, route }) => {
    
   }
 
+  const openHistoryFromNotification = async () =>{
+
+  }
 
   const renderNotifications = ({ item }) => {
 
@@ -238,25 +243,64 @@ const HomePage = ({ navigation, route }) => {
     const formattedDateTimeString = `${date.toLocaleDateString('en-GB')} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 
     return (
-      <View style={styles.notificationItem}>
-        <View style={{ paddingVertical: 10 }}>
-          <Image
-            style={styles.notificationAvatar}
-            source={{ uri: item.creatorProfileImageURL }} // Replace with your actual image source
-          />
-        </View>
-        <View style={styles.notificationContent}>
-          <Text style={styles.notificationMessage}>{item.message}</Text>
-          <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
-        </View>
 
-        <Button
-          mode="outlined"
-          onPress={() => openChatFromNotification(item)}
-          style={{ marginRight: 10, borderRadius: 0 }}
-        >
-          View
-        </Button>
+      <View>
+         {item.notificationType === 1 ? (
+          <View style={styles.notificationItem}>
+            <View style={{ paddingVertical: 10 }}>
+              <Image
+                style={styles.notificationAvatar}
+                source={{ uri: item.creatorProfileImageURL }} // Replace with your actual image source
+              />
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationMessage}>{item.message}</Text>
+              <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
+            </View>
+            <Button
+              mode="outlined"
+              onPress={() => openChatFromNotification(item)}
+              style={{ marginRight: 10, borderRadius: 0 }}
+            >
+              View
+            </Button>
+          </View>
+        ) : item.notificationType === 2 ? (
+            <View style={styles.notificationItem}>
+              <View style={{ paddingVertical: 10 }}>
+                <Image
+                  style={styles.notificationAvatar}
+                  source={{ uri: item.creatorProfileImageURL }} // Replace with your actual image source
+                />
+              </View>
+              <View style={styles.notificationContent}>
+                <Text style={styles.notificationMessage}>{item.message}</Text>
+                <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
+              </View>
+              <Button
+              mode="outlined"
+              onPress={() => openHistoryFromNotification(item)}
+              style={{ marginRight: 10, borderRadius: 0 }}
+            >
+              View A
+            </Button>
+              
+            </View>
+          ) : (
+            <View style={styles.notificationItem}>
+              <View style={{ paddingVertical: 10 }}>
+                <Image
+                  style={styles.notificationAvatar}
+                  source={{ uri: item.creatorProfileImageURL }} // Replace with your actual image source
+                />
+              </View>
+              <View style={styles.notificationContent}>
+                <Text style={styles.notificationMessage}>{item.message}</Text>
+                <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
+              </View>
+            </View>
+        )}
+
 
       </View>
     );
@@ -377,6 +421,18 @@ const HomePage = ({ navigation, route }) => {
                     onPress={() => nextPage("_verifyAccount")}
                   >
                     <Text>Verify Account</Text>
+
+                  </TouchableOpacity>
+                </View>
+
+                <View>
+                  <TouchableOpacity
+                    style={[
+                      styles.menuButton,
+                    ]}
+                    onPress={() => nextPage("_rentalHistory")}
+                  >
+                    <Text>Rental History</Text>
 
                   </TouchableOpacity>
                 </View>
