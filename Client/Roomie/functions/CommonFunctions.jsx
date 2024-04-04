@@ -448,7 +448,11 @@ export const handleChat = async (chats,navigation, uID, uID2) => {
 
     let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
 
-    
+    navigation.navigate('_chat', { // replaces navigation, so can open new chat
+      chatID: id,
+      uID: uID,
+      recipientID: uID2
+    });
   }
 
   else if (chats.length > 0) {
@@ -459,6 +463,15 @@ export const handleChat = async (chats,navigation, uID, uID2) => {
 
       c = matchingChatRecord.chatid
       console.log(c);
+
+      navigation.pop(); // removes last chat 
+ 
+
+      navigation.navigate('_chat', { // replaces navigation, so can open new chat
+        chatID: c,
+        uID: uID,
+        recipientID: uID2
+      });
 
     }
     else {
@@ -471,18 +484,17 @@ export const handleChat = async (chats,navigation, uID, uID2) => {
 
       let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
 
+      navigation.navigate('_chat', { // replaces navigation, so can open new chat
+        chatID: id,
+        uID: uID,
+        recipientID: uID2
+      });
+
     }
 
   }
 //https://reactnavigation.org/docs/navigating/
-  navigation.pop(); // removes last chat 
- 
 
-  navigation.navigate('_chat', { // replaces navigation, so can open new chat
-    chatID: c,
-    uID: uID,
-    recipientID: uID2
-  });
 }
 
 const styles = StyleSheet.create({

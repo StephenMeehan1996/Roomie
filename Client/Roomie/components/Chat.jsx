@@ -34,6 +34,8 @@ const Chat = ({navigation, route}) => {
 
   function writeUserData(messages) { // passes message from chat UI component
 
+    console.log(recipientID);
+    
     const db = FIREBASE_DATABASE;
     set(ref(db, `chats/${chatID}/` + generateShortID()), {
         date : new Date(messages[0].createdAt).toISOString(), // needs to be refactored
@@ -44,7 +46,7 @@ const Chat = ({navigation, route}) => {
     });
 
 
-    writeNotification(recipientID,messages[0].user?.name,uID,messages[0].user?.avatar,chatID,1)
+    writeNotification(recipientID, messages[0].user?.name, uID,messages[0].user?.avatar, chatID, 1)
 
   }
 
