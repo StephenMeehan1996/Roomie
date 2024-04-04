@@ -428,21 +428,32 @@ export const returnNotificationMessage = (notType, name) =>{
 
 export const handleChat = async (chats,navigation, uID, uID2) => {
   let c;
+  let matchingChatRecord;
   console.log(chats);
+
+ const routes = navigation.getState().routes;
+ const lastRoute = routes[routes.length - 1];
+
+ console.log(routes);
+
+
+
   if (!chats || chats.length === 0) {
-    c = generateUUID();
+    id = generateUUID();
     const chatRecord = {
-      chatID: c,
+      chatID: id,
       user1: uID,
       user2: uID2
     };
 
     let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
+
+    
   }
 
   else if (chats.length > 0) {
 
-    const matchingChatRecord = chats.find(record => record.user1 === uID2 || record.user2 === uID2);
+    matchingChatRecord = chats.find(record => record.user1 === uID2 || record.user2 === uID2);
 
     if (matchingChatRecord) {
 
@@ -451,9 +462,9 @@ export const handleChat = async (chats,navigation, uID, uID2) => {
 
     }
     else {
-      c = generateUUID();
+      id = generateUUID();
       const chatRecord = {
-        chatID: c,
+        chatID: id,
         user1: uID,
         user2: uID2
       };
@@ -463,8 +474,11 @@ export const handleChat = async (chats,navigation, uID, uID2) => {
     }
 
   }
+//https://reactnavigation.org/docs/navigating/
+  navigation.pop(); // removes last chat 
+ 
 
-  navigation.replace('_chat', { // replaces navigation, so can open new chat
+  navigation.navigate('_chat', { // replaces navigation, so can open new chat
     chatID: c,
     uID: uID,
     recipientID: uID2

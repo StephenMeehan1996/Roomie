@@ -9,7 +9,7 @@ import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
 import Ad from './Ad';
 import formStyles from '../styles/formStyle.style';
-import { calculateReviewStats, returnSelectedProfileImage, returnSelectedCoverImage } from '../functions/CommonFunctions';
+import { calculateReviewStats, returnSelectedProfileImage, returnSelectedCoverImage, handleChat } from '../functions/CommonFunctions';
 import useFetchData from '../functions/GetAPI';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import { useAppContext } from '../Providers/AppContext';
@@ -18,7 +18,7 @@ import styles from '../styles/common.style';
 
 
 const ViewUserProfile = ({ navigation, route }) => {
-
+    const { signedInUserDetails, setSignedInUserDetails } = useAppContext();
     const video = React.useRef(null);
     const [status, setStatus] = useState({});
     const [uID, setUID] = useState(route.params.uID);
@@ -81,7 +81,12 @@ const ViewUserProfile = ({ navigation, route }) => {
     }, [uID, userImages]);
 
 
+const message = async () =>{
+    const chats = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${signedInUserDetails.useridentifier}`); 
 
+    handleChat(chats, navigation, signedInUserDetails.useridentifier, uID)
+
+}
 
     const renderApplicationTabContent = () => {
 
@@ -221,7 +226,7 @@ const ViewUserProfile = ({ navigation, route }) => {
                                     <Button
                                         icon="email"
                                         mode="outlined"
-                                        onPress={() => console.log('Message button pressed')}
+                                        onPress={() => message()}
                                         style={{
 
                                             height: 25, // Adjust the height as needed

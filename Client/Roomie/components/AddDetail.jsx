@@ -8,7 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { returnAdTypeText, references, smoking } from '../functions/CommonFunctions';
 import useFetchData from '../functions/GetAPI';
-import { calculateReviewStats, digsMeals, returnSelectedProfileImage, returnSelectedCoverImage, generateUUID, writeNotification } from '../functions/CommonFunctions';
+import { calculateReviewStats, digsMeals, returnSelectedProfileImage, returnSelectedCoverImage, generateUUID, writeNotification, handleChat } from '../functions/CommonFunctions';
 import styles from '../styles/common.style';
 import callLambdaFunction from '../functions/PostAPI';
 import formStyles from '../styles/formStyle.style';
@@ -60,50 +60,12 @@ const AddDetail = ({ navigation, route }) => {
   };
 
 
-  const handleChat = async () => {
+  const navChat = async () => {
     let c;
-    //chats, ad, UUID
-    if (!chats || chats.length === 0) {
-      c = generateUUID();
-      const chatRecord = {
-        chatID: c,
-        user1: uID,
-        user2: ad.useridentifier
-      };
+ 
+    handleChat(chats, navigation, uID, ad.useridentifier); // navigate using common function 
 
-      let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
-      setForceRefresh(prev => !prev); // triggers refresh after post
-    }
-
-    else if (chats.length > 0) {
-
-      const matchingChatRecord = chats.find(record => record.user1 === ad.useridentifier || record.user2 === ad.useridentifier);
-
-      if (matchingChatRecord) {
-
-        c = matchingChatRecord.chatid
-        console.log(c);
-
-      }
-      else {
-        c = generateUUID();
-        const chatRecord = {
-          chatID: c,
-          user1: uID,
-          user2: ad.useridentifier
-        };
-
-        let res = await callLambdaFunction(chatRecord, 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/chat'); // working 
-        setForceRefresh(prev => !prev); // triggers refresh after post
-      }
-
-    }
-
-    navigation.navigate('_chat', {
-      chatID: c,
-      uID: uID,
-      recipientID: ad.useridentifier
-    });
+    
   }
 
   const handleSendMessage = () => {
@@ -348,7 +310,7 @@ const AddDetail = ({ navigation, route }) => {
                         icon="email"
                         mode="outlined"
                         style={{ width: 150 }}
-                        onPress={() => handleChat()}>
+                        onPress={() => navChat()}>
                         Message
                       </Button>
                     </View>

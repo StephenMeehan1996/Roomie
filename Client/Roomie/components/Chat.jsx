@@ -22,6 +22,16 @@ const Chat = ({navigation, route}) => {
   const [formattedMessages, setFormattedMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // useEffect(() => {
+  //   // Clear previous value of chatID before assigning the new value
+  //   setChatID(null);
+  // }, [route.params.chatID]); // Dependency on route.params.chatID
+
+  // useEffect(() => {
+  //   // Assign the new value of chatID
+  //   setChatID(route.params.chatID);
+  // }, [route.params.chatID]); // Dependency on route.params.chatID
+
   function writeUserData(messages) { // passes message from chat UI component
 
     const db = FIREBASE_DATABASE;
@@ -53,12 +63,12 @@ const Chat = ({navigation, route}) => {
  }, [userImages]);
 
 
-useEffect(() => {
-
-    const db = FIREBASE_DATABASE;
-    return onValue(ref(db, `chats/${chatID}/`), (snapshot) => {
-      const mes = (snapshot.val()) || 'Anonymous';
-      if(mes){
+ useEffect(() => {
+  console.log(chatID);
+  const db = FIREBASE_DATABASE;
+  const unsubscribe = onValue(ref(db, `chats/${chatID}/`), (snapshot) => {
+    const mes = snapshot.val() || 'Anonymous';
+    if (mes) {
       const newFormattedMessages = Object.keys(mes).map(key => ({
         _id: key,
         createdAt: mes[key].date,
@@ -74,14 +84,18 @@ useEffect(() => {
         return new Date(b.createdAt) - new Date(a.createdAt);
       }); 
 
-      setFormattedMessages(sortedMessages);
-     
-    }
-    }, {
-   
-    });
+      console.log(sortedMessages);
 
-},[uID]);
+      setFormattedMessages(sortedMessages);
+
+    }
+  });
+
+  return () => {
+    // Clean up the database listener when the component unmounts
+    unsubscribe();
+  };
+}, [chatID]); 
 
   const onSend = useCallback((messages = []) => {
 
@@ -107,7 +121,7 @@ useEffect(() => {
                             mode="text"
                             size={30}
                             style={{flex:1,alignItems: 'flex-end'}}
-                            onPress={() => navigation.goBack()}>
+                            onPress={() => navigation.popToTop()}>
                         </IconButton>
                     </View>
                 </Card.Content>

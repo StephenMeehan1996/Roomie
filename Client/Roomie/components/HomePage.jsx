@@ -223,9 +223,9 @@ const HomePage = ({ navigation, route }) => {
   }, [showNotifications]);
 
   const openChatFromNotification = async (item) => {
-    //setIsLoading(true)
+
     const chats = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${signedInUserDetails.useridentifier}`); 
-    // setIsLoading(false)
+
     setShowNotifications(false);
     handleChat(chats, navigation, signedInUserDetails.useridentifier, item.creatorID)
    

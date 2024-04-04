@@ -9,6 +9,9 @@ Change Log v1.2
 - 	Added Jest library for unit testing. 
 		-	Added Input validation function, and wrote unit test, simulating security risks.
 		-	Wrote Unit tests for common functions.
+- Moved navigate to chat out to common functions.
+- Added ability for user to redirect to chat from notification. 
+
 
 Added Components
 ----------
