@@ -19,6 +19,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { Formik, Form, Field, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 
+
 //https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUserReviews?id=6ed81d5b-e317-47bb-bcfa-27596a754252
 //https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetRentalHistory?id=d1691d88-7ab9-42bb-8ec1-8fa562909f68
 
@@ -53,8 +54,6 @@ const RentalHistory = ({ navigation, route }) => {
     }
 
     const confirmRental = async (id) => {
-
-
         const update = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieAcceptStatus?id=${id}`);
 
         console.log(update)
@@ -72,11 +71,7 @@ const RentalHistory = ({ navigation, route }) => {
         setReviewFromName(name);
         setReviewFormUID(id);
         setShowForm(true);
-
-
     }
-
- 
 
     useEffect(() => {
         setIsLoading(true)
@@ -107,7 +102,15 @@ const RentalHistory = ({ navigation, route }) => {
 
     const submitReview = async (values) => {
 
-        console.log(values);
+        values.authorID = signedInUserDetails.useridentifier;
+        values.subjectID = reviewFormUID;
+        setIsLoading(true);
+        let url = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/review';
+    
+         let res = await callLambdaFunction(values, url); // working 
+         console.log(res);
+        setIsLoading(false);
+        setShowForm(false);
     }
 
     const ReviewSchema = Yup.object().shape({
@@ -312,8 +315,11 @@ const RentalHistory = ({ navigation, route }) => {
 
                                         }}
                                         validationSchema={ReviewSchema}
-                                        onSubmit={values => submitReview(values)
-                                        }
+                                        onSubmit={async (values, { resetForm }) => {
+                                            await submitReview(values);
+                                            resetForm(); // Reset the form after submission
+                                        }}
+                                        
                                     >
                                         {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit }) => (
                                             <View style={[styles2.container]}>

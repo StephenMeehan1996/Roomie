@@ -28,9 +28,9 @@ const AdApplications = ({ navigation, route, applications }) => {
     const [isLoading, setIsLoading] = useState(true);
     const fetchAds = useFetchDataBoth();
 
-    let ud, ui, ua, uad;
+ 
 
-    console.log(applications);
+   
     //Get https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetApplications?id=113
     // 
 
@@ -43,8 +43,11 @@ const AdApplications = ({ navigation, route, applications }) => {
     }
     const handleApplicationClick = async (UUID) => {
 
+        console.log(applications);
         navigation.navigate('_ViewProfile', {
             uID: UUID,
+            adID: applications[0].adid
+            
         });
 
     }

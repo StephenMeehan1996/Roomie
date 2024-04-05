@@ -9,16 +9,22 @@ import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
 import Ad from './Ad';
 import formStyles from '../styles/formStyle.style';
-import { calculateReviewStats, returnSelectedProfileImage, returnSelectedCoverImage, handleChat } from '../functions/CommonFunctions';
+import { calculateReviewStats, returnSelectedProfileImage, returnSelectedCoverImage, handleChat, convertToDateTimeString, generateUUID } from '../functions/CommonFunctions';
 import useFetchData from '../functions/GetAPI';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import { useAppContext } from '../Providers/AppContext';
 import styles from '../styles/common.style';
+import { AntDesign } from '@expo/vector-icons';
+import callLambdaFunction from '../functions/PostAPI';
 
 
 
 const ViewUserProfile = ({ navigation, route }) => {
     const { signedInUserDetails, setSignedInUserDetails } = useAppContext();
+    const {adID} = route.params;
+ 
+
+
     const video = React.useRef(null);
     const [status, setStatus] = useState({});
     const [uID, setUID] = useState(route.params.uID);
@@ -33,6 +39,8 @@ const ViewUserProfile = ({ navigation, route }) => {
     const [updating, setUpdating] = useState(false);
     const [selectedApplicationTab, setSelectedApplicationTab] = useState('Tab1');
     const fetchAds = useFetchDataBoth();
+    const [reviews, setReviews] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
 
 
     useEffect(() => {
@@ -44,9 +52,12 @@ const ViewUserProfile = ({ navigation, route }) => {
                 const getUserImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${uID}`);
                 setUserImages(getUserImages);
 
-
                 const getUserDetails = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUser?uid=${uID}`);
                 setUserDetails(getUserDetails[0]);
+
+                const getReviews = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetUserReviews?id=${uID}`);
+                setReviews(getReviews);
+                console.log(getReviews);
 
 
                 console.log(getUserDetails)
@@ -63,6 +74,28 @@ const ViewUserProfile = ({ navigation, route }) => {
         // Call the fetchData function
         fetchData();
     }, [uID]);
+
+    const acceptRental = async () => {
+
+        let obj = {
+            authorID: signedInUserDetails.useridentifier,
+            subjectID: uID, 
+            adID : adID,
+            rentalUID: generateUUID()
+        }
+
+        setIsLoading(true);
+        let url = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/AcceptRequest';
+    
+         let res = await callLambdaFunction(obj, url); // working 
+         console.log(res);
+        setIsLoading(false);
+
+        write
+
+       
+
+    }
 
     useEffect(() => {
 
@@ -81,12 +114,67 @@ const ViewUserProfile = ({ navigation, route }) => {
     }, [uID, userImages]);
 
 
-const message = async () =>{
-    const chats = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${signedInUserDetails.useridentifier}`); 
+    const message = async () => {
+        const chats = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${signedInUserDetails.useridentifier}`);
 
-    handleChat(chats, navigation, signedInUserDetails.useridentifier, uID)
+        handleChat(chats, navigation, signedInUserDetails.useridentifier, uID)
 
-}
+    }
+
+    const renderReviews = ({ item }) => {
+
+        return (
+            <View>
+
+                <View>
+
+                    <Card style={styles.card}>
+                        <Card.Content >
+                            <View style={styles2.profileInfo}>
+                                <Avatar.Image size={50} source={{ uri: item.authorprofile }} style={{ marginRight: 15 }} />
+                                <View style={styles2.userInfo}>
+                                    <Title>{item.authorfirstname} {item.authorsecondname}</Title>
+                                    <Paragraph>{convertToDateTimeString(item.reviewdate)}</Paragraph>
+                                </View>
+
+                                <View style={{ marginLeft: 20 }}>
+                                    {item.reviewstatus === 1 ? (
+                                        <View
+                                            style={[styles2.thumbButtonGreen, styles2.selected]}
+
+                                        >
+                                            <AntDesign name="like2" size={22} color={'white'} />
+
+
+                                            <Text style={[styles2.textGreen, styles2.text]}>Positive</Text>
+                                        </View>
+                                    ) : (
+                                        <View
+                                            style={[styles2.thumbButtonRed, styles2.selectedRed]}
+
+                                        >
+                                            <AntDesign name="dislike2" size={22} color={'white'} />
+                                            <Text style={[styles2.textRed, styles2.text]}>Negative</Text>
+                                        </View>
+                                    )}
+
+                                </View>
+
+                            </View>
+                            <View >
+                                <Title style={{ marginVertical: 10 }}>{item.reviewtitle}</Title>
+                                <Paragraph>{item.reviewtext}</Paragraph>
+                            </View>
+
+                        </Card.Content>
+
+                    </Card>
+
+                </View>
+
+            </View>
+        );
+    };
 
     const renderApplicationTabContent = () => {
 
@@ -171,7 +259,19 @@ const message = async () =>{
             case 'Tab2':
                 return (
                     <View style={styles2.tabContent}>
-
+                        <View>
+                            {reviews && reviews.length > 0 ? (
+                                <FlatList
+                                    data={reviews}
+                                    renderItem={renderReviews}
+                                    keyExtractor={(r) => r.reviewid.toString()}
+                                />
+                            ) : (
+                                <View>
+                                    <Title style={{ textAlign: 'center', marginVertical: 15 }}>No Reviews</Title>
+                                </View>
+                            )}
+                        </View>
 
                     </View>
                 );
@@ -179,8 +279,25 @@ const message = async () =>{
                 return (
                     <View style={styles2.tabContent}>
 
-                        <View >
-                            <Paragraph style={styles2.bio}></Paragraph>
+                        <View style={{ paddingHorizontal: 10 }}>
+                            <Paragraph style={styles2.bio}>
+                                By clicking accept, you will send {userDetails.firstname} a notification to confirm that a rental agreement has taken place.
+                                Once accepted on both ends, you can review each other.
+                            </Paragraph>
+
+                            <Paragraph style={styles2.bio}>
+                                This action also makes the ad inactive, it will not be deleted, to activate the ad again go to your inactive ad section.
+                            </Paragraph>
+                            <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 10 }}>
+                                <TouchableOpacity
+                                    style={[styles2.confirmButton, styles2.selected]}
+                                    onPress={() => acceptRental()}
+                                >
+                                    <AntDesign name="check" size={22} color={'white'} />
+                                    <Text style={[styles2.selectedText]}>Accept</Text>
+                                </TouchableOpacity>
+                            </View>
+
                         </View>
 
 
@@ -345,6 +462,17 @@ const styles2 = StyleSheet.create({
         justifyContent: 'center',
 
     },
+    confirmButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'green',
+        borderRadius: 0,
+        paddingHorizontal: 5,
+        paddingVertical: 10,
+        marginVertical: 10,
+        width: 150
+    },
     video: {
         alignSelf: 'center',
         width: 320,
@@ -364,6 +492,12 @@ const styles2 = StyleSheet.create({
         fontSize: 24,
 
         textAlign: 'center',
+    },
+    selectedText: {
+        color: 'white',
+        marginLeft: 5,
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 
 
@@ -414,6 +548,56 @@ const styles2 = StyleSheet.create({
     redText: {
         color: 'red', // Set the color to green
         fontWeight: 'bold', // Optional: You can apply additional styles as needed
+    },
+    thumbButtonRed: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 5,
+        borderWidth: 1,
+        borderRadius: 8,
+        borderColor: 'red',
+        marginHorizontal: 10,
+        backgroundColor: 'transparent',
+    },
+    thumbButtonGreen: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 5,
+        borderWidth: 1,
+        borderRadius: 8,
+        borderColor: 'green',
+        marginHorizontal: 10,
+        backgroundColor: 'transparent',
+    },
+    selected: {
+        backgroundColor: 'green', // Change to your preferred selected color
+    },
+    selectedRed: {
+        backgroundColor: 'red', // Change to your preferred selected color
+    },
+    text: {
+        marginLeft: 5,
+        color: 'white',
+        fontWeight: 'bold'
+    },
+    profileInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    textGreen: {
+        marginLeft: 5,
+        color: 'green',
+        fontWeight: 'bold'
+    },
+    textRed: {
+        marginLeft: 5,
+        color: 'red',
+        fontWeight: 'bold'
+    },
+    thumbContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
     },
 
 });
