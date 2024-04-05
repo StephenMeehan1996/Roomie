@@ -9,7 +9,7 @@ import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
 import Ad from './Ad';
 import formStyles from '../styles/formStyle.style';
-import { calculateReviewStats, returnSelectedProfileImage, returnSelectedCoverImage, handleChat, convertToDateTimeString, generateUUID } from '../functions/CommonFunctions';
+import { calculateReviewStats, returnSelectedProfileImage, returnSelectedCoverImage, handleChat, convertToDateTimeString, generateUUID, writeNotification } from '../functions/CommonFunctions';
 import useFetchData from '../functions/GetAPI';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import { useAppContext } from '../Providers/AppContext';
@@ -21,9 +21,8 @@ import callLambdaFunction from '../functions/PostAPI';
 
 const ViewUserProfile = ({ navigation, route }) => {
     const { signedInUserDetails, setSignedInUserDetails } = useAppContext();
+    const {profileImage : p} = useAppContext();
     const {adID} = route.params;
- 
-
 
     const video = React.useRef(null);
     const [status, setStatus] = useState({});
@@ -91,9 +90,9 @@ const ViewUserProfile = ({ navigation, route }) => {
          console.log(res);
         setIsLoading(false);
 
-        write
+        // recipientID, name, uID, pic, chatID, notificationType
 
-       
+         writeNotification(uID, signedInUserDetails.firstname + ' ' + signedInUserDetails.secondname, signedInUserDetails.useridentifier, p.imageurl, adID, 3)
 
     }
 

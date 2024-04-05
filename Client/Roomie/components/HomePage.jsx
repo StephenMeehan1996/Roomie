@@ -282,10 +282,35 @@ const HomePage = ({ navigation, route }) => {
               onPress={() => openHistoryFromNotification(item)}
               style={{ marginRight: 10, borderRadius: 0 }}
             >
-              View A
+              View
             </Button>
               
             </View>
+             ) : item.notificationType === 3 ? (
+              <View style={styles.notificationItem}>
+                <View style={{ paddingVertical: 10 }}>
+                  <Image
+                    style={styles.notificationAvatar}
+                    source={{ uri: item.creatorProfileImageURL }} // Replace with your actual image source
+                  />
+                </View>
+                <View style={styles.notificationContent}>
+                  <Text style={styles.notificationMessage}>{item.message}</Text>
+                  <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
+                </View>
+                <Button
+                mode="outlined"
+                onPress={() => {
+                  setShowNotifications(false);
+                  nextPage('_rentalHistory');
+              }}
+                style={{ marginRight: 10, borderRadius: 0 }}
+              >
+                View
+              </Button>
+                
+              </View>
+        
           ) : (
             <View style={styles.notificationItem}>
               <View style={{ paddingVertical: 10 }}>

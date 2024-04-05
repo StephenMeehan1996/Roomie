@@ -21,7 +21,8 @@ const Profile = ({ navigation, route }) => {
   const video = React.useRef(null);
   const [status, setStatus] = useState({});
 
-  const { signedInUserDetails } = useAppContext();
+  const { signedInUserDetails,SetSignedInProfileImage } = useAppContext();
+
   const [uID, setUID] = useState(signedInUserDetails.useridentifier);
 
   const [userImages, setUserImages] = useState(route.params.userImages);

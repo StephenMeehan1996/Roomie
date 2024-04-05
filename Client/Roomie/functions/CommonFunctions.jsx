@@ -423,6 +423,10 @@ export const returnNotificationMessage = (notType, name) =>{
       return `${name} has sent you a message`
     case 2: 
       return `${name} has applied for your advertisement`
+    case 3: 
+      return `${name} has accepted your ad application`
+    case 4: 
+      return `${name} has left you a review`
   }
 }
 
