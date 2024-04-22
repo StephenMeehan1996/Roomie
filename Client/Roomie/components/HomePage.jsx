@@ -226,14 +226,14 @@ const HomePage = ({ navigation, route }) => {
 
   const openChatFromNotification = async (item) => {
 
-    const chats = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${signedInUserDetails.useridentifier}`); 
+    const chats = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieChat?uid=${signedInUserDetails.useridentifier}`);
 
     setShowNotifications(false);
     handleChat(chats, navigation, signedInUserDetails.useridentifier, item.creatorID)
-   
+
   }
 
-  const openHistoryFromNotification = async () =>{
+  const openHistoryFromNotification = async () => {
 
   }
 
@@ -245,7 +245,7 @@ const HomePage = ({ navigation, route }) => {
     return (
 
       <View>
-         {item.notificationType === 1 ? (
+        {item.notificationType === 1 ? (
           <View style={styles.notificationItem}>
             <View style={{ paddingVertical: 10 }}>
               <Image
@@ -266,64 +266,114 @@ const HomePage = ({ navigation, route }) => {
             </Button>
           </View>
         ) : item.notificationType === 2 ? (
-            <View style={styles.notificationItem}>
-              <View style={{ paddingVertical: 10 }}>
-                <Image
-                  style={styles.notificationAvatar}
-                  source={{ uri: item.creatorProfileImageURL }} // Replace with your actual image source
-                />
-              </View>
-              <View style={styles.notificationContent}>
-                <Text style={styles.notificationMessage}>{item.message}</Text>
-                <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
-              </View>
-              <Button
+          <View style={styles.notificationItem}>
+            <View style={{ paddingVertical: 10 }}>
+              <Image
+                style={styles.notificationAvatar}
+                source={{ uri: item.creatorProfileImageURL }} // Replace with your actual image source
+              />
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationMessage}>{item.message}</Text>
+              <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
+            </View>
+            <Button
               mode="outlined"
               onPress={() => openHistoryFromNotification(item)}
               style={{ marginRight: 10, borderRadius: 0 }}
             >
               View
             </Button>
-              
+
+          </View>
+        ) : item.notificationType === 3 ? (
+          <View style={styles.notificationItem}>
+            <View style={{ paddingVertical: 10 }}>
+              <Image
+                style={styles.notificationAvatar}
+                source={{ uri: item.creatorProfileImageURL }} // Replace with your actual image source
+              />
             </View>
-             ) : item.notificationType === 3 ? (
-              <View style={styles.notificationItem}>
-                <View style={{ paddingVertical: 10 }}>
-                  <Image
-                    style={styles.notificationAvatar}
-                    source={{ uri: item.creatorProfileImageURL }} // Replace with your actual image source
-                  />
-                </View>
-                <View style={styles.notificationContent}>
-                  <Text style={styles.notificationMessage}>{item.message}</Text>
-                  <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
-                </View>
-                <Button
-                mode="outlined"
-                onPress={() => {
-                  setShowNotifications(false);
-                  nextPage('_rentalHistory');
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationMessage}>{item.message}</Text>
+              <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
+            </View>
+            <Button
+              mode="outlined"
+              onPress={() => {
+                setShowNotifications(false);
+                nextPage('_rentalHistory');
               }}
-                style={{ marginRight: 10, borderRadius: 0 }}
-              >
-                View
-              </Button>
-                
-              </View>
-        
-          ) : (
-            <View style={styles.notificationItem}>
-              <View style={{ paddingVertical: 10 }}>
-                <Image
-                  style={styles.notificationAvatar}
-                  source={{ uri: item.creatorProfileImageURL }} // Replace with your actual image source
-                />
-              </View>
-              <View style={styles.notificationContent}>
-                <Text style={styles.notificationMessage}>{item.message}</Text>
-                <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
-              </View>
+              style={{ marginRight: 10, borderRadius: 0 }}
+            >
+              View
+            </Button>
+
+          </View>
+
+        ) : item.notificationType === 4 ? (
+          <View style={styles.notificationItem}>
+            <View style={{ paddingVertical: 10 }}>
+              <Image
+                style={styles.notificationAvatar}
+                source={{ uri: item.creatorProfileImageURL }} // Replace with your actual image source
+              />
             </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationMessage}>{item.message}</Text>
+              <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
+            </View>
+            <Button
+              mode="outlined"
+              onPress={() => {
+                setShowNotifications(false);
+                nextPage('_managePreferences');
+              }}
+              style={{ marginRight: 10, borderRadius: 0 }}
+            >
+              View
+            </Button>
+
+          </View>
+
+        ) : item.notificationType === 5 ? (
+          <View style={styles.notificationItem}>
+            <View style={{ paddingVertical: 10 }}>
+              <Image
+                style={styles.notificationAvatar}
+                source={{ uri: item.creatorProfileImageURL }} // Replace with your actual image source
+              />
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationMessage}>{item.message}</Text>
+              <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
+            </View>
+            <Button
+              mode="outlined"
+              onPress={() => {
+                setShowNotifications(false);
+                nextPage('_rentalHistory');
+              }}
+              style={{ marginRight: 10, borderRadius: 0 }}
+            >
+              View
+            </Button>
+
+          </View>
+
+        ) : (
+          <View style={styles.notificationItem}>
+            <View style={{ paddingVertical: 10 }}>
+              <Image
+                style={styles.notificationAvatar}
+                source={{ uri: item.creatorProfileImageURL }}
+              />
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationMessage}>{item.message}</Text>
+              <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
+            </View>
+          </View>
         )}
 
 
