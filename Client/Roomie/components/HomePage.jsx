@@ -130,6 +130,8 @@ const HomePage = ({ navigation, route }) => {
     });
   };
 
+
+
   // Gets done here so I can pass the information to required components
   useEffect(() => {
     setIsLoading(true)
@@ -233,7 +235,18 @@ const HomePage = ({ navigation, route }) => {
 
   }
 
-  const openHistoryFromNotification = async () => {
+  const openAdFromNotification = (item) => {
+
+ 
+    const filteredUserAdDetail = userAdDetail.find(ad => ad.addid  === item.chatID);   
+    const filteredUserAdImages = userAdImages.filter(image => image.AddID === item.chatID);
+    setShowNotifications(false);
+     navigation.navigate('_AddDetail', {
+
+      ad: filteredUserAdDetail,
+      images: filteredUserAdImages
+
+     });
 
   }
 
@@ -270,7 +283,7 @@ const HomePage = ({ navigation, route }) => {
             <View style={{ paddingVertical: 10 }}>
               <Image
                 style={styles.notificationAvatar}
-                source={{ uri: item.creatorProfileImageURL }} // Replace with your actual image source
+                source={{ uri: item.creatorProfileImageURL }}
               />
             </View>
             <View style={styles.notificationContent}>
@@ -279,12 +292,11 @@ const HomePage = ({ navigation, route }) => {
             </View>
             <Button
               mode="outlined"
-              onPress={() => openHistoryFromNotification(item)}
+              onPress={() => openAdFromNotification(item)}
               style={{ marginRight: 10, borderRadius: 0 }}
             >
               View
             </Button>
-
           </View>
         ) : item.notificationType === 3 ? (
           <View style={styles.notificationItem}>
@@ -327,7 +339,7 @@ const HomePage = ({ navigation, route }) => {
               mode="outlined"
               onPress={() => {
                 setShowNotifications(false);
-                nextPage('_managePreferences');
+                nextPage('_rentalHistory');
               }}
               style={{ marginRight: 10, borderRadius: 0 }}
             >

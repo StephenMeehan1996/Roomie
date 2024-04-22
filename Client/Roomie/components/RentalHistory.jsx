@@ -121,6 +121,10 @@ const RentalHistory = ({ navigation, route }) => {
 
         setIsLoading(false);
         setShowForm(false);
+
+        navigation.navigate('_Profile', {
+       
+       });
       
     }
 

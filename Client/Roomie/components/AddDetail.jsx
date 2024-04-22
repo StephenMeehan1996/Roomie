@@ -23,6 +23,8 @@ const AddDetail = ({ navigation, route }) => {
   const [uID, setUID] = useState(signedInUserDetails.useridentifier);
 
   const { ad, images, userImages, userDetails } = route?.params; // from search results
+
+ 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedTab, setSelectedTab] = useState('Tab1');
   const [selectedApplicationTab, setSelectedApplicationTab] = useState('Tab1');
