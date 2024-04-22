@@ -277,107 +277,116 @@ export const calculateMatchPercentage = (userDetail, adDetail, adType) => {
   };
   let totalPossible = 0;
 
-    adDetail.forEach(detailObj => {
-      let totalWeight = 0;
-      let matchedObjects = [];
 
-      if (detailObj.gender === userDetail.gender) {
-        totalWeight += weights.gender;
-        matchedObjects.push({ id: 2, prop: 'Gender', matched: 1 });
-      } else
-        matchedObjects.push({ id: 2, prop: 'Gender', matched: 0 });
 
-      if (userDetail.agebracket && detailObj.agebracket === userDetail.agebracket) {
-        totalWeight += weights.agebracket;
-        matchedObjects.push({ id: 3, prop: 'Age', matched: 1 });
-      } else
-        matchedObjects.push({ id: 3, prop: 'Age', matched: 0 });
+  adDetail.forEach(detailObj => {
+    let totalWeight = 0;
+    let matchedObjects = [];
 
-      if (userDetail.occupation && detailObj.occupation === userDetail.occupation) {
-        totalWeight += weights.occupation;
-        matchedObjects.push({ id: 4, prop: 'Occupation', matched: 1 });
-      } else
-        matchedObjects.push({ id: 4, prop: 'Occupation', matched: 0 });
-      if (userDetail.smoke && detailObj.smokingpermitted === userDetail.smoke) {
-        totalWeight += weights.smoking;
-        matchedObjects.push({ id: 5, prop: 'Smoking Permitted', matched: 1 });
-      } else
-        matchedObjects.push({ id: 5, prop: 'Smoking Permitted', matched: 0 });
+    console.log('ID' + detailObj.addid)
+    console.log('User: ' + userDetail.houserentalnumbedrooms)
+    console.log('Ad: ' + detailObj.houserentalnumbedrooms)
+    console.log(userDetail);
+    console.log(detailObj);
 
-     if(adType === 1){
-        totalPossible = 1.2;
-        if (userDetail.housesharepricemax && parseInt(detailObj.price) <= userDetail.housesharepricemax) {
-          totalWeight += weights.price;
-          matchedObjects.push({ id: 6, prop: 'Price', matched: 1 });
-        } else
-          matchedObjects.push({ id: 6, prop: 'Price', matched: 0 });
+    if (detailObj.gender === userDetail.gender) {
+      totalWeight += weights.gender;
+      matchedObjects.push({ id: 2, prop: 'Gender', matched: 1 });
+    } else
+      matchedObjects.push({ id: 2, prop: 'Gender', matched: 0 });
 
-        if (userDetail.housesharehousetype && detailObj.propertytype === userDetail.housesharehousetype) {
-          totalWeight += weights.standardWeight;
-          matchedObjects.push({ id: 7, prop: 'Property Type', matched: 1 });
-        } else
-          matchedObjects.push({ id: 7, prop: 'Property Type', matched: 0 });
-     }
+    if (userDetail.agebracket && detailObj.agebracket === userDetail.agebracket) {
+      totalWeight += weights.agebracket;
+      matchedObjects.push({ id: 3, prop: 'Age', matched: 1 });
+    } else
+      matchedObjects.push({ id: 3, prop: 'Age', matched: 0 });
 
-     else if(adType === 2){
-      totalPossible = 1.4;
-      if (userDetail.houserentalpricemax && parseInt(detailObj.price) <= userDetail.houserentalpricemax) {
+    if (userDetail.occupationtitle && detailObj.occupation === userDetail.occupationtitle) {
+      totalWeight += weights.occupation;
+      matchedObjects.push({ id: 4, prop: 'Occupation', matched: 1 });
+    } else
+      matchedObjects.push({ id: 4, prop: 'Occupation', matched: 0 });
+
+    if (userDetail.smoke && detailObj.smokingpermitted === userDetail.smoke) {
+      totalWeight += weights.smoking;
+      matchedObjects.push({ id: 5, prop: 'Smoking Permitted', matched: 1 });
+    } else
+      matchedObjects.push({ id: 5, prop: 'Smoking Permitted', matched: 0 });
+
+    if (adType === 1) {
+      totalPossible = 1.2;
+      if (userDetail.housesharepricemax && parseFloat(detailObj.price) <= userDetail.housesharepricemax) {
         totalWeight += weights.price;
         matchedObjects.push({ id: 6, prop: 'Price', matched: 1 });
       } else
         matchedObjects.push({ id: 6, prop: 'Price', matched: 0 });
 
-      if (userDetail.houserentalhousetype && detailObj.houserentalnumbedrooms === userDetail.houserentalhousetype) {
-          totalWeight += weights.standardWeight;
-          matchedObjects.push({ id: 7, prop: 'Property Type', matched: 1 });
+      if (userDetail.housesharehousetype && detailObj.propertytype === userDetail.housesharehousetype) {
+        totalWeight += weights.standardWeight;
+        matchedObjects.push({ id: 7, prop: 'Property Type', matched: 1 });
       } else
-         matchedObjects.push({ id: 7, prop: 'Property Type', matched: 0 });
+        matchedObjects.push({ id: 7, prop: 'Property Type', matched: 0 });
+    }
 
-      if (userDetail.houserentalnumbedrooms && detailObj.propertytype === userDetail.houserentalnumbedrooms) {
-          totalWeight += weights.standardWeight;
-          matchedObjects.push({ id: 8, prop: 'Number of bedrooms', matched: 1 });
+    else if (adType === 2) {
+      totalPossible = 1.4;
+      if (userDetail.houserentalpricemax && parseFloat(detailObj.price) <= userDetail.houserentalpricemax) {
+        totalWeight += weights.price;
+        matchedObjects.push({ id: 6, prop: 'Price', matched: 1 });
       } else
-         matchedObjects.push({ id: 8, prop: 'Number of bedrooms', matched: 0 });
+        matchedObjects.push({ id: 6, prop: 'Price', matched: 0 });
 
-     }else{
+      if (userDetail.houserentalhousetype && detailObj.propertytype === userDetail.houserentalhousetype) {
+        totalWeight += weights.standardWeight;
+        matchedObjects.push({ id: 7, prop: 'Property Type', matched: 1 });
+      } else
+        matchedObjects.push({ id: 7, prop: 'Property Type', matched: 0 });
+
+      if (userDetail.houserentalnumrooms && detailObj.houserentalnumbedrooms === userDetail.houserentalnumrooms) {
+        totalWeight += weights.standardWeight;
+        matchedObjects.push({ id: 8, prop: 'Number of bedrooms', matched: 1 });
+      } else
+        matchedObjects.push({ id: 8, prop: 'Number of bedrooms', matched: 0 });
+
+    } else {
 
       totalPossible = 1.6;
-      if (userDetail.digspricemax && parseInt(detailObj.price) <= userDetail.digspricemax) {
+      if (userDetail.digspricemax && parseFloat(detailObj.price) <= userDetail.digspricemax) {
         totalWeight += weights.price;
         matchedObjects.push({ id: 6, prop: 'Price', matched: 1 });
       } else
         matchedObjects.push({ id: 6, prop: 'Price', matched: 0 });
 
       if (userDetail.digshousetype && detailObj.propertytype === userDetail.digshousetype) {
-          totalWeight += weights.standardWeight;
-          matchedObjects.push({ id: 7, prop: 'Property Type', matched: 1 });
+        totalWeight += weights.standardWeight;
+        matchedObjects.push({ id: 7, prop: 'Property Type', matched: 1 });
       } else
-         matchedObjects.push({ id: 7, prop: 'Property Type', matched: 0 });
+        matchedObjects.push({ id: 7, prop: 'Property Type', matched: 0 });
 
       if (userDetail.digsroomtype && detailObj.propertytype === userDetail.digsroomtype) { // need to add to get 
-          totalWeight += weights.standardWeight;
-          matchedObjects.push({ id: 7, prop: 'Room Type', matched: 1 });
+        totalWeight += weights.standardWeight;
+        matchedObjects.push({ id: 7, prop: 'Room Type', matched: 1 });
       } else
-         matchedObjects.push({ id: 7, prop: 'Room Type', matched: 0 });
+        matchedObjects.push({ id: 7, prop: 'Room Type', matched: 0 });
 
       if (userDetail.digsmealsincluded && detailObj.digsmealsprovided === userDetail.digsmealsincluded) {
-          totalWeight += weights.standardWeight;
-          matchedObjects.push({ id: 8, prop: 'Meals Included', matched: 1 });
+        totalWeight += weights.standardWeight;
+        matchedObjects.push({ id: 8, prop: 'Meals Included', matched: 1 });
       } else
-         matchedObjects.push({ id: 8, prop: 'Meals Included', matched: 0 });
-           
-     }
+        matchedObjects.push({ id: 8, prop: 'Meals Included', matched: 0 });
 
-      detailObj.matchPercentage = (totalWeight / totalPossible) * 100;
-      detailObj.matchPercentage = Math.round(detailObj.matchPercentage);
-      detailObj.matchedProperties = matchedObjects;
-    });
+    }
 
-    adDetail.forEach(detailObj => {
-      console.log('Match Percentage:', detailObj.matchPercentage);
-    });
+    detailObj.matchPercentage = (totalWeight / totalPossible) * 100;
+    detailObj.matchPercentage = Math.round(detailObj.matchPercentage);
+    detailObj.matchedProperties = matchedObjects;
+  });
 
-    return adDetail;
+  adDetail.forEach(detailObj => {
+    console.log('Match Percentage:', detailObj.matchPercentage);
+  });
+
+  return adDetail;
 
 };
 
@@ -386,7 +395,7 @@ export async function updateNotifications(id, uID, obj) {
   const db = FIREBASE_DATABASE;
 
   obj.forEach(async notification => {
-   
+
     const notificationRef = ref(db, `notifications/${uID}/${notification.key}`);
 
     try {
@@ -410,37 +419,37 @@ export function writeNotification(recipientID, name, uID, pic, chatID, notificat
     creatorID: uID,
     creatorProfileImageURL: pic,
     seen: 0,
-    chatID: chatID, 
-    notificationType : notificationType
+    chatID: chatID,
+    notificationType: notificationType
   });
 
 }
 
-export const returnNotificationMessage = (notType, name) =>{
+export const returnNotificationMessage = (notType, name) => {
 
-  switch(notType){
+  switch (notType) {
     case 1:
       return `${name} has sent you a message`
-    case 2: 
+    case 2:
       return `${name} has applied for your advertisement`
-    case 3: 
+    case 3:
       return `${name} has accepted your ad application`
-    case 4: 
+    case 4:
       return `${name} has left you a review`
-    case 5: 
+    case 5:
       return `${name} has confirmed your rental request`
   }
 }
 
-export const handleChat = async (chats,navigation, uID, uID2) => {
+export const handleChat = async (chats, navigation, uID, uID2) => {
   let c;
   let matchingChatRecord;
   console.log(chats);
 
- const routes = navigation.getState().routes;
- const lastRoute = routes[routes.length - 1];
+  const routes = navigation.getState().routes;
+  const lastRoute = routes[routes.length - 1];
 
- console.log(routes);
+  console.log(routes);
 
 
 
@@ -471,7 +480,7 @@ export const handleChat = async (chats,navigation, uID, uID2) => {
       console.log(c);
 
       navigation.pop(); // removes last chat 
- 
+
 
       navigation.navigate('_chat', { // replaces navigation, so can open new chat
         chatID: c,
@@ -499,7 +508,7 @@ export const handleChat = async (chats,navigation, uID, uID2) => {
     }
 
   }
-//https://reactnavigation.org/docs/navigating/
+  //https://reactnavigation.org/docs/navigating/
 
 }
 
@@ -542,16 +551,16 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   greenText: {
-    color: 'green', 
+    color: 'green',
     fontWeight: 'bold',
   },
   redText: {
-    color: 'red', 
-    fontWeight: 'bold', 
+    color: 'red',
+    fontWeight: 'bold',
   },
   orangeText: {
-    color: 'orange', 
-    fontWeight: 'bold', 
+    color: 'orange',
+    fontWeight: 'bold',
   }
 
 });

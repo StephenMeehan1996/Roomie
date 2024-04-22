@@ -10,7 +10,7 @@ import putAPI from '../functions/PutAPI';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 //import { yesNO, priceRange, number, roomType, houseType, houseMatExpectations, environmentOptions, days } from '../data/formData';
-import { genderOptions, workingHoursOptions, occupationOptions, yearOfStudyOptions, yesNO, rentalPreference, irishCounties, priceRange, daysnumber, roomType, houseType, houseMatExpectations, environmentOptions } from '../data/formData';
+import { genderOptions, workingHoursOptions, occupationOptions, yearOfStudyOptions, yesNO, rentalPreference, irishCounties, priceRange, daysnumber, roomType, houseType, houseMatExpectations, environmentOptions, number, days } from '../data/formData';
 import styles from '../styles/formStyle.style';
 import { generateUUID } from '../functions/CommonFunctions';
 import { update } from 'firebase/database';

@@ -162,7 +162,7 @@ const Profile = ({ navigation, route }) => {
                 </Paragraph>
                 <View style={styles.info}>
                   {userAdDetail && (
-                    <Text style={styles.infoText}>Active Adds: {userAdDetail.length}</Text>
+                    <Text style={styles.infoText}>Active Adds: {userAdDetail.filter(ad => ad.active === 1).length}</Text>
                   )}
                   <Text style={styles.infoText}>Rating: {calculateReviewStats(signedInUserDetails.numreviews, signedInUserDetails.positivereview)}</Text>
                 </View>

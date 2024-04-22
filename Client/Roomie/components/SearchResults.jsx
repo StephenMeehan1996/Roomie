@@ -55,7 +55,7 @@ const SearchResults = ({ navigation, route }) => {
       let search = location.split(',')[0];
       let adType = returnAdTypeNum(rentalType);
       const filtered = detail.filter((ad) => `${ad.addressline1} ${ad.addressline2} ${ad.city} ${ad.county} `.toLowerCase().includes(search.toLowerCase())
-        && ad.addtype === adType && ad.useridentifier !== uID);
+        && ad.addtype === adType && ad.useridentifier !== uID && ad.active != 0);
       return filtered;
     };
   
@@ -68,7 +68,7 @@ const SearchResults = ({ navigation, route }) => {
       let search = location.split(',')[0];
       let adType = returnAdTypeNum(rentalType);
       const filtered = detail.filter((ad) => `${ad.addressline1} ${ad.addressline2} ${ad.city} ${ad.county} `.toLowerCase().includes(search.toLowerCase())
-        && ad.addtype === adType && ad.useridentifier !== uID);
+        && ad.addtype === adType && ad.useridentifier !== uID && ad.active != 0);
       return filtered;
     };
   

@@ -186,142 +186,146 @@ const ManageAd = ({ navigation, route, ad, images }) => {
   };
 
   const handleChangeAdState = () => {
-    setSnackbarMessage('Are you sure you want to make the ad inactive?');
+    if(ad.active === 1)
+      setSnackbarMessage('Are you sure you want to make the ad inactive?');
+    else
+      setSnackbarMessage('Are you sure you want to activate this ad?');
+   
     showDialog();
   };
 
   const confirmAction = async () => {
 
     if (snackbarMessage === 'Are you sure you want to delete the ad?') {
-        
-        setUpdating(true);
-        await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieDeleteAd?id=${ad.addid}&type=${ad.addtype}&pref=${ad.preferenceset}`);
-        setUpdating(false);
-        navigation.navigate('_Profile');
-       
 
-    } else if (snackbarMessage === 'Are you sure you want to make the ad inactive?') {
-        // https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieToggleAdActive?id
-        setUpdating(true);
-        await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieToggleAdActive?id=${ad.addid}`);
-        setUpdating(false);
-        navigation.navigate('_Profile');
+      setUpdating(true);
+      await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieDeleteAd?id=${ad.addid}&type=${ad.addtype}&pref=${ad.preferenceset}`);
+      setUpdating(false);
+      navigation.navigate('_Profile');
+
+
+    } else if (snackbarMessage === 'Are you sure you want to make the ad inactive?' || snackbarMessage === 'Are you sure you want to activate this ad?') {
+      // https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieToggleAdActive?id
+      setUpdating(true);
+      await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieToggleAdActive?id=${ad.addid}`);
+      setUpdating(false);
+      navigation.navigate('_Profile');
     }
 
     // After completing the action, hide the dialog
     hideDialog();
-};
+  };
 
-const saveChanges = async (values) => {
-  console.log(values);
-  //https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add
+  const saveChanges = async (values) => {
+    console.log(values);
+    //https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add
 
-  setUpdating(true);
-  let res = await putAPI(`https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add`, values);
-  console.log(res)
-  setUpdating(false);
+    setUpdating(true);
+    let res = await putAPI(`https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add`, values);
+    console.log(res)
+    setUpdating(false);
 
-}
+  }
 
-const HouseShareSchema = Yup.object().shape({
-  addType: Yup.number().integer(),
-  id: Yup.number().integer(),
-  numOccupants: Yup.number().integer()
-    .required('Please select the current number of occupants'),
-  houseShareHouseType: Yup.string()
-    .required('Please select a property type'),
-  houseSharePrice: Yup.string()
-    .required('Please select a price'),
-  houseShareRoomType: Yup.string()
-    .required('Please select a room type'),
-  houseShareHouseType: Yup.string()
-    .required('Please select a house type'),
-  houseShareEnsuite: Yup.number().integer()
-    .required('Please select a value'),
-  bio: Yup.string(),
-  referenceRequired: Yup.number().integer()
-    .required('Please select an option'),
-  deposit: Yup.string()
-    .required('Please enter deposit detail'),
-  houseMateDetailOption: Yup.number().integer()
-    .required('Please select a option'),
-  houseMateGender: Yup.string()
-    .required('Please select a gender'),
-  houseMateAge: Yup.string()
-    .required('Please select a age'),
-  houseMateOccupation: Yup.string()
-    .required('Please select an occupation'),
-  occupationDropdownValue: Yup.string()
-    .required('Please select a value'),
-  houseMateSmoking: Yup.number().integer()
-    .required('Please select an option'),
-  houseMateExpect: Yup.string()
-    .required('Please select an option'),
-  environment: Yup.string()
-    .required('Please select an option')
-});
+  const HouseShareSchema = Yup.object().shape({
+    addType: Yup.number().integer(),
+    id: Yup.number().integer(),
+    numOccupants: Yup.number().integer()
+      .required('Please select the current number of occupants'),
+    houseShareHouseType: Yup.string()
+      .required('Please select a property type'),
+    houseSharePrice: Yup.string()
+      .required('Please select a price'),
+    houseShareRoomType: Yup.string()
+      .required('Please select a room type'),
+    houseShareHouseType: Yup.string()
+      .required('Please select a house type'),
+    houseShareEnsuite: Yup.number().integer()
+      .required('Please select a value'),
+    bio: Yup.string(),
+    referenceRequired: Yup.number().integer()
+      .required('Please select an option'),
+    deposit: Yup.string()
+      .required('Please enter deposit detail'),
+    houseMateDetailOption: Yup.number().integer()
+      .required('Please select a option'),
+    houseMateGender: Yup.string()
+      .required('Please select a gender'),
+    houseMateAge: Yup.string()
+      .required('Please select a age'),
+    houseMateOccupation: Yup.string()
+      .required('Please select an occupation'),
+    occupationDropdownValue: Yup.string()
+      .required('Please select a value'),
+    houseMateSmoking: Yup.number().integer()
+      .required('Please select an option'),
+    houseMateExpect: Yup.string()
+      .required('Please select an option'),
+    environment: Yup.string()
+      .required('Please select an option')
+  });
 
-const HouseRentalSchema = Yup.object().shape({
-  addType: Yup.string(),
-  numRooms: Yup.string()
-    .required('Please enter the city for the address'),
-  houseRentalHouseType: Yup.string()
-    .required('Please select a house type'),
-  houseRentalPrice: Yup.string()
-    .required('Please select a price'),
-  bio: Yup.string(),
+  const HouseRentalSchema = Yup.object().shape({
+    addType: Yup.string(),
+    numRooms: Yup.string()
+      .required('Please enter the city for the address'),
+    houseRentalHouseType: Yup.string()
+      .required('Please select a house type'),
+    houseRentalPrice: Yup.string()
+      .required('Please select a price'),
+    bio: Yup.string(),
 
-  tenantDetailOption: Yup.string()
-    .required('Please select an option'),
-  tenantGender: Yup.string()
-    .required('Please select a gender'),
-  tenantAgeBracket: Yup.string()
-    .required('Please select an age bracket'),
-  tenantOccupation: Yup.string()
-    .required('Please select a occupation'),
-  occupationDropdownValue: Yup.string()
-    .required('Please select a value'),
-  tenantSmoking: Yup.string()
-    .required('Please select an option'),
-  referenceRequired: Yup.string()
-    .required('Please select an option'),
-  deposit: Yup.string()
-    .required('Please deposit details')
-});
+    tenantDetailOption: Yup.string()
+      .required('Please select an option'),
+    tenantGender: Yup.string()
+      .required('Please select a gender'),
+    tenantAgeBracket: Yup.string()
+      .required('Please select an age bracket'),
+    tenantOccupation: Yup.string()
+      .required('Please select a occupation'),
+    occupationDropdownValue: Yup.string()
+      .required('Please select a value'),
+    tenantSmoking: Yup.string()
+      .required('Please select an option'),
+    referenceRequired: Yup.string()
+      .required('Please select an option'),
+    deposit: Yup.string()
+      .required('Please deposit details')
+  });
 
-const DigsSchema = Yup.object().shape({
-  addType: Yup.string(),
-  numOccupants: Yup.string()
-    .required('Please enter the city for the address'),
-  digsHouseType: Yup.string()
-    .required('Please select a house type'),
-  digsPrice: Yup.string()
-    .required('Please select a price'),
-  digsDays: Yup.string()
-    .required('Please select an option'),
-  digsMealIncluded: Yup.string()
-    .required('Please select an option'),
-  referenceRequired: Yup.string()
-    .required('Please select an option'),
-  deposit: Yup.string()
-    .required('Please enter deposit detail'),
-  bio: Yup.string(),
-  digsDetailOption: Yup.string()
-    .required('Please select an option'),
-  digsGender: Yup.string()
-    .required('Please select a gender'),
-  digsAge: Yup.string()
-    .required('Please select a age'),
-  digsOccupation: Yup.string()
-    .required('Please select a occupation'),
-  occupationDropdownValue: Yup.string()
-    .required('Please select an option'),
-  digsSmoking: Yup.string()
-    .required('Please select an option')
-});
+  const DigsSchema = Yup.object().shape({
+    addType: Yup.string(),
+    numOccupants: Yup.string()
+      .required('Please enter the city for the address'),
+    digsHouseType: Yup.string()
+      .required('Please select a house type'),
+    digsPrice: Yup.string()
+      .required('Please select a price'),
+    digsDays: Yup.string()
+      .required('Please select an option'),
+    digsMealIncluded: Yup.string()
+      .required('Please select an option'),
+    referenceRequired: Yup.string()
+      .required('Please select an option'),
+    deposit: Yup.string()
+      .required('Please enter deposit detail'),
+    bio: Yup.string(),
+    digsDetailOption: Yup.string()
+      .required('Please select an option'),
+    digsGender: Yup.string()
+      .required('Please select a gender'),
+    digsAge: Yup.string()
+      .required('Please select a age'),
+    digsOccupation: Yup.string()
+      .required('Please select a occupation'),
+    occupationDropdownValue: Yup.string()
+      .required('Please select an option'),
+    digsSmoking: Yup.string()
+      .required('Please select an option')
+  });
 
-console.log(ad);
-const [showForm, setShowForm] = useState(ad.addtype);
+  console.log(ad);
+  const [showForm, setShowForm] = useState(ad.addtype);
 
   const renderApplicationTabContent = () => {
     switch (selectedApplicationTab) {
@@ -1480,14 +1484,18 @@ const [showForm, setShowForm] = useState(ad.addtype);
                       <Text style={styles.addressText}>{ad.eircode}</Text>
                     </View>
                   </View>
-                  <View style= {{flexDirection: 'row', justifyContent: 'space-between', marginTop: 20}}>
-                    <Button mode="contained" style={{flex: 1, marginHorizontal: 5, borderRadius: 0, backgroundColor: 'red'}} onPress={handleDeleteAd}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+                    <Button mode="contained" style={{ flex: 1, marginHorizontal: 5, borderRadius: 0, backgroundColor: 'red' }} onPress={handleDeleteAd}>
                       Delete Ad
                     </Button>
-                    <Button mode="contained" style={{flex: 1, marginHorizontal: 5, borderRadius: 0}} onPress={handleChangeAdState}>
-                      Make Ad Inactive
+                    <Button mode="contained" style={{ flex: 1, marginHorizontal: 5, borderRadius: 0 }} onPress={handleChangeAdState}>
+                      {ad.active === 1 ? (
+                        <Text>Make Ad Inactive</Text>
+                      ) : (
+                        <Text>Activate Ad</Text>
+                      )}
                     </Button>
-                   
+
                     <Snackbar
                       visible={visible}
                       onDismiss={hideDialog}
@@ -1496,9 +1504,9 @@ const [showForm, setShowForm] = useState(ad.addtype);
                         onPress: confirmAction,
                       }}
                     >
-                       {snackbarMessage}
+                      {snackbarMessage}
                     </Snackbar>
-                    
+
                   </View>
                 </View>
 
