@@ -21,7 +21,7 @@ const Profile = ({ navigation, route }) => {
   const video = React.useRef(null);
   const [status, setStatus] = useState({});
 
-  const { signedInUserDetails,SetSignedInProfileImage } = useAppContext();
+  const { signedInUserDetails, SetSignedInProfileImage } = useAppContext();
 
   const [uID, setUID] = useState(signedInUserDetails.useridentifier);
 
@@ -112,7 +112,7 @@ const Profile = ({ navigation, route }) => {
               ref={video}
               style={styles.video}
               source={{ //
-               // uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+                // uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
                 uri: 'https://firebasestorage.googleapis.com/v0/b/roomie-a0158.appspot.com/o/video%2FWIN_20240403_10_34_28_Pro.mp4?alt=media&token=29242532-6241-442a-bc6c-2783c4f2f5ea',
               }}
               useNativeControls
@@ -134,7 +134,7 @@ const Profile = ({ navigation, route }) => {
         return null;
     }
   };
-  
+
   return (
 
     <ScrollView>
@@ -177,7 +177,7 @@ const Profile = ({ navigation, route }) => {
                     </Button>
                   )}
 
-                  <View style={{  flexDirection: 'row', marginVertical: 10 }}>
+                  <View style={{ flexDirection: 'row', marginVertical: 10 }}>
                     <Button
                       icon="text-box"
                       mode="outlined"
@@ -220,22 +220,22 @@ const Profile = ({ navigation, route }) => {
                 <Title style={styles.username}>Active ads</Title>
                 <View >
 
-                  {userAdDetail.length == 0 ? (
-                    <Card elevation={5} style={[formStyles.card, { marginTop: 30, paddingVertical: 40 }]}>
-                      <Card.Content>
-                        <View style={styles.noResultsContainer}>
-                          <Text style={styles.noResultsText}>No results found</Text>
-                        </View>
-                      </Card.Content>
-                    </Card>
+                  {userAdDetail.filter(ad => ad.active === 1).length === 0 ? (
+                    <View style={{ padding: 10, marginVertical: 15 }}>
+                      <Text style={{ fontSize: 16, textAlign: 'center' }}>No Active Ads</Text>
+                    </View>
                   ) : (
                     <View>
                       <FlatList
                         data={userAdDetail.filter(ad => ad.active === 1)}
                         renderItem={renderAds}
-                        keyExtractor={(userAdDetail) => userAdDetail.addid.toString()}
+                        keyExtractor={item => item.addid.toString()}
                       />
+                    </View>
+                  )}
 
+                  {userAdDetail.filter(ad => ad.active === 0).length > 0 ? (
+                    <View>
                       <Title style={styles.username}>Inactive ads</Title>
                       <View style={formStyles.iconContainer}>
                         <IconButton
@@ -245,30 +245,29 @@ const Profile = ({ navigation, route }) => {
                           style={formStyles.icon}
                         />
                       </View>
-                      {iconDirection == 'chevron-down' ? (
-                        <View>
-                          <FlatList
-                            data={userAdDetail.filter(ad => ad.active === 0)}
-                            renderItem={renderAds}
-                            keyExtractor={(userAdDetail) => userAdDetail.addid.toString()}
-                          />
-                        </View>
-                      ) : (
-                        <View></View>
+                      {iconDirection === 'chevron-down' && (
+                        <FlatList
+                          data={userAdDetail.filter(ad => ad.active === 0)}
+                          renderItem={renderAds}
+                          keyExtractor={item => item.addid.toString()}
+                        />
                       )}
                     </View>
+                  ) : (
+                    <View></View>
                   )}
 
                 </View>
+                  
 
 
-              </Card.Content>
-            </Card>
-          </>
+            </Card.Content>
+          </Card>
+      </>
         )}
 
-      </View>
-    </ScrollView>
+    </View>
+    </ScrollView >
   )
 }
 
@@ -279,9 +278,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   vidContainer: {
-    
+
     justifyContent: 'center',
- 
+
   },
   video: {
     alignSelf: 'center',
@@ -300,7 +299,7 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 24,
-   
+
     textAlign: 'center',
   },
   selectedTab: {

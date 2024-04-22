@@ -83,16 +83,19 @@ const ViewUserProfile = ({ navigation, route }) => {
             rentalUID: generateUUID()
         }
 
-        setIsLoading(true);
+       
+        setUpdating(true);
         let url = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/AcceptRequest';
     
          let res = await callLambdaFunction(obj, url); // working 
          console.log(res);
-        setIsLoading(false);
-
-        // recipientID, name, uID, pic, chatID, notificationType
+   
 
          writeNotification(uID, signedInUserDetails.firstname + ' ' + signedInUserDetails.secondname, signedInUserDetails.useridentifier, p.imageurl, adID, 3)
+         setUpdating(false);
+         navigation.navigate('_Profile', { // replaces navigation, so can open new chat
+         
+          });
 
     }
 

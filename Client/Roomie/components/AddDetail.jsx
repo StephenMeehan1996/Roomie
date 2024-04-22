@@ -472,7 +472,7 @@ const AddDetail = ({ navigation, route }) => {
                     ]}
                     onPress={() => setSelectedTab('Tab3')}
                   >
-                    <Text>Contact</Text>
+                    <Text>Apply</Text>
                   </TouchableOpacity>
                 </View>
               )}

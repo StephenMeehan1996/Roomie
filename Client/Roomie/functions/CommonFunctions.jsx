@@ -427,6 +427,8 @@ export const returnNotificationMessage = (notType, name) =>{
       return `${name} has accepted your ad application`
     case 4: 
       return `${name} has left you a review`
+    case 5: 
+      return `${name} has confirmed your rental request`
   }
 }
 

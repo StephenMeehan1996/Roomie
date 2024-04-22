@@ -7,7 +7,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { returnAdTypeText, references, smoking } from '../functions/CommonFunctions';
 import useFetchData from '../functions/GetAPI';
-import { convertToDateTimeString } from '../functions/CommonFunctions';
+import { convertToDateTimeString, writeNotification } from '../functions/CommonFunctions';
 import styles from '../styles/common.style';
 import callLambdaFunction from '../functions/PostAPI';
 import formStyles from '../styles/formStyle.style';
@@ -28,7 +28,7 @@ const RentalHistory = ({ navigation, route }) => {
     //npm i react-native-ratings
     const [selectedTab, setSelectedTab] = useState('Tab1');
     const [selectedParentTab, setSelectedParentTab] = useState('Tab1');
-    const { signedInUserDetails, profileImage } = useAppContext();
+    const {signedInUserDetails, profileImage } = useAppContext();
     const [rating, setRating] = useState(0);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -53,17 +53,19 @@ const RentalHistory = ({ navigation, route }) => {
         setRating(rating);
     }
 
-    const confirmRental = async (id) => {
+    const confirmRental = async (id, user) => {
+        setIsLoading(true)
         const update = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieAcceptStatus?id=${id}`);
 
         console.log(update)
+  
 
         const getHistory = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetRentalHistory?id=${signedInUserDetails.useridentifier}`);
         console.log(getHistory);
         setRentalHistory(getHistory);
+        writeNotification(user, signedInUserDetails.firstname + ' ' + signedInUserDetails.secondname, signedInUserDetails.useridentifier, profileImage.imageurl,0, 5)
+        setIsLoading(false)
     }
-
-  
 
     const openReviewForm = (name, pic, id) => {
 
@@ -104,13 +106,22 @@ const RentalHistory = ({ navigation, route }) => {
 
         values.authorID = signedInUserDetails.useridentifier;
         values.subjectID = reviewFormUID;
+        alert('hey')
+        console.log(values);
         setIsLoading(true);
         let url = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/review';
     
-         let res = await callLambdaFunction(values, url); // working 
-         console.log(res);
+        let res = await callLambdaFunction(values, url); // working 
+        console.log(res);
+        
+        console.log(name);
+        console.log(values.subjectID)
+
+        writeNotification(values.subjectID, signedInUserDetails.firstname + ' ' + signedInUserDetails.secondname, signedInUserDetails.useridentifier, profileImage.imageurl,0, 4)
+
         setIsLoading(false);
         setShowForm(false);
+      
     }
 
     const ReviewSchema = Yup.object().shape({
@@ -125,7 +136,6 @@ const RentalHistory = ({ navigation, route }) => {
     });
 
     const renderHistory = ({ item }) => {
-
         return (
             <View>
                 {item.status === 0 ? (
@@ -149,7 +159,7 @@ const RentalHistory = ({ navigation, route }) => {
                             <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 10 }}>
                                 <TouchableOpacity
                                     style={[styles2.confirmButton, selected === 'confirm' && styles2.selected]}
-                                    onPress={() => confirmRental(item.rentalhistoryuid)}
+                                    onPress={() => confirmRental(item.rentalhistoryuid, item.authoridentifier)}
                                 >
                                     <AntDesign name="check" size={22} color={'white'} />
                                     <Text style={[styles2.selectedText]}>Confirm</Text>
