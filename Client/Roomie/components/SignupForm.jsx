@@ -48,6 +48,7 @@ const SignupSchema = Yup.object().shape({
   smoke: Yup.string()
     .notOneOf(['Select an option'], 'Please select a value')
     .required('Please select a value'),
+  tagline: Yup.string(),
   profilePicURL: Yup.string(),
   intoVideoURL: Yup.string(),
   shareName: Yup.string()
@@ -176,6 +177,7 @@ const SignUpForm = ({ navigation }) => {
           bio: 'Passionate explorer navigating the journey of life 🌍. Enthusiastic about technology, art, and the beauty of everyday moments. 🎨✨ Coffee lover, bookworm, and aspiring storyteller',
           occupation: 'Student',
           occupationDropdownValue: '1st',
+          tagline: 'Social Software Developer',
           smoke: 1,
           userIdentifier: '',
           profilePicURL: '',
@@ -301,6 +303,7 @@ const SignUpForm = ({ navigation }) => {
                         onChangeText={handleChange('password')}
                         value={values.password}
                         onBlur={() => setFieldTouched('password')}
+                        secureTextEntry
 
                       />
                       {touched.password && errors.password && (
@@ -318,6 +321,7 @@ const SignUpForm = ({ navigation }) => {
                         onChangeText={handleChange('confirmPassword')}
                         value={values.confirmPassword}
                         onBlur={() => setFieldTouched('confirmPassword')}
+                        secureTextEntry
                       />
                       {touched.confirmPassword && errors.confirmPassword && (
                         <View>
@@ -540,6 +544,17 @@ const SignUpForm = ({ navigation }) => {
                     {touched.smoke && errors.smoke && (
                       <Text style={styles.errorTxt}>{errors.smoke}</Text>
                     )}
+                  </View>
+
+                  <View style={styles.lineInput}>
+                    <Text style={styles.label}>Tagline</Text>
+                    <TextInput
+                      style={[styles.input, styles.singleLineInput, {width: 225}]}
+                      placeholder="Enter tagline"
+                      onChangeText={handleChange('tagline')}
+                      value={values.tagline}
+                      onBlur={() => setFieldTouched('tagline')}
+                    />
                   </View>
                   
                  

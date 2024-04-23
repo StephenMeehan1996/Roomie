@@ -24,21 +24,23 @@ const RentalPreferencesForm = ({ navigation, route }) => {
   const auth = FIREBASE_AUTH;
   const { firebaseUser, setFirebaseUser } = useAppContext();
 
-  const steps = ['Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5', 'Step 6', 'Step 7'];
+  const steps = ['Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5', 'Step 6', 'Step 7','Step 8'];
 
-  const [currentStep, setCurrentStep] = useState(6);
+  const [currentStep, setCurrentStep] = useState(5);
 
   const onPressNext = () => {
     setCurrentStep(currentStep + 1);
   };
 
   const onPressPrevious = () => {
-    setCurrentStep(currentStep - 1);
+    if (currentStep == 5)
+      navigation.goBack()
+    else
+      setCurrentStep(currentStep - 1);
+
+
   };
 
-  // {uploading? <View style={{marginBottom: 10}}><ActivityIndicator size="large" color="#0000ff"/></View>
-  // : <>
-  // </>}
 
   const insertUser = async (formData) => {
     let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/user';
@@ -118,6 +120,8 @@ const RentalPreferencesForm = ({ navigation, route }) => {
       formsToCombine.selectedRentalPref = formsToCombine.selectedRentalPref.map(item => `'${item}'`).join(', ');
       formsToCombine.userIdentifier = generateUUID();
 
+      console.log(formsToCombine)
+
 
       const r = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
       console.log(r);
@@ -166,7 +170,7 @@ const RentalPreferencesForm = ({ navigation, route }) => {
         {({ values, errors, touched, handleChange, setFieldTouched, setFieldValue, isValid, handleSubmit }) => (
 
           <View style={styles.container}>
-            <Card elevation={5} style={[styles.card,{paddingHorizontal: 15}]}>
+            <Card elevation={5} style={[styles.card, { paddingHorizontal: 15 }]}>
               <Card.Content>
                 <View style={styles.header}>
                   <Title style={styles.title}>Rental Preferences</Title>
@@ -180,361 +184,411 @@ const RentalPreferencesForm = ({ navigation, route }) => {
                 </View>
 
                 <View style={styles2.buttonContainer}>
-                    <StepIndicator
-                      stepCount={steps.length}
-                      currentPosition={currentStep}
-                      pulse={false}
-                      customStyles={stepIndicatorStyles}
-                    />
+                  <StepIndicator
+                    stepCount={steps.length}
+                    currentPosition={currentStep}
+                    pulse={false}
+                    customStyles={stepIndicatorStyles}
+                  />
 
-                  </View>
+                </View>
               </Card.Content>
             </Card>
+            {currentStep === 5 && (
+              <View>
 
-            <View>
-              {isFormVisible('House Share') && (
-                // Render this view when the title is in the array
-                <Card elevation={5} style={styles.card}>
-                  <Card.Content>
+                {isFormVisible('House Share') && (
+                  // Render this view when the title is in the array
+                  <Card elevation={5} style={styles.card}>
+                    <Card.Content>
 
-                    <Title style={styles.title}>House Share Preferences</Title>
-                    <Text style={styles.label}>Price Range:</Text>
-                    <View style={styles.sameLineContainer}>
-                      <View style={styles.lineInput}>
-                        <Text style={styles.label}>Min:</Text>
-                        <Picker
-                          style={styles.input}
-                          selectedValue={values.houseSharePriceRangeMin}
-                          onValueChange={handleChange('houseSharePriceRangeMin')}
-                          onBlur={() => setFieldTouched('houseSharePriceRangeMin')}
-                        >
-                          {priceRange.map((option, index) => (
-                            <Picker.Item key={index} label={option.label} value={option.value} />
-                          ))}
-                        </Picker>
-                        {touched.houseSharePriceRangeMin && errors.houseSharePriceRangeMin && (
-                          <Text style={styles.errorTxt}>{errors.houseSharePriceRangeMin}</Text>
-                        )}
+                      <Title style={styles.title}>House Share Preferences</Title>
+                      <Text style={styles.label}>Price Range:</Text>
+                      <View style={styles.sameLineContainer}>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>Min:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.houseSharePriceRangeMin}
+                            onValueChange={handleChange('houseSharePriceRangeMin')}
+                            onBlur={() => setFieldTouched('houseSharePriceRangeMin')}
+                          >
+                            {priceRange.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.houseSharePriceRangeMin && errors.houseSharePriceRangeMin && (
+                            <Text style={styles.errorTxt}>{errors.houseSharePriceRangeMin}</Text>
+                          )}
+                        </View>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>Max:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.houseSharePriceRangeMax}
+                            onValueChange={handleChange('houseSharePriceRangeMax')}
+                            onBlur={() => setFieldTouched('houseSharePriceRangeMax')}
+                          >
+                            {priceRange.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.houseSharePriceRangeMax && errors.houseSharePriceRangeMax && (
+                            <Text style={styles.errorTxt}>{errors.houseSharePriceRangeMax}</Text>
+                          )}
+                        </View>
                       </View>
-                      <View style={styles.lineInput}>
-                        <Text style={styles.label}>Max:</Text>
-                        <Picker
-                          style={styles.input}
-                          selectedValue={values.houseSharePriceRangeMax}
-                          onValueChange={handleChange('houseSharePriceRangeMax')}
-                          onBlur={() => setFieldTouched('houseSharePriceRangeMax')}
-                        >
-                          {priceRange.map((option, index) => (
-                            <Picker.Item key={index} label={option.label} value={option.value} />
-                          ))}
-                        </Picker>
-                        {touched.houseSharePriceRangeMax && errors.houseSharePriceRangeMax && (
-                          <Text style={styles.errorTxt}>{errors.houseSharePriceRangeMax}</Text>
-                        )}
-                      </View>
-                    </View>
 
-                    <View style={styles.sameLineContainer}>
-                      <View style={styles.lineInput}>
-                        <Text style={styles.label}>Room Type:</Text>
-                        <Picker
-                          style={styles.input}
-                          selectedValue={values.houseShareRoomType}
-                          onValueChange={handleChange('houseShareRoomType')}
-                          onBlur={() => setFieldTouched('houseShareRoomType')}
-                        >
-                          {roomType.map((option, index) => (
-                            <Picker.Item key={index} label={option.label} value={option.value} />
-                          ))}
-                        </Picker>
-                        {touched.houseShareRoomType && errors.houseShareRoomType && (
-                          <Text style={styles.errorTxt}>{errors.houseShareRoomType}</Text>
-                        )}
+                      <View style={styles.sameLineContainer}>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>Room Type:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.houseShareRoomType}
+                            onValueChange={handleChange('houseShareRoomType')}
+                            onBlur={() => setFieldTouched('houseShareRoomType')}
+                          >
+                            {roomType.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.houseShareRoomType && errors.houseShareRoomType && (
+                            <Text style={styles.errorTxt}>{errors.houseShareRoomType}</Text>
+                          )}
+                        </View>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>House Type:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.houseShareHouseType}
+                            onValueChange={handleChange('houseShareHouseType')}
+                            onBlur={() => setFieldTouched('houseShareHouseType')}
+                          >
+                            {houseType.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.houseShareHouseType && errors.houseShareHouseType && (
+                            <Text style={styles.errorTxt}>{errors.houseShareHouseType}</Text>
+                          )}
+                        </View>
                       </View>
-                      <View style={styles.lineInput}>
-                        <Text style={styles.label}>House Type:</Text>
-                        <Picker
-                          style={styles.input}
-                          selectedValue={values.houseShareHouseType}
-                          onValueChange={handleChange('houseShareHouseType')}
-                          onBlur={() => setFieldTouched('houseShareHouseType')}
-                        >
-                          {houseType.map((option, index) => (
-                            <Picker.Item key={index} label={option.label} value={option.value} />
-                          ))}
-                        </Picker>
-                        {touched.houseShareHouseType && errors.houseShareHouseType && (
-                          <Text style={styles.errorTxt}>{errors.houseShareHouseType}</Text>
-                        )}
-                      </View>
-                    </View>
 
-                    <View style={styles.lineInput}>
-                      <Text style={styles.label}>Ensuite</Text>
-                      <Picker
-                        style={[styles.input, styles.singleLineInput]}
-                        selectedValue={values.houseShareEnsuite}
-                        onValueChange={handleChange('houseShareEnsuite')}
-                        onBlur={() => setFieldTouched('houseShareEnsuite')}
-                      >
-                        {yesNO.map((option, index) => (
-                          <Picker.Item key={index} label={option.label} value={option.value} />
-                        ))}
-                      </Picker>
-                      {touched.houseShareEnsuite && errors.houseShareEnsuite && (
-                        <Text style={styles.errorTxt}>{errors.houseShareEnsuite}</Text>
-                      )}
-                    </View>
-
-                    <View style={styles.sameLineContainer}>
                       <View style={styles.lineInput}>
-                        <Text style={styles.label}>House Expectations:</Text>
+                        <Text style={styles.label}>Ensuite</Text>
                         <Picker
-                          style={styles.input}
-                          selectedValue={values.houseMateExpect}
-                          onValueChange={handleChange('houseMateExpect')}
-                          onBlur={() => setFieldTouched('houseMateExpect')}
-                        >
-                          {houseMatExpectations.map((option, index) => (
-                            <Picker.Item key={index} label={option.label} value={option.value} />
-                          ))}
-                        </Picker>
-                        {touched.houseMateExpect && errors.houseMateExpect && (
-                          <Text style={styles.errorTxt}>{errors.houseMateExpect}</Text>
-                        )}
-                      </View>
-                      <View style={styles.lineInput}>
-                        <Text style={styles.label}>Environment:</Text>
-                        <Picker
-                          style={styles.input}
-                          selectedValue={values.environment}
-                          onValueChange={handleChange('environment')}
-                          onBlur={() => setFieldTouched('environment')}
-                        >
-                          {environmentOptions.map((option, index) => (
-                            <Picker.Item key={index} label={option.label} value={option.value} />
-                          ))}
-                        </Picker>
-                        {touched.environment && errors.environment && (
-                          <Text style={styles.errorTxt}>{errors.environment}</Text>
-                        )}
-                      </View>
-                    </View>
-
-                  </Card.Content>
-                </Card>
-              )}
-            </View>
-
-
-            <View>
-              {isFormVisible('House Rental') && (
-                // Render this view when the title is in the array
-                <Card elevation={5} style={styles.card}>
-                  <Card.Content>
-                    <Title style={styles.title}>House Rental Preferences</Title>
-                    <Text style={styles.label}>Price Range:</Text>
-                    <View style={styles.sameLineContainer}>
-                      <View style={styles.lineInput}>
-                        <Text style={styles.label}>Min:</Text>
-                        <Picker
-                          style={styles.input}
-                          selectedValue={values.houseRentalPriceRangeMin}
-                          onValueChange={handleChange('houseRentalPriceRangeMin')}
-                          onBlur={() => setFieldTouched('houseRentalPriceRangeMin')}
-                        >
-                          {priceRange.map((option, index) => (
-                            <Picker.Item key={index} label={option.label} value={option.value} />
-                          ))}
-                        </Picker>
-                        {touched.houseRentalPriceRangeMin && errors.houseRentalPriceRangeMin && (
-                          <Text style={styles.errorTxt}>{errors.houseRentalPriceRangeMin}</Text>
-                        )}
-                      </View>
-                      <View style={styles.lineInput}>
-                        <Text style={styles.label}>Max:</Text>
-                        <Picker
-                          style={styles.input}
-                          selectedValue={values.houseRentalPriceRangeMax}
-                          onValueChange={handleChange('houseRentalPriceRangeMax')}
-                          onBlur={() => setFieldTouched('houseRentalPriceRangeMax')}
-                        >
-                          {priceRange.map((option, index) => (
-                            <Picker.Item key={index} label={option.label} value={option.value} />
-                          ))}
-                        </Picker>
-                        {touched.houseRentalPriceRangeMax && errors.houseRentalPriceRangeMax && (
-                          <Text style={styles.errorTxt}>{errors.houseRentalPriceRangeMax}</Text>
-                        )}
-                      </View>
-                    </View>
-
-                    <View style={styles.sameLineContainer}>
-                      <View style={styles.lineInput}>
-                        <Text style={styles.label}>Num Rooms:</Text>
-                        <Picker
-                          style={styles.input}
-                          selectedValue={values.numRooms}
-                          onValueChange={handleChange('numRooms')}
-                          onBlur={() => setFieldTouched('numRooms')}
-                        >
-                          {number.map((option, index) => (
-                            <Picker.Item key={index} label={option.label} value={option.value} />
-                          ))}
-                        </Picker>
-                        {touched.numRooms && errors.numRooms && (
-                          <Text style={styles.errorTxt}>{errors.numRooms}</Text>
-                        )}
-                      </View>
-                      <View style={styles.lineInput}>
-                        <Text style={styles.label}>House Type:</Text>
-                        <Picker
-                          style={styles.input}
-                          selectedValue={values.houseRentalHouseType}
-                          onValueChange={handleChange('houseRentalHouseType')}
-                          onBlur={() => setFieldTouched('houseRentalHouseType')}
-                        >
-                          {houseType.map((option, index) => (
-                            <Picker.Item key={index} label={option.label} value={option.value} />
-                          ))}
-                        </Picker>
-                        {touched.houseRentalHouseType && errors.houseRentalHouseType && (
-                          <Text style={styles.errorTxt}>{errors.houseRentalHouseType}</Text>
-                        )}
-                      </View>
-                    </View>
-                  </Card.Content>
-                </Card>
-              )}
-            </View>
-
-            <View>
-              {isFormVisible('Digs') && (
-                // Render this view when the title is in the array
-                <Card elevation={5} style={styles.card}>
-                  <Card.Content>
-                    <Title style={styles.title}>Digs Preferences</Title>
-                    <Text style={styles.label}>Price Range:</Text>
-                    <View style={styles.sameLineContainer}>
-                      <View style={styles.lineInput}>
-                        <Text style={styles.label}>Min:</Text>
-                        <Picker
-                          style={styles.input}
-                          selectedValue={values.digsPriceRangeMin}
-                          onValueChange={handleChange('digsPriceRangeMin')}
-                          onBlur={() => setFieldTouched('digsPriceRangeMin')}
-                        >
-                          {priceRange.map((option, index) => (
-                            <Picker.Item key={index} label={option.label} value={option.value} />
-                          ))}
-                        </Picker>
-                        {touched.digsPriceRangeMin && errors.digsPriceRangeMin && (
-                          <Text style={styles.errorTxt}>{errors.digsPriceRangeMin}</Text>
-                        )}
-                      </View>
-                      <View style={styles.lineInput}>
-                        <Text style={styles.label}>Max:</Text>
-                        <Picker
-                          style={styles.input}
-                          selectedValue={values.digsPriceRangeMax}
-                          onValueChange={handleChange('digsPriceRangeMax')}
-                          onBlur={() => setFieldTouched('digsPriceRangeMax')}
-                        >
-                          {priceRange.map((option, index) => (
-                            <Picker.Item key={index} label={option.label} value={option.value} />
-                          ))}
-                        </Picker>
-                        {touched.digsPriceRangeMax && errors.digsPriceRangeMax && (
-                          <Text style={styles.errorTxt}>{errors.digsPriceRangeMax}</Text>
-                        )}
-                      </View>
-                    </View>
-
-                    <View style={styles.sameLineContainer}>
-                      <View style={styles.lineInput}>
-                        <Text style={styles.label}>Room Type:</Text>
-                        <Picker
-                          style={styles.input}
-                          selectedValue={values.digsRoomType}
-                          onValueChange={handleChange('digsRoomType')}
-                          onBlur={() => setFieldTouched('digsRoomType')}
-                        >
-                          {roomType.map((option, index) => (
-                            <Picker.Item key={index} label={option.label} value={option.value} />
-                          ))}
-                        </Picker>
-                        {touched.digsRoomType && errors.digsRoomType && (
-                          <Text style={styles.errorTxt}>{errors.digsRoomType}</Text>
-                        )}
-                      </View>
-                      <View style={styles.lineInput}>
-                        <Text style={styles.label}>House Type:</Text>
-                        <Picker
-                          style={styles.input}
-                          selectedValue={values.digsHouseType}
-                          onValueChange={handleChange('digsHouseType')}
-                          onBlur={() => setFieldTouched('digsHouseType')}
-                        >
-                          {houseType.map((option, index) => (
-                            <Picker.Item key={index} label={option.label} value={option.value} />
-                          ))}
-                        </Picker>
-                        {touched.digsHouseType && errors.digsHouseType && (
-                          <Text style={styles.errorTxt}>{errors.digsHouseType}</Text>
-                        )}
-                      </View>
-                    </View>
-
-                    <View style={styles.sameLineContainer}>
-                      <View style={styles.lineInput}>
-                        <Text style={styles.label}>Days:</Text>
-                        <Picker
-                          style={styles.input}
-                          selectedValue={values.digsDays}
-                          onValueChange={handleChange('digsDays')}
-                          onBlur={() => setFieldTouched('digsDays')}
-                        >
-                          {days.map((option, index) => (
-                            <Picker.Item key={index} label={option.label} value={option.value} />
-                          ))}
-                        </Picker>
-                        {touched.digsDays && errors.digsDays && (
-                          <Text style={styles.errorTxt}>{errors.digsDays}</Text>
-                        )}
-                      </View>
-                      <View style={styles.lineInput}>
-                        <Text style={styles.label}>Meals Included:</Text>
-                        <Picker
-                          style={styles.input}
-                          selectedValue={values.digsMealIncluded}
-                          onValueChange={handleChange('digsMealIncluded')}
-                          onBlur={() => setFieldTouched('digsMealIncluded')}
+                          style={[styles.input, styles.singleLineInput]}
+                          selectedValue={values.houseShareEnsuite}
+                          onValueChange={handleChange('houseShareEnsuite')}
+                          onBlur={() => setFieldTouched('houseShareEnsuite')}
                         >
                           {yesNO.map((option, index) => (
                             <Picker.Item key={index} label={option.label} value={option.value} />
                           ))}
                         </Picker>
-                        {touched.digsMealIncluded && errors.digsMealIncluded && (
-                          <Text style={styles.errorTxt}>{errors.digsDays}</Text>
+                        {touched.houseShareEnsuite && errors.houseShareEnsuite && (
+                          <Text style={styles.errorTxt}>{errors.houseShareEnsuite}</Text>
                         )}
                       </View>
-                    </View>
-                    {loading ? <View style={styles.activityContainer}><ActivityIndicator size="large" color="#0000ff" /></View>
-                      : <>
-                      </>}
-                    <Button
-                      mode="contained"
-                      color="#FF5733"
-                      labelStyle={styles.buttonLabel}
-                      disabled={!isValid}
-                      onPress={handleSubmit}>
-                      Create Account
-                    </Button>
-                  </Card.Content>
-                </Card>
-              )}
-            </View>
+
+                      <View style={styles.sameLineContainer}>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>House Expectations:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.houseMateExpect}
+                            onValueChange={handleChange('houseMateExpect')}
+                            onBlur={() => setFieldTouched('houseMateExpect')}
+                          >
+                            {houseMatExpectations.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.houseMateExpect && errors.houseMateExpect && (
+                            <Text style={styles.errorTxt}>{errors.houseMateExpect}</Text>
+                          )}
+                        </View>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>Environment:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.environment}
+                            onValueChange={handleChange('environment')}
+                            onBlur={() => setFieldTouched('environment')}
+                          >
+                            {environmentOptions.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.environment && errors.environment && (
+                            <Text style={styles.errorTxt}>{errors.environment}</Text>
+                          )}
+                        </View>
+                      </View>
+
+                      <View style={styles2.buttonContainer}>
+                        <TouchableOpacity
+                          style={[styles2.b2, { marginRight: 10 }]}
+                          onPress={onPressPrevious}
+                          disabled={currentStep === 0}
+                        >
+                          <Text style={styles2.buttonText}>Previous</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={styles2.b2}
+                          onPress={onPressNext}
+                          disabled={currentStep === steps.length - 1}
+                        >
+                          <Text style={styles2.buttonText}>Next</Text>
+                        </TouchableOpacity>
+                      </View>
+
+                    </Card.Content>
+                  </Card>
+                )}
+              </View>
+            )}
+
+            {currentStep === 6 && (
+              <View>
+                {isFormVisible('House Rental') && (
+                  // Render this view when the title is in the array
+                  <Card elevation={5} style={styles.card}>
+                    <Card.Content>
+                      <Title style={styles.title}>House Rental Preferences</Title>
+                      <Text style={styles.label}>Price Range:</Text>
+                      <View style={styles.sameLineContainer}>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>Min:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.houseRentalPriceRangeMin}
+                            onValueChange={handleChange('houseRentalPriceRangeMin')}
+                            onBlur={() => setFieldTouched('houseRentalPriceRangeMin')}
+                          >
+                            {priceRange.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.houseRentalPriceRangeMin && errors.houseRentalPriceRangeMin && (
+                            <Text style={styles.errorTxt}>{errors.houseRentalPriceRangeMin}</Text>
+                          )}
+                        </View>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>Max:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.houseRentalPriceRangeMax}
+                            onValueChange={handleChange('houseRentalPriceRangeMax')}
+                            onBlur={() => setFieldTouched('houseRentalPriceRangeMax')}
+                          >
+                            {priceRange.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.houseRentalPriceRangeMax && errors.houseRentalPriceRangeMax && (
+                            <Text style={styles.errorTxt}>{errors.houseRentalPriceRangeMax}</Text>
+                          )}
+                        </View>
+                      </View>
+
+                      <View style={styles.sameLineContainer}>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>Num Rooms:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.numRooms}
+                            onValueChange={handleChange('numRooms')}
+                            onBlur={() => setFieldTouched('numRooms')}
+                          >
+                            {number.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.numRooms && errors.numRooms && (
+                            <Text style={styles.errorTxt}>{errors.numRooms}</Text>
+                          )}
+                        </View>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>House Type:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.houseRentalHouseType}
+                            onValueChange={handleChange('houseRentalHouseType')}
+                            onBlur={() => setFieldTouched('houseRentalHouseType')}
+                          >
+                            {houseType.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.houseRentalHouseType && errors.houseRentalHouseType && (
+                            <Text style={styles.errorTxt}>{errors.houseRentalHouseType}</Text>
+                          )}
+                        </View>
+                      </View>
+                      <View style={styles2.buttonContainer}>
+                        <TouchableOpacity
+                          style={[styles2.b2, { marginRight: 10 }]}
+                          onPress={onPressPrevious}
+                          disabled={currentStep === 0}
+                        >
+                          <Text style={styles2.buttonText}>Previous</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={styles2.b2}
+                          onPress={onPressNext}
+                          disabled={currentStep === steps.length - 1}
+                        >
+                          <Text style={styles2.buttonText}>Next</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </Card.Content>
+                  </Card>
+                )}
+              </View>
+            )}
+
+            {currentStep === 7 && (
+              <View>
+                {isFormVisible('Digs') && (
+                  // Render this view when the title is in the array
+                  <Card elevation={5} style={styles.card}>
+                    <Card.Content>
+                      <Title style={styles.title}>Digs Preferences</Title>
+                      <Text style={styles.label}>Price Range:</Text>
+                      <View style={styles.sameLineContainer}>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>Min:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.digsPriceRangeMin}
+                            onValueChange={handleChange('digsPriceRangeMin')}
+                            onBlur={() => setFieldTouched('digsPriceRangeMin')}
+                          >
+                            {priceRange.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.digsPriceRangeMin && errors.digsPriceRangeMin && (
+                            <Text style={styles.errorTxt}>{errors.digsPriceRangeMin}</Text>
+                          )}
+                        </View>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>Max:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.digsPriceRangeMax}
+                            onValueChange={handleChange('digsPriceRangeMax')}
+                            onBlur={() => setFieldTouched('digsPriceRangeMax')}
+                          >
+                            {priceRange.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.digsPriceRangeMax && errors.digsPriceRangeMax && (
+                            <Text style={styles.errorTxt}>{errors.digsPriceRangeMax}</Text>
+                          )}
+                        </View>
+                      </View>
+
+                      <View style={styles.sameLineContainer}>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>Room Type:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.digsRoomType}
+                            onValueChange={handleChange('digsRoomType')}
+                            onBlur={() => setFieldTouched('digsRoomType')}
+                          >
+                            {roomType.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.digsRoomType && errors.digsRoomType && (
+                            <Text style={styles.errorTxt}>{errors.digsRoomType}</Text>
+                          )}
+                        </View>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>House Type:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.digsHouseType}
+                            onValueChange={handleChange('digsHouseType')}
+                            onBlur={() => setFieldTouched('digsHouseType')}
+                          >
+                            {houseType.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.digsHouseType && errors.digsHouseType && (
+                            <Text style={styles.errorTxt}>{errors.digsHouseType}</Text>
+                          )}
+                        </View>
+                      </View>
+
+                      <View style={styles.sameLineContainer}>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>Days:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.digsDays}
+                            onValueChange={handleChange('digsDays')}
+                            onBlur={() => setFieldTouched('digsDays')}
+                          >
+                            {days.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.digsDays && errors.digsDays && (
+                            <Text style={styles.errorTxt}>{errors.digsDays}</Text>
+                          )}
+                        </View>
+                        <View style={styles.lineInput}>
+                          <Text style={styles.label}>Meals Included:</Text>
+                          <Picker
+                            style={styles.input}
+                            selectedValue={values.digsMealIncluded}
+                            onValueChange={handleChange('digsMealIncluded')}
+                            onBlur={() => setFieldTouched('digsMealIncluded')}
+                          >
+                            {yesNO.map((option, index) => (
+                              <Picker.Item key={index} label={option.label} value={option.value} />
+                            ))}
+                          </Picker>
+                          {touched.digsMealIncluded && errors.digsMealIncluded && (
+                            <Text style={styles.errorTxt}>{errors.digsDays}</Text>
+                          )}
+                        </View>
+                      </View>
+                      {loading ? <View style={styles.activityContainer}><ActivityIndicator size="large" color="#0000ff" /></View>
+                        : <>
+                        </>}
+                      <View style={styles2.buttonContainer}>
+                        <Button
+                          style={[styles2.button, { marginRight: 10 }]}
+                          onPress={onPressPrevious}
+                          disabled={currentStep === 0}
+                        >
+                          <Text style={styles2.buttonText}>Previous</Text>
+                        </Button>
+                        <Button
+                          mode="contained"
+                          color="#FF5733"
+                          labelStyle={styles.buttonLabel}
+                          disabled={!isValid}
+                          style={styles2.button}
+                          onPress={handleSubmit}>
+                            
+                          Create Account
+                        </Button>
+                      </View>
+                    </Card.Content>
+                  </Card>
+                )}
+              </View>
+            )}
           </View>
+
         )}
       </Formik>
     </ScrollView>
