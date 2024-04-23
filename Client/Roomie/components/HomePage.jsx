@@ -471,7 +471,7 @@ const HomePage = ({ navigation, route }) => {
                     ]}
                     onPress={() => nextPage("_manageImages")}
                   >
-                    <Text >Manage Images</Text>
+                    <Text >Manage Media</Text>
 
                   </TouchableOpacity>
                 </View>

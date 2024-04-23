@@ -352,7 +352,6 @@ const ManageProfileImages = ({ navigation, route }) => {
                 </Card.Content>
               </Card>
             </View>
-
           </View>
         );
       case 'Tab2':

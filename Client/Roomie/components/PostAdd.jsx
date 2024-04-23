@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet,Platform,TextInput,Dimensions,TouchableOpacity,Image,ScrollView, SafeAreaView, Alert, FlatList, ActivityIndicator} from 'react-native';
+import { View, Text, StyleSheet, Platform, TextInput, Dimensions, TouchableOpacity, Image, ScrollView, SafeAreaView, Alert, FlatList, ActivityIndicator } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
-import { Avatar, Card, Title, Paragraph, Button,IconButton, Checkbox, RadioButton  } from 'react-native-paper';
+import { Avatar, Card, Title, Paragraph, Button, IconButton, Checkbox, RadioButton } from 'react-native-paper';
 import { launchCameraAsync } from 'expo-image-picker';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import  styles  from '../styles/formStyle.style';
+import styles from '../styles/formStyle.style';
 import callLambdaFunction from '../functions/PostAPI';
 import { generateUUID, returnAdTypeText } from '../functions/CommonFunctions';
 import { useAppContext } from '../Providers/AppContext';
+import StepIndicator from 'react-native-step-indicator';
 
-const PostAdd = ({navigation, route}) => {
+const PostAdd = ({ navigation, route }) => {
 
   const { signedInUserDetails } = useAppContext();
   const [uID, setuID] = useState(signedInUserDetails.useridentifier);
@@ -20,7 +21,17 @@ const PostAdd = ({navigation, route}) => {
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
 
-  const {formData} = route.params;
+  const { formData } = route.params;
+
+  const steps = ['Step 1', 'Step 2', 'Step 3', 'Step 4'];
+
+  const [currentStep, setCurrentStep] = useState(4);
+
+
+
+  const onPressPrevious = () => {
+    setCurrentStep(currentStep - 1);
+  };
 
   console.log(uID);
 
@@ -28,19 +39,19 @@ const PostAdd = ({navigation, route}) => {
   formData.posterID = userID;
 
   const addTypeString = returnAdTypeText(formData.addType);
-  const pickImage = async () =>{
-    
+  const pickImage = async () => {
+
     let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4,3],
-        quality: 1,
-        base64: false,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      base64: false,
     })
     if (!result.canceled) {
       let uri = result.assets[0].uri;
       let filename = generateUUID();
-      const newImage = {uri: uri, filename: filename };
+      const newImage = { uri: uri, filename: filename };
       setSelectedFiles([...selectedFiles, newImage]);
     }
   }
@@ -50,7 +61,7 @@ const PostAdd = ({navigation, route}) => {
     setSelectedFiles(updatedFiles);
   };
 
-  const takeImage = async () =>{
+  const takeImage = async () => {
     let result = await launchCameraAsync()
     if (!result.canceled) {
       setImage(result.assets[0].uri);
@@ -61,23 +72,23 @@ const PostAdd = ({navigation, route}) => {
     // const granted = await PermissionsAndroid.request(
     //   PermissionsAndroid.PERMISSIONS.CAMERA
     // )
-  
+
     // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
     //  // setOpenCamera(true)
-  
-      const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        aspect: [4, 3],
-        base64: true,
-        quality: 1
-      })
-  
-      if (!result.canceled) {
-        setImage(result.assets[0].uri);
-      }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [4, 3],
+      base64: true,
+      quality: 1
+    })
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
     //}
   }
-//{"v_add_id":78}
+  //{"v_add_id":78}
 
   const postAdd = async () => {
     let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/add';
@@ -104,11 +115,11 @@ const PostAdd = ({navigation, route}) => {
 
     uploadFile(generatedID)
   };
- 
-  function imagePosition(file){
-   if(file == selectedFiles[0]){
-    return 1;
-   } 
+
+  function imagePosition(file) {
+    if (file == selectedFiles[0]) {
+      return 1;
+    }
     return 0;
   }
 
@@ -119,38 +130,38 @@ const PostAdd = ({navigation, route}) => {
       setUploading(true);
       const uploadPromises = [];
       const imageArray = [];
-  
+
       for (const file of selectedFiles) {
         try {
           const response = await fetch(file.uri);
           const blob = await response.blob();
           const storageRef = ref(storage, 'images/' + file.filename);
-  
+
           const uploadPromise = new Promise((resolve, reject) => {
             uploadBytes(storageRef, blob)
               .then(async (snapshot) => {
                 console.log('Uploaded a blob or file!');
                 const url = await getDownloadURL(snapshot.ref);
-  
+
                 let imageObj = [generatedID, url, file.filename, imagePosition(file)];
                 imageArray.push(imageObj);
-                resolve(); 
+                resolve();
               })
               .catch((error) => {
                 console.error('Error uploading image:', error);
-                reject(error); 
+                reject(error);
               });
           });
-  
+
           uploadPromises.push(uploadPromise);
         } catch (error) {
           console.error('Error uploading image:', error);
         }
       }
-  
+
       try {
         await Promise.all(uploadPromises);
-        setSelectedFiles([]); 
+        setSelectedFiles([]);
         let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/addimages'; // end point for form post
         await callLambdaFunction(imageArray, signUpUrl); // working 
         setUploading(false);
@@ -164,118 +175,125 @@ const PostAdd = ({navigation, route}) => {
   };
 
   return (
-          <ScrollView>
-            <Card elevation={5} style={styles.card}>
-              <Card.Content>
-                <View style={styles.header}>
-                  <Title style={styles.title}>Add Images</Title>
+    <ScrollView>
+      <Card elevation={5} style={[styles.card, { paddingVertical: 0, borderRadius: 0 }]}>
+        <Card.Content>
+          <View style={[styles.header, { paddingHorizontal: 20 }]}>
+
+            <IconButton
+              icon="arrow-left"
+              mode="text"
+              size={30}
+              style={{ flex: 1, alignItems: 'flex-end' }}
+              onPress={() => navigation.goBack()}>
+            </IconButton>
+          </View>
+
+          <View style={{ marginBottom: 15 }}>
+            <StepIndicator
+              stepCount={steps.length}
+              currentPosition={currentStep}
+              pulse={false}
+              customStyles={stepIndicatorStyles}
+            />
+          </View>
+        </Card.Content>
+      </Card>
+
+      <Card elevation={5} style={styles.card}>
+        <Card.Content>
+          <View>
+            <Title style={styles2.title}>Summary</Title>
+            <View style={[styles2.container, { paddingHorizontal: 10 }]}>
+              <View style={[styles2.column, { marginRight: 50 }]}>
+                <Text style={styles2.boldText}>Ad Detail:</Text>
+                <Text style={styles2.infoText}>Add Type: {addTypeString}</Text>
+                <Text style={styles2.infoText}>Price: £1,300</Text>
+              </View>
+              <View style={styles2.column}>
+                <Text style={styles2.boldText}>Address:</Text>
+                <Text style={styles2.addressText}>{formData.addressLine1}</Text>
+                <Text style={styles2.addressText}>{formData.addressLine2}</Text>
+                <Text style={styles2.addressText}>{formData.county}, {formData.city}</Text>
+              </View>
+            </View>
+          </View>
+        </Card.Content>
+      </Card>
+
+      <Card elevation={5} style={styles.card}>
+        <Card.Content>
+        <Title style={styles2.title}>Image Upload</Title>
+          <View style={{paddingLeft: 10, marginBottom: 15}}>
+         
+            <FlatList
+              data={selectedFiles}
+              keyExtractor={(item, index) => index.toString()}
+              horizontal={false}
+              numColumns={3} // Set the number of columns
+              contentContainerStyle={styles.listContainer}
+              renderItem={({ item }) => (
+                <View key={item.id}>
+                  <Image source={item} style={{ width: 100, height: 100, margin: 5 }} />
                   <IconButton
-                      icon="arrow-left"
-                      mode="text"
-                      size={30}
-                      style={{flex:1,alignItems: 'flex-end'}}
-                      onPress={() => navigation.goBack()}>
+                    icon="trash-can-outline"
+                    size={30}
+                    iconColor="red"
+                    style={{ position: 'absolute', top: -5, right: -5 }}
+                    onPress={() => removeImage(item.uri)}>
                   </IconButton>
                 </View>
-              </Card.Content>
-            </Card>
-           
-              <Card elevation={5} style={styles.card}>
-              <Card.Content>
-                <View>
-                <Title style={styles.title}>Detail Summary</Title>
-                <Text style={styles2.username}>Add Type: {addTypeString}</Text>
-                <Text style={styles2.username}>Price: £1,300</Text>
-                <Text style={[styles2.username, {fontWeight: 'bold'}]}>Address: </Text>
-                <Text style={styles2.username}>{formData.addressLine1}</Text>
-                <Text style={styles2.username}>{formData.addressLine2}</Text>
-                <Text style={styles2.username}>{formData.county}, {formData.city}</Text>
-                </View>
-                <View>
-                  <View style={{ flexDirection: 'row', marginVertical: 10, justifyContent: 'center'}}>
-                  </View>
-                </View>
-                <View>
-                  <View style={{ flexDirection: 'row', marginVertical: 10, justifyContent: 'center'}}>
-                  </View>
-                </View>
-              </Card.Content>
-             </Card>
-            
-              <Card elevation={5} style={styles.card}>
-              <Card.Content>
-                <View>
-                  <FlatList
-                      data={selectedFiles}
-                      keyExtractor={(item, index) => index.toString()}
-                      horizontal={false}
-                      numColumns={3} // Set the number of columns
-                       contentContainerStyle={styles.listContainer}
-                      renderItem={({ item}) => (
-                        <View key={item.id}>
-                          <Image source={item} style={{ width: 100, height: 100, margin: 5 }} />
-                          <IconButton
-                            icon="trash-can-outline"
-                            size={30}
-                            iconColor="red"
-                            style={{position: 'absolute', top: -5, right: -5}}
-                            onPress={() => removeImage(item.uri)}>
-                        </IconButton>
-                       </View>
-                  )}
-                  />
-                </View>
-                <View>
-                <Title style={styles.title}>Image Upload</Title>
-                {uploading? <View style={{marginBottom: 10}}><ActivityIndicator size="large" color="#0000ff"/></View>
-                  : <>
-                  </>}
-                  <View style={{ flexDirection: 'row', marginVertical: 10, justifyContent: 'center'}}>
-                    <Button
-                      mode="contained"
-                      style={{marginRight: 10}} // Use "outlined" for an outlined button
-                      color="#FF5733" // Set your desired button color
-                      labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
-                      onPress={pickImage}>
-                      Pick File
-                  </Button>
-                  <Button
-                      mode="contained" // Use "outlined" for an outlined button
-                      color="#FF5733" // Set your desired button color
-                      labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
-                      onPress={pickImageFromCamera}>
-                      Take Image
-                  </Button>
-          
-                  </View>
-                  <Button
-                      mode="contained" // Use "outlined" for an outlined button
-                      color="#FF5733" // Set your desired button color
-                      labelStyle={styles.buttonLabel} // Apply custom label text style // Apply custom button style
-                      onPress={() => postAdd()}>
-                      Confirm and Post Add
-                  </Button>
-                </View>
-              </Card.Content>
-            </Card>
-           
-          </ScrollView>
+              )}
+            />
+          </View>
+          <View>
+         
+            {uploading ? <View style={{ marginBottom: 10 }}><ActivityIndicator size="large" color="#0000ff" /></View>
+              : <>
+              </>}
+          <View style={styles2.buttonContainer}>
+            <Button
+              style={[styles2.button]}
+              onPress={pickImage}
+              
+            >
+              <Text style={styles2.buttonText}>Select Image</Text>
+            </Button>
+          </View>
+
+          <View style={[styles2.buttonContainer,{marginTop: 20}]}>
+          <Button
+              mode="contained"
+              color="#FF5733"
+              style={[styles2.button,{paddingHorizontal: 20}]}
+              onPress={() => postAdd()}>
+              
+              Create ad
+            </Button>
+          </View>
+          </View>
+        </Card.Content>
+      </Card>
+
+ 
+
+    </ScrollView>
   )
 }
 
 const styles2 = StyleSheet.create({
   selectButton: {
-     borderRadius: 5,
-     width: 200,
-     height: 100,
-     backgroundColor: 'blue',
-     alignItems: 'center',
-     justifyContent: 'center'
+    borderRadius: 5,
+    width: 200,
+    height: 100,
+    backgroundColor: 'blue',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   btnText: {
-     color: '#FFF',
-     fontSize: 18,
-     fontWeight: 'bold'
+    color: '#FFF',
+    fontSize: 18,
+    fontWeight: 'bold'
   },
   activityContainer: {
     flex: 1,
@@ -295,8 +313,83 @@ const styles2 = StyleSheet.create({
   username: {
     fontSize: 18,
     marginTop: 10
-  }
-  });
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 5,
+  },
+  button: {
+    backgroundColor: '#6750a4',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    alignContent: 'center'
+  },
+  b2: {
+    backgroundColor: '#6750a4',
+    paddingVertical: 15,
+    paddingHorizontal: 25,
+    borderRadius: 5,
+    alignContent: 'center'
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 14,
+  },
+  title: {
+    marginBottom: 10,
+   
+    fontSize: 20,
+    marginLeft: 15
+  },
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%'
+  },
+  column: {
+    flex: 1,
+    padding: 10
+  },
+  infoText: {
+    marginBottom: 5,
+    fontSize: 16,
+    color: '#333333',
+  },
+  boldText: {
+    marginBottom: 5,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#6200EE',
+  },
+  addressText: {
+    marginBottom: 5,
+    fontSize: 16,
+    color: '#666666',
+  },
+});
+
+const stepIndicatorStyles = {
+  stepIndicatorSize: 35,
+  currentStepIndicatorSize: 35,
+  separatorStrokeWidth: 4,
+  currentStepStrokeWidth: 3,
+  stepStrokeWidth: 3,
+  stepStrokeCurrentColor: '#6750a4', // Change color to match #6200EE
+  stepStrokeFinishedColor: '#6750a4', // Change color to match #6200EE
+  stepStrokeUnFinishedColor: '#AAAAAA', // Adjusted to a lighter shade to pair with #6200EE
+  separatorFinishedColor: '#6750a4', // Change color to match #6200EE
+  separatorUnFinishedColor: '#AAAAAA', // Adjusted to a lighter shade to pair with #6200EE
+  stepIndicatorFinishedColor: '#6750a4', // Change color to match #6200EE
+  stepIndicatorUnFinishedColor: '#FFFFFF', // Adjusted to white to pair with #6200EE
+  stepIndicatorCurrentColor: '#FFFFFF', // Adjusted to white to pair with #6200EE
+  stepIndicatorLabelCurrentColor: '#6750a4', // Change color to match #6200EE
+  stepIndicatorLabelFinishedColor: '#FFFFFF', // Adjusted to white to pair with #6200EE
+  stepIndicatorLabelUnFinishedColor: '#AAAAAA', // Adjusted to a lighter shade to pair with #6200EE
+  labelColor: '#999999',
+  currentStepLabelColor: '#6750a4', // Change color to match #6200EE
+};
 
 
 

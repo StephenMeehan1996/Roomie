@@ -201,16 +201,12 @@ const SignUpForm = ({ navigation }) => {
             <View>
               <Card elevation={5} style={styles.card}>
                 <Card.Content>
-
-                  <View style={styles2.buttonContainer}>
                     <StepIndicator
                       stepCount={steps.length}
                       currentPosition={currentStep}
                       pulse={false}
                       customStyles={stepIndicatorStyles}
                     />
-
-                  </View>
                 </Card.Content>
               </Card>
             </View>
@@ -657,7 +653,7 @@ const SignUpForm = ({ navigation }) => {
 const stepIndicatorStyles = {
   stepIndicatorSize: 35,
   currentStepIndicatorSize: 40,
-  separatorStrokeWidth: 10,
+  separatorStrokeWidth: 4,
   currentStepStrokeWidth: 3,
   stepStrokeWidth: 3,
   stepStrokeCurrentColor: '#6750a4', // Change color to match #6200EE
