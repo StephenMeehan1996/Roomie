@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     borderColor: '#6200EE'
   },
   selectedButton: {
-    backgroundColor: '#6200EE'
+    backgroundColor: '#6750a4'
   },
   buttonText: {
     color: 'black',

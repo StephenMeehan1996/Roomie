@@ -162,7 +162,7 @@ const CreateAdd = ({ navigation, route }) => {
     const [showForm, setShowForm] = useState(null);
     const isButtonSelected = (buttonId) => selectedButton === buttonId;
 
-    const steps = ['Step 1', 'Step 2', 'Step 3', 'Step 4'];
+    const steps = ['Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5'];
 
     const [currentStep, setCurrentStep] = useState(1);
 
@@ -383,6 +383,107 @@ const CreateAdd = ({ navigation, route }) => {
                                         </Card>
                                     )}
                                     {currentStep === 2 && (
+                                        <Card elevation={5} style={styles.card}>
+                                            <Card.Content>
+
+                                                <View style={{ marginBottom: 15 }}>
+                                                    <StepIndicator
+                                                        stepCount={steps.length}
+                                                        currentPosition={currentStep}
+                                                        pulse={false}
+                                                        customStyles={stepIndicatorStyles}
+                                                    />
+                                                </View>
+
+                                                <View>
+                                                    <Title style={styles.title2}>Ad Detail:</Title>
+
+                                                    <TextInput
+                                                        style={styles.input}
+                                                        multiline
+                                                        numberOfLines={3}
+                                                        placeholder="Type description here..."
+                                                        onChangeText={handleChange('bio')}
+                                                        value={values.bio}
+                                                        onBlur={() => setFieldTouched('bio')}
+                                                    />
+                                                </View>
+                                                <View style={styles.lineInput}>
+                                                    <Text style={styles.label}>Ad title</Text>
+                                                    <TextInput
+                                                        style={[styles.input, styles.singleLineInput, { width: 225 }]}
+                                                        placeholder="Enter title"
+                                                        onChangeText={handleChange('title')}
+                                                        value={values.title}
+                                                        onBlur={() => setFieldTouched('title')}
+                                                    />
+                                                </View>
+                                                <View style={styles.lineInput}>
+                                                    <Text style={styles.label}>Ad Tagline</Text>
+                                                    <TextInput
+                                                        style={[styles.input, styles.singleLineInput, { width: 225 }]}
+                                                        placeholder="Enter tagline"
+                                                        onChangeText={handleChange('tagline')}
+                                                        value={values.tagline}
+                                                        onBlur={() => setFieldTouched('tagline')}
+                                                    />
+                                                </View>
+
+
+
+                                                <View style={styles.sameLineContainer}>
+                                                    <View style={styles.lineInput}>
+                                                        <Text style={styles.label}>References Required:</Text>
+                                                        <Picker
+                                                            style={styles.input}
+                                                            selectedValue={values.referenceRequired}
+                                                            onValueChange={handleChange('referenceRequired')}
+                                                            onBlur={() => setFieldTouched('referenceRequired')}
+                                                        >
+                                                            {yesNO.map((option, index) => (
+                                                                <Picker.Item key={index} label={option.label} value={option.value} />
+                                                            ))}
+                                                        </Picker>
+                                                        {touched.referenceRequired && errors.referenceRequired && (
+                                                            <Text style={styles.errorTxt}>{errors.referenceRequired}</Text>
+                                                        )}
+                                                    </View>
+                                                    <View style={styles.lineInput}>
+                                                        <Text style={styles.label}>Deposit:</Text>
+                                                        <TextInput
+                                                            style={[styles.input]}
+                                                            placeholder="Enter deposit detail"
+                                                            onChangeText={handleChange('deposit')}
+                                                            value={values.deposit}
+                                                            onBlur={() => setFieldTouched('deposit')}
+                                                        />
+                                                        {touched.deposit && errors.deposit && (
+                                                            <Text style={styles.errorTxt}>{errors.deposit}</Text>
+                                                        )}
+                                                    </View>
+                                                </View>
+
+                                                <View style={styles2.buttonContainer}>
+                                                    <TouchableOpacity
+                                                        style={[styles2.b2, { marginRight: 10 }]}
+                                                        onPress={onPressPrevious}
+                                                        disabled={currentStep === 0}
+                                                    >
+                                                        <Text style={styles2.buttonText}>Previous</Text>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity
+                                                        style={styles2.b2}
+                                                        onPress={onPressNext}
+                                                        disabled={currentStep === steps.length - 1}
+                                                    >
+                                                        <Text style={styles2.buttonText}>Next</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+
+                                            </Card.Content>
+                                        </Card>
+                                    )}
+                                    {currentStep === 3 && (
 
                                         <Card elevation={5} style={styles.card}>
                                             <Card.Content>
@@ -484,51 +585,6 @@ const CreateAdd = ({ navigation, route }) => {
                                                     </View>
                                                 </View>
 
-                                                <View>
-                                                    <Text style={styles.label}>Room Description:</Text>
-                                                    <TextInput
-                                                        style={styles.input}
-                                                        multiline
-                                                        numberOfLines={3}
-                                                        placeholder="Type description here..."
-                                                        onChangeText={handleChange('bio')}
-                                                        value={values.bio}
-                                                        onBlur={() => setFieldTouched('bio')}
-                                                    />
-                                                </View>
-
-                                                <View style={styles.sameLineContainer}>
-                                                    <View style={styles.lineInput}>
-                                                        <Text style={styles.label}>References Required:</Text>
-                                                        <Picker
-                                                            style={styles.input}
-                                                            selectedValue={values.referenceRequired}
-                                                            onValueChange={handleChange('referenceRequired')}
-                                                            onBlur={() => setFieldTouched('referenceRequired')}
-                                                        >
-                                                            {yesNO.map((option, index) => (
-                                                                <Picker.Item key={index} label={option.label} value={option.value} />
-                                                            ))}
-                                                        </Picker>
-                                                        {touched.referenceRequired && errors.referenceRequired && (
-                                                            <Text style={styles.errorTxt}>{errors.referenceRequired}</Text>
-                                                        )}
-                                                    </View>
-                                                    <View style={styles.lineInput}>
-                                                        <Text style={styles.label}>Deposit:</Text>
-                                                        <TextInput
-                                                            style={[styles.input]}
-                                                            placeholder="Enter deposit detail"
-                                                            onChangeText={handleChange('deposit')}
-                                                            value={values.deposit}
-                                                            onBlur={() => setFieldTouched('deposit')}
-                                                        />
-                                                        {touched.deposit && errors.deposit && (
-                                                            <Text style={styles.errorTxt}>{errors.deposit}</Text>
-                                                        )}
-                                                    </View>
-                                                </View>
-
                                                 <View style={styles2.buttonContainer}>
                                                     <TouchableOpacity
                                                         style={[styles2.b2, { marginRight: 10 }]}
@@ -549,7 +605,7 @@ const CreateAdd = ({ navigation, route }) => {
                                             </Card.Content>
                                         </Card>
                                     )}
-                                    {currentStep === 3 && (
+                                    {currentStep === 4 && (
 
                                         <Card elevation={5} style={styles.card}>
                                             <Card.Content>
@@ -879,9 +935,106 @@ const CreateAdd = ({ navigation, route }) => {
                                             </Card.Content>
                                         </Card>
                                     )}
+
                                     {currentStep === 2 && (
+                                        <Card style={styles.card}>
+                                            <Card.Content>
 
+                                                <View style={{ marginBottom: 15 }}>
+                                                    <StepIndicator
+                                                        stepCount={steps.length}
+                                                        currentPosition={currentStep}
+                                                        pulse={false}
+                                                        customStyles={stepIndicatorStyles}
+                                                    />
+                                                </View>
+                                                <View>
+                                                    <Title style={styles.title2}>Ad Detail:</Title>
+                                                    <TextInput
+                                                        style={styles.input}
+                                                        multiline
+                                                        numberOfLines={3}
+                                                        placeholder="Type description here..."
+                                                        onChangeText={handleChange('bio')}
+                                                        value={values.bio}
+                                                        onBlur={() => setFieldTouched('bio')}
+                                                    />
+                                                </View>
 
+                                                <View style={styles.lineInput}>
+                                                    <Text style={styles.label}>Ad title</Text>
+                                                    <TextInput
+                                                        style={[styles.input, styles.singleLineInput, { width: 225 }]}
+                                                        placeholder="Enter title"
+                                                        onChangeText={handleChange('title')}
+                                                        value={values.title}
+                                                        onBlur={() => setFieldTouched('title')}
+                                                    />
+                                                </View>
+                                                <View style={styles.lineInput}>
+                                                    <Text style={styles.label}>Ad Tagline</Text>
+                                                    <TextInput
+                                                        style={[styles.input, styles.singleLineInput, { width: 225 }]}
+                                                        placeholder="Enter tagline"
+                                                        onChangeText={handleChange('tagline')}
+                                                        value={values.tagline}
+                                                        onBlur={() => setFieldTouched('tagline')}
+                                                    />
+                                                </View>
+
+                                                <View style={styles.sameLineContainer}>
+                                                    <View style={styles.lineInput}>
+                                                        <Text style={styles.label}>References Required:</Text>
+                                                        <Picker
+                                                            style={styles.input}
+                                                            selectedValue={values.referenceRequired}
+                                                            onValueChange={handleChange('referenceRequired')}
+                                                            onBlur={() => setFieldTouched('referenceRequired')}
+                                                        >
+                                                            {yesNO.map((option, index) => (
+                                                                <Picker.Item key={index} label={option.label} value={option.value} />
+                                                            ))}
+                                                        </Picker>
+                                                        {touched.referenceRequired && errors.referenceRequired && (
+                                                            <Text style={styles.errorTxt}>{errors.referenceRequired}</Text>
+                                                        )}
+                                                    </View>
+                                                    <View style={styles.lineInput}>
+                                                        <Text style={styles.label}>Deposit:</Text>
+                                                        <TextInput
+                                                            style={[styles.input]}
+                                                            placeholder="Enter deposit detail"
+                                                            onChangeText={handleChange('deposit')}
+                                                            value={values.deposit}
+                                                            onBlur={() => setFieldTouched('deposit')}
+                                                        />
+                                                        {touched.deposit && errors.deposit && (
+                                                            <Text style={styles.errorTxt}>{errors.deposit}</Text>
+                                                        )}
+                                                    </View>
+                                                </View>
+
+                                                <View style={styles2.buttonContainer}>
+                                                    <TouchableOpacity
+                                                        style={[styles2.b2, { marginRight: 10 }]}
+                                                        onPress={onPressPrevious}
+                                                        disabled={currentStep === 0}
+                                                    >
+                                                        <Text style={styles2.buttonText}>Previous</Text>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity
+                                                        style={styles2.b2}
+                                                        onPress={onPressNext}
+                                                        disabled={currentStep === steps.length - 1}
+                                                    >
+                                                        <Text style={styles2.buttonText}>Next</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+
+                                            </Card.Content>
+                                        </Card>
+                                    )}
+                                    {currentStep === 3 && (
                                         <Card elevation={5} style={styles.card}>
                                             <Card.Content>
                                                 <View style={{ marginBottom: 15 }}>
@@ -892,7 +1045,7 @@ const CreateAdd = ({ navigation, route }) => {
                                                         customStyles={stepIndicatorStyles}
                                                     />
                                                 </View>
-                                                <Title style={styles.title}>Property Detail:</Title>
+                                                <Title style={styles.title2}>Property Detail:</Title>
                                                 <View style={styles.sameLineContainer}>
                                                     <View style={styles.lineInput}>
                                                         <Text style={styles.label}>Num of Bedrooms:</Text>
@@ -945,50 +1098,9 @@ const CreateAdd = ({ navigation, route }) => {
                                                     )}
                                                 </View>
 
-                                                <View>
-                                                    <Text style={styles.label}>Property Description:</Text>
-                                                    <TextInput
-                                                        style={styles.input}
-                                                        multiline
-                                                        numberOfLines={3}
-                                                        placeholder="Type description here..."
-                                                        onChangeText={handleChange('bio')}
-                                                        value={values.bio}
-                                                        onBlur={() => setFieldTouched('bio')}
-                                                    />
-                                                </View>
 
-                                                <View style={styles.sameLineContainer}>
-                                                    <View style={styles.lineInput}>
-                                                        <Text style={styles.label}>References Required:</Text>
-                                                        <Picker
-                                                            style={styles.input}
-                                                            selectedValue={values.referenceRequired}
-                                                            onValueChange={handleChange('referenceRequired')}
-                                                            onBlur={() => setFieldTouched('referenceRequired')}
-                                                        >
-                                                            {yesNO.map((option, index) => (
-                                                                <Picker.Item key={index} label={option.label} value={option.value} />
-                                                            ))}
-                                                        </Picker>
-                                                        {touched.referenceRequired && errors.referenceRequired && (
-                                                            <Text style={styles.errorTxt}>{errors.referenceRequired}</Text>
-                                                        )}
-                                                    </View>
-                                                    <View style={styles.lineInput}>
-                                                        <Text style={styles.label}>Deposit:</Text>
-                                                        <TextInput
-                                                            style={[styles.input]}
-                                                            placeholder="Enter deposit detail"
-                                                            onChangeText={handleChange('deposit')}
-                                                            value={values.deposit}
-                                                            onBlur={() => setFieldTouched('deposit')}
-                                                        />
-                                                        {touched.deposit && errors.deposit && (
-                                                            <Text style={styles.errorTxt}>{errors.deposit}</Text>
-                                                        )}
-                                                    </View>
-                                                </View>
+
+
                                                 <View style={styles2.buttonContainer}>
                                                     <TouchableOpacity
                                                         style={[styles2.b2, { marginRight: 10 }]}
@@ -1008,7 +1120,7 @@ const CreateAdd = ({ navigation, route }) => {
                                             </Card.Content>
                                         </Card>
                                     )}
-                                    {currentStep === 3 && (
+                                    {currentStep === 4 && (
 
                                         <Card elevation={5} style={styles.card}>
                                             <Card.Content>
@@ -1020,7 +1132,7 @@ const CreateAdd = ({ navigation, route }) => {
                                                         customStyles={stepIndicatorStyles}
                                                     />
                                                 </View>
-                                                <Title style={styles.title}>Tenant Details:</Title>
+                                                <Title style={styles.title2}>Tenant Details:</Title>
                                                 <Text style={styles.label}>What Are You Looking For In a Tenant:</Text>
                                                 <RadioButton.Group onValueChange={(newValue) => setFieldValue('tenantDetailOption', newValue)} value={values.tenantDetailOption}>
                                                     <View style={styles.radioContainerStart}>
@@ -1294,7 +1406,7 @@ const CreateAdd = ({ navigation, route }) => {
                                                 </View>
 
                                                 <View style={styles2.buttonContainer}>
-                                               
+
                                                     <TouchableOpacity
                                                         style={styles2.b2}
                                                         onPress={onPressNext}
@@ -1307,11 +1419,11 @@ const CreateAdd = ({ navigation, route }) => {
                                             </Card.Content>
                                         </Card>
                                     )}
-                                    {currentStep === 2 && (
 
+                                    {currentStep === 2 && (
                                         <Card elevation={5} style={styles.card}>
                                             <Card.Content>
-                                                <View style={{ marginBottom: 15 }}>
+                                            <View style={{ marginBottom: 15 }}>
                                                     <StepIndicator
                                                         stepCount={steps.length}
                                                         currentPosition={currentStep}
@@ -1320,60 +1432,7 @@ const CreateAdd = ({ navigation, route }) => {
                                                     />
                                                 </View>
 
-                                                <Title style={styles.title2}>Room Details:</Title>
-                                                <View style={styles.sameLineContainer}>
-                                                    <View style={styles.lineInput}>
-                                                        <Text style={styles.label}>Num of Occupants:</Text>
-                                                        <Picker
-                                                            style={styles.input}
-                                                            selectedValue={values.numOccupants}
-                                                            onValueChange={handleChange('numOccupants')}
-                                                            onBlur={() => setFieldTouched('numOccupants')}
-                                                        >
-                                                            {number.map((option, index) => (
-                                                                <Picker.Item key={index} label={option.label} value={option.value} />
-                                                            ))}
-                                                        </Picker>
-                                                        {touched.numOccupants && errors.numOccupants && (
-                                                            <Text style={styles.errorTxt}>{errors.numOccupants}</Text>
-                                                        )}
-                                                    </View>
-                                                    <View style={styles.lineInput}>
-                                                        <Text style={styles.label}>Property Type:</Text>
-                                                        <Picker
-                                                            style={styles.input}
-                                                            selectedValue={values.digsHouseType}
-                                                            onValueChange={handleChange('digsHouseType')}
-                                                            onBlur={() => setFieldTouched('digsHouseType')}
-                                                        >
-                                                            {houseType.map((option, index) => (
-                                                                <Picker.Item key={index} label={option.label} value={option.value} />
-                                                            ))}
-                                                        </Picker>
-                                                        {touched.digsHouseType && errors.digsHouseType && (
-                                                            <Text style={styles.errorTxt}>{errors.digsHouseType}</Text>
-                                                        )}
-                                                    </View>
-                                                </View>
-
-                                                <View>
-                                                    <Text style={styles.label}>Price Per Month:</Text>
-                                                    <Picker
-                                                        style={[styles.input, styles.singleLineInput]}
-                                                        selectedValue={values.digsPrice}
-                                                        onValueChange={handleChange('digsPrice')}
-                                                        onBlur={() => setFieldTouched('digsPrice')}
-                                                    >
-                                                        {priceRange.map((option, index) => (
-                                                            <Picker.Item key={index} label={option.label} value={option.value} />
-                                                        ))}
-                                                    </Picker>
-                                                    {touched.digsPrice && errors.digsPrice && (
-                                                        <Text style={styles.errorTxt}>{errors.digsPrice}</Text>
-                                                    )}
-                                                </View>
-
-                                                <View>
+                                            <View>
                                                     <Text style={styles.label}>Property Description:</Text>
                                                     <TextInput
                                                         style={styles.input}
@@ -1383,6 +1442,27 @@ const CreateAdd = ({ navigation, route }) => {
                                                         onChangeText={handleChange('bio')}
                                                         value={values.bio}
                                                         onBlur={() => setFieldTouched('bio')}
+                                                    />
+                                                </View>
+
+                                                <View style={styles.lineInput}>
+                                                    <Text style={styles.label}>Ad title</Text>
+                                                    <TextInput
+                                                        style={[styles.input, styles.singleLineInput, { width: 225 }]}
+                                                        placeholder="Enter title"
+                                                        onChangeText={handleChange('title')}
+                                                        value={values.title}
+                                                        onBlur={() => setFieldTouched('title')}
+                                                    />
+                                                </View>
+                                                <View style={styles.lineInput}>
+                                                    <Text style={styles.label}>Ad Tagline</Text>
+                                                    <TextInput
+                                                        style={[styles.input, styles.singleLineInput, { width: 225 }]}
+                                                        placeholder="Enter tagline"
+                                                        onChangeText={handleChange('tagline')}
+                                                        value={values.tagline}
+                                                        onBlur={() => setFieldTouched('tagline')}
                                                     />
                                                 </View>
 
@@ -1453,6 +1533,93 @@ const CreateAdd = ({ navigation, route }) => {
                                                         )}
                                                     </View>
                                                 </View>
+
+                                            <View style={styles2.buttonContainer}>
+                                                    <TouchableOpacity
+                                                        style={[styles2.b2, { marginRight: 10 }]}
+                                                        onPress={onPressPrevious}
+                                                        disabled={currentStep === 0}
+                                                    >
+                                                        <Text style={styles2.buttonText}>Previous</Text>
+                                                    </TouchableOpacity>
+                                                    <TouchableOpacity
+                                                        style={styles2.b2}
+                                                        onPress={onPressNext}
+                                                        disabled={currentStep === steps.length - 1}
+                                                    >
+                                                        <Text style={styles2.buttonText}>Next</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </Card.Content>
+                                        </Card>
+                                    )}
+                                    {currentStep === 3 && (
+
+                                        <Card elevation={5} style={styles.card}>
+                                            <Card.Content>
+                                                <View style={{ marginBottom: 15 }}>
+                                                    <StepIndicator
+                                                        stepCount={steps.length}
+                                                        currentPosition={currentStep}
+                                                        pulse={false}
+                                                        customStyles={stepIndicatorStyles}
+                                                    />
+                                                </View>
+
+                                                <Title style={styles.title2}>Room Details:</Title>
+                                                <View style={styles.sameLineContainer}>
+                                                    <View style={styles.lineInput}>
+                                                        <Text style={styles.label}>Num of Occupants:</Text>
+                                                        <Picker
+                                                            style={styles.input}
+                                                            selectedValue={values.numOccupants}
+                                                            onValueChange={handleChange('numOccupants')}
+                                                            onBlur={() => setFieldTouched('numOccupants')}
+                                                        >
+                                                            {number.map((option, index) => (
+                                                                <Picker.Item key={index} label={option.label} value={option.value} />
+                                                            ))}
+                                                        </Picker>
+                                                        {touched.numOccupants && errors.numOccupants && (
+                                                            <Text style={styles.errorTxt}>{errors.numOccupants}</Text>
+                                                        )}
+                                                    </View>
+                                                    <View style={styles.lineInput}>
+                                                        <Text style={styles.label}>Property Type:</Text>
+                                                        <Picker
+                                                            style={styles.input}
+                                                            selectedValue={values.digsHouseType}
+                                                            onValueChange={handleChange('digsHouseType')}
+                                                            onBlur={() => setFieldTouched('digsHouseType')}
+                                                        >
+                                                            {houseType.map((option, index) => (
+                                                                <Picker.Item key={index} label={option.label} value={option.value} />
+                                                            ))}
+                                                        </Picker>
+                                                        {touched.digsHouseType && errors.digsHouseType && (
+                                                            <Text style={styles.errorTxt}>{errors.digsHouseType}</Text>
+                                                        )}
+                                                    </View>
+                                                </View>
+
+                                                <View>
+                                                    <Text style={styles.label}>Price Per Month:</Text>
+                                                    <Picker
+                                                        style={[styles.input, styles.singleLineInput]}
+                                                        selectedValue={values.digsPrice}
+                                                        onValueChange={handleChange('digsPrice')}
+                                                        onBlur={() => setFieldTouched('digsPrice')}
+                                                    >
+                                                        {priceRange.map((option, index) => (
+                                                            <Picker.Item key={index} label={option.label} value={option.value} />
+                                                        ))}
+                                                    </Picker>
+                                                    {touched.digsPrice && errors.digsPrice && (
+                                                        <Text style={styles.errorTxt}>{errors.digsPrice}</Text>
+                                                    )}
+                                                </View>
+
+                                           
                                                 <View style={styles2.buttonContainer}>
                                                     <TouchableOpacity
                                                         style={[styles2.b2, { marginRight: 10 }]}
@@ -1473,7 +1640,7 @@ const CreateAdd = ({ navigation, route }) => {
                                             </Card.Content>
                                         </Card>
                                     )}
-                                    {currentStep === 3 && (
+                                    {currentStep === 4 && (
 
                                         <Card elevation={5} style={styles.card}>
                                             <Card.Content>
