@@ -9,7 +9,7 @@ import { Picker } from '@react-native-picker/picker';
 import { yesNO, priceRange, number, roomType, houseType, houseMatExpectations, environmentOptions, days, irishCounties, rentalPreference, orderBy, radius } from '../data/formData';
 import formStyles from '../styles/formStyle.style';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
-import { returnAdTypeNum, calculateMatchPercentage } from '../functions/CommonFunctions';
+import { returnAdTypeNum, calculateMatchPercentage, sortAds } from '../functions/CommonFunctions';
 import { useAppContext } from '../Providers/AppContext';
 
 
@@ -43,12 +43,19 @@ const SearchResults = ({ navigation, route }) => {
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
   const pickerItemStyle = {
-    fontSize: 10, // Adjust the font size as needed
+    fontSize: 10, 
   };
 
   const handleSearch = async (value) => {
     setLocation(value);
   };
+  
+  const changeOrder =()=>{
+
+    setFilteredAds(sortAds(filteredAds, orderByValue));
+    hideDialog();
+
+  }
 
   useEffect(() => {
     const filterAds = () => {
@@ -61,7 +68,7 @@ const SearchResults = ({ navigation, route }) => {
   
     const filteredAds = filterAds();
     setFilteredAds(filteredAds);
-  }, [location, detail, rentalType, uID]); // Include uID in the dependency array
+  }, [location, detail, rentalType, uID]); 
   
   useEffect(() => {
     const filterAds = () => {
@@ -77,29 +84,27 @@ const SearchResults = ({ navigation, route }) => {
       let propertyValue = null;
       let adType = returnAdTypeNum(rentalType);
       let filtered = filterAds();
-    if(filtered.length > 0){
-      // Check if filtered array is not empty and if it doesn't have the percentageMatch property
-      if (filtered.length > 0 && !(propertyName in filtered[0])) {
-        filtered = filtered.map(obj => {
-          console.log('in loop');
-          return { ...obj, [propertyName]: propertyValue };
-        });
-      }
   
-      // Check if filtered[0] exists and its percentageMatch property is null
-      if (filtered[0] && filtered[0].percentageMatch === null || filtered[0].percentageMatch === undefined) {
-        console.log('Calculating Match');
-        const match = await calculateMatchPercentage(signedInUserDetails, filtered, adType);
-        console.log(match);
-        setFilteredAds(match);
-      }
+      if (filtered.length > 0) {
   
-      console.log(filtered);
-    };
-  }
+        if (filtered.length > 0 && !(propertyName in filtered[0])) {
+          filtered = filtered.map(obj => {
+            console.log('in loop');
+            return { ...obj, [propertyName]: propertyValue };
+          });
+        }
+  
+        if (filtered[0] && filtered[0].percentageMatch === null || filtered[0].percentageMatch === undefined) {
+          console.log('Calculating Match');
+          const match = await calculateMatchPercentage(signedInUserDetails, filtered, adType);
+          setFilteredAds(match);
+        }
+      };
+    }
   
     cal();
-  }, [location, detail, rentalType, uID]); // Include uID in the dependency array
+  }, [location, detail, rentalType, uID]);
+  
   
 
   const renderAds = ({ item: ad }) => {
@@ -231,7 +236,7 @@ const SearchResults = ({ navigation, route }) => {
             </Dialog.Content>
             <Dialog.Actions>
               <Button onPress={hideDialog}>Close</Button>
-              <Button >Apply</Button>
+              <Button onPress={() => changeOrder()}>Apply</Button>
             </Dialog.Actions>
           </Dialog>
         </Portal>

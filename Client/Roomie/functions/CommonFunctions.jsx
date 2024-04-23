@@ -184,6 +184,19 @@ export const convertToDateTimeString = (val) => {
   return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
+export const convertToShortDateString = (val) => {
+
+  const date = new Date(val);
+
+
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+
+  return `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
+}
+
 export const getStorageLocation = (directory, filename) => {
 
   const storage = getStorage();
@@ -284,8 +297,8 @@ export const calculateMatchPercentage = (userDetail, adDetail, adType) => {
     let matchedObjects = [];
 
     console.log('ID' + detailObj.addid)
-    console.log('User: ' + userDetail.houserentalnumbedrooms)
-    console.log('Ad: ' + detailObj.houserentalnumbedrooms)
+    console.log('User: ' + userDetail)
+    console.log('Ad: ' + detailObj)
     console.log(userDetail);
     console.log(detailObj);
 
@@ -382,6 +395,8 @@ export const calculateMatchPercentage = (userDetail, adDetail, adType) => {
     detailObj.matchedProperties = matchedObjects;
   });
 
+  adDetail.sort((a, b) => b.matchPercentage - a.matchPercentage);
+
   adDetail.forEach(detailObj => {
     console.log('Match Percentage:', detailObj.matchPercentage);
   });
@@ -389,6 +404,22 @@ export const calculateMatchPercentage = (userDetail, adDetail, adType) => {
   return adDetail;
 
 };
+
+export const sortAds = (ads, prop) =>{
+
+  if(prop == 'Date'){
+
+    ads.sort((a, b) => - new Date(b.postdate) - new Date(a.postdate) );
+
+  }
+  
+  else if(prop == 'Match %'){
+    ads.sort((a, b) => b.matchPercentage - a.matchPercentage);
+  }
+
+
+  return ads
+}
 
 export async function updateNotifications(id, uID, obj) {
 

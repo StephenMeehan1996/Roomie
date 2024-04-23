@@ -9,13 +9,11 @@ import { Picker } from '@react-native-picker/picker';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { MultiSelect, Dropdown } from 'react-native-element-dropdown';
-import { matchColor } from '../functions/CommonFunctions';
+import { matchColor, convertToShortDateString } from '../functions/CommonFunctions';
 
 const Ad = ({ ad, images, uID, navigation, route }) => {
 
   const [showContainer, setShowContainer] = useState(false);
-
-  console.log(ad);
 
   const handleMatchPercentageClick = () => {
     setShowContainer(true);
@@ -129,6 +127,7 @@ const Ad = ({ ad, images, uID, navigation, route }) => {
               </View>
             )}
             <Paragraph>{ad.tagline}</Paragraph>
+            <Paragraph>{convertToShortDateString(ad.postdate)} </Paragraph>
             <Paragraph>€{ad.price}</Paragraph>
             <Paragraph style={styles.addressText}>{ad.addressline1}</Paragraph>
             <Paragraph style={styles.addressText}>{ad.addressline2}</Paragraph>

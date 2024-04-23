@@ -41,9 +41,7 @@ const genderOptions = [
   const orderBy = [
     
     { label: 'Match %', value: 'Match %' },
-    { label: 'Price', value: 'Price' },
     { label: 'Date', value: 'Date' },
-    { label: 'Add Poster Rating', value: 'Add Poster Rating'}
   ];
 
   const radius = [

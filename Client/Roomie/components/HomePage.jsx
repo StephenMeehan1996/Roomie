@@ -10,7 +10,7 @@ import Profile from '../components/Profile';
 import Search from '../components/Search';
 import Login from './Login';
 import CreateAdd from './CreateAdd';
-import { Avatar, Card, Title, Paragraph, Button, IconButton, Modal, Portal, Dialog, Menu, ICon, Appbar, Badge } from 'react-native-paper';
+import { Avatar, Card, Title, Paragraph, Button, IconButton, Modal, Portal, Dialog, Menu, Appbar, Badge, Icon, MD3Colors } from 'react-native-paper';
 import SearchResults from './SearchResults';
 import { createNativeStackNavigator, Header } from '@react-navigation/native-stack';
 import AddDetail from './AddDetail';
@@ -237,16 +237,16 @@ const HomePage = ({ navigation, route }) => {
 
   const openAdFromNotification = (item) => {
 
- 
-    const filteredUserAdDetail = userAdDetail.find(ad => ad.addid  === item.chatID);   
+
+    const filteredUserAdDetail = userAdDetail.find(ad => ad.addid === item.chatID);
     const filteredUserAdImages = userAdImages.filter(image => image.AddID === item.chatID);
     setShowNotifications(false);
-     navigation.navigate('_AddDetail', {
+    navigation.navigate('_AddDetail', {
 
       ad: filteredUserAdDetail,
       images: filteredUserAdImages
 
-     });
+    });
 
   }
 
@@ -264,6 +264,7 @@ const HomePage = ({ navigation, route }) => {
               <Image
                 style={styles.notificationAvatar}
                 source={{ uri: item.creatorProfileImageURL }} // Replace with your actual image source
+
               />
             </View>
             <View style={styles.notificationContent}>
@@ -404,31 +405,43 @@ const HomePage = ({ navigation, route }) => {
         </View>
         : <>
           <View style={styles.header}>
-            <View style={styles.iconContainer}>
-
-              <View>
-                {newMessages.length > 0 && (
-                  <Badge style={{ position: 'absolute', top: 5, right: 1 }} size={22}>
-                    {newMessages.length}
-                  </Badge>
-                )}
-                <Appbar.Action icon="message" onPress={() => t(newMessages)} size={30} />
-              </View>
-              <View>
-                {newNotifications.length > 0 && (
-                  <Badge style={{ position: 'absolute', top: 5, right: 2 }} size={22}>
-                    {newNotifications.length}
-                  </Badge>
-                )}
-                <Appbar.Action icon="bell" onPress={handleIconPress} size={30} />
-              </View>
-              <IconButton
-                icon="cog"
-                size={30}
-                style={{ marginHorizontal: 0 }}
-                onPress={showDialog}
+            <View style={styles.leftContainer}>
+              <Image
+                source={require('../assets/Icons/images/house.jpg')}
+                style={styles.image}
               />
+
             </View>
+            <View style={styles.rightContainer}>
+
+              <View style={styles.iconContainer}>
+
+                <View>
+                  {newMessages.length > 0 && (
+                    <Badge style={{ position: 'absolute', top: 5, right: 1 }} size={22}>
+                      {newMessages.length}
+                    </Badge>
+                  )}
+                  <Appbar.Action icon="message" onPress={() => t(newMessages)} size={30} />
+                </View>
+                <View>
+                  {newNotifications.length > 0 && (
+                    <Badge style={{ position: 'absolute', top: 5, right: 2 }} size={22}>
+                      {newNotifications.length}
+                    </Badge>
+                  )}
+                  <Appbar.Action icon="bell" onPress={handleIconPress} size={30} />
+                </View>
+                <IconButton
+                  icon="cog"
+                  size={30}
+                  style={{ marginHorizontal: 0 }}
+                  onPress={showDialog}
+                />
+              </View>
+
+            </View>
+
           </View>
           {showNotifications && (
             <View style={styles.notificationContainer}>
@@ -648,12 +661,24 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end', // Align items to the end of the container
+    justifyContent: 'space-between',
     paddingHorizontal: 2,
     backgroundColor: '#ffffff',
   },
+  leftContainer: {
+    marginRight: 20,
+  },
+  rightContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   iconContainer: {
     flexDirection: 'row', // Arrange icons horizontally
+    justifyContent: 'flex-end', // Align items to the end of the container
+  },
+  f: {
+    justifyContent: 'flex-start'
+
   },
 
   notificationContainer: {
@@ -755,6 +780,11 @@ const styles = StyleSheet.create({
   selectedTab: {
     borderColor: 'blue',
   },
+  image: {
+    width: 50, // Adjust the width as needed
+    height: 50, // Adjust the height as needed
+    resizeMode: 'contain', // You can use other resize modes like 'cover', 'contain', etc.
+  }
 
 });
 
