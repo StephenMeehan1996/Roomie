@@ -30,7 +30,10 @@ CREATE OR REPLACE FUNCTION public.roomieinsertad(
 	in_occupation_detail text DEFAULT NULL::text,
 	in_smokingpermitted numeric DEFAULT NULL::numeric,
 	in_house_expectation text DEFAULT NULL::text,
-	in_envoirnment text DEFAULT NULL::text)
+	in_envoirnment text DEFAULT NULL::text,
+	in_title text DEFAULT NULL::text,
+	in_tagline text DEFAULT NULL::text
+)
     RETURNS integer
     LANGUAGE 'plpgsql'
     COST 100
@@ -53,9 +56,9 @@ BEGIN
 		(v_add_id, in_address_line1, in_address_line2, in_county, in_city, in_eircode);
 	--Insert into common detail	
 	INSERT INTO 
-		public."CommonAddDetailsTBL" ("AddID","PropertyType","Description","ReferenceRequired","Deposit","PreferenceSet")
+		public."CommonAddDetailsTBL" ("AddID","PropertyType","Description","ReferenceRequired","Deposit","PreferenceSet", "Title", "Tagline")
     VALUES 
-		(v_add_id, in_property_type, in_description, in_reference_required, in_deposit, in_preference_set);
+		(v_add_id, in_property_type, in_description, in_reference_required, in_deposit, in_preference_set, in_title, in_tagline);
 
     -- Perform conditional inserts based on AddType
     CASE in_type
@@ -98,5 +101,5 @@ BEGIN
 END;
 $BODY$;
 
-ALTER FUNCTION public.roomieinsertad(integer, integer, uuid, date, numeric, text, text, text, text, text, text, text, numeric, text, numeric, numeric, text, numeric, numeric, numeric, text, text, text, text, text, numeric, text, text)
+ALTER FUNCTION public.roomieinsertad(integer, integer, uuid, date, numeric, text, text, text, text, text, text, text, numeric, text, numeric, numeric, text, numeric, numeric, numeric, text, text, text, text, text, numeric, text, text, text, text)
     OWNER TO postgres;

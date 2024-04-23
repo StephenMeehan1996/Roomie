@@ -4,7 +4,7 @@
 
 CREATE OR REPLACE FUNCTION public.roomiegetusersadds(
 	id uuid)
-    RETURNS TABLE(addid integer, addtype integer, posterid integer, postdate date, price numeric, addaddressid integer, addressline1 character varying, addressline2 character varying, county character varying, city character varying, eircode character varying, commonadddetailsid integer, propertytype character varying, description character varying, referencerequired integer, deposit character varying, preferenceset integer, agebracket character varying, gender character varying, occupation character varying, occupationdetail character varying, smokingpermitted integer, houseexpectation character varying, envoirnment character varying, houseshareroomtype character varying, houseshareensuite integer, housesharecurrentoccupants integer, houserentalnumbedrooms integer, digscurrentoccupants integer, digsmealsprovided integer, digsdaysavailable character varying, useridentifier uuid) 
+    RETURNS TABLE(addid integer, addtype integer, posterid integer, postdate date, price numeric, active integer, addaddressid integer, addressline1 character varying, addressline2 character varying, county character varying, city character varying, eircode character varying, commonadddetailsid integer, propertytype character varying, description character varying, referencerequired integer, deposit character varying, preferenceset integer, agebracket character varying, gender character varying, occupation character varying, occupationdetail character varying, smokingpermitted integer, houseexpectation character varying, envoirnment character varying, houseshareroomtype character varying, houseshareensuite integer, housesharecurrentoccupants integer, houserentalnumbedrooms integer, digscurrentoccupants integer, digsmealsprovided integer, digsdaysavailable character varying, useridentifier uuid, title character varying, tagline character varying) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -19,13 +19,14 @@ AS $BODY$
 			A."PosterID", 
 			A."PostDate", 
 			A."Price", 
+			A."Active",
 			AA."AddAddressID", 
 			AA."AddressLine1", 
 			AA."AddressLine2", 
 			AA."County", 
 			AA."City", 
 			AA."Eircode",
-			CA."CommonAddDetailsID",
+			CA."CommonAddDetailID",
 			CA."PropertyType",
 			CA."Description",
 			CA."ReferenceRequired",
@@ -45,7 +46,9 @@ AS $BODY$
 			D."CurrentOccupants",
 			D."MealsProvided",
 			D."DaysAvailable",
-			A."PosterUID"
+			A."PosterUID", 
+			CA."Title",
+			CA."Tagline"
 		FROM
 			public."AddTBL" A
 		INNER JOIN

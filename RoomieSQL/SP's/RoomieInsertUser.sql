@@ -22,6 +22,7 @@ CREATE OR REPLACE FUNCTION public.roomieinsertuser(
 	in_intro_video_url text,
 	in_occupation_title text,
 	in_occupation_detail text,
+	in_tagline text,
 	in_house_share_price_max numeric,
 	in_house_share_price_min numeric,
 	in_house_share_room_type text,
@@ -59,9 +60,9 @@ BEGIN
 		(v_user_id, in_address_line1, in_address_line2, in_county, in_city, in_eircode);
 	
     INSERT INTO 
-		public."ProfileDetailTBL"("UserID","Bio", "IntroVideoURL" )
+		public."ProfileDetailTBL"("UserID","Bio", "IntroVideoURL", "tagline" )
     VALUES 
-		(v_user_id, in_bio, in_intro_video_url );
+		(v_user_id, in_bio, in_intro_video_url,in_tagline );
 	
 	INSERT INTO 
 		public."OccupationTBL"("UserID","OccupationTitle","OccupationDetail")
@@ -80,5 +81,5 @@ BEGIN
 END;
 $BODY$;
 
-ALTER FUNCTION public.roomieinsertuser(text, text, text, date, text, text, numeric, numeric, numeric, uuid, text, text, text, text, text, text, text, text, text, numeric, numeric, text, text, text, text, numeric, numeric, numeric, text, numeric, numeric, text, text, numeric, text)
+ALTER FUNCTION public.roomieinsertuser(text, text, text, date, text, text, numeric, numeric, numeric, uuid, text, text, text, text, text, text, text, text, text, text, numeric, numeric, text, text, text, text, numeric, numeric, numeric, text, numeric, numeric, text, text, numeric, text)
     OWNER TO postgres;

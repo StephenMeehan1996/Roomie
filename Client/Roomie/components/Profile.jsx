@@ -44,6 +44,8 @@ const Profile = ({ navigation, route }) => {
 
 
   useEffect(() => {
+
+   
     const unsubscribe = navigation.addListener('focus', async () => {
       setUpdating(true);
       const getUserImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${uID}`);
@@ -158,7 +160,7 @@ const Profile = ({ navigation, route }) => {
                 />
                 <Title style={styles.username}>{signedInUserDetails.firstname} {signedInUserDetails.secondname}</Title>
                 <Paragraph style={styles.tagLine}>
-                  Web Developer | Traveller | Foodie
+                {signedInUserDetails.tagline}
                 </Paragraph>
                 <View style={styles.info}>
                   {userAdDetail && (

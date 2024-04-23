@@ -433,8 +433,8 @@ const AddDetail = ({ navigation, route }) => {
                   <Text>{selectedImageIndex + 1}/{images.length}</Text>
                 </View>
                 <View>
-                  <Title>Beautiful Property</Title>
-                  <Paragraph>2 Bedrooms | 2 Bathrooms | 1500 sqft</Paragraph>
+                  <Title>{ad.title}</Title>
+                  <Paragraph>{ad.tagline}</Paragraph>
                   <Paragraph>€{ad.price}</Paragraph>
                   <Paragraph style={styles.addressText}>{ad.addressline1}</Paragraph>
                   <Paragraph style={styles.addressText}>{ad.addressline2}</Paragraph>
@@ -464,7 +464,7 @@ const AddDetail = ({ navigation, route }) => {
                     ]}
                     onPress={() => setSelectedTab('Tab2')}
                   >
-                    <Text>Add Poster</Text>
+                    <Text>Ad Poster</Text>
 
                   </TouchableOpacity>
                   <TouchableOpacity

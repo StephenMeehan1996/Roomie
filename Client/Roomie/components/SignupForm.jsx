@@ -6,6 +6,7 @@ import { DatePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { MultiSelect, Dropdown } from 'react-native-element-dropdown';
 import StepIndicator from 'react-native-step-indicator';
+import { validateInput } from '../functions/Validation';
 
 
 import { Formik, Form, Field } from 'formik';
@@ -15,62 +16,7 @@ import { genderOptions, workingHoursOptions, occupationOptions, yearOfStudyOptio
 import styles from '../styles/formStyle.style';
 
 
-const SignupSchema = Yup.object().shape({
-  firstName: Yup.string()
-    .min(2, 'Too Short!')
-    .max(50, 'Too Long!')
-    .required('Please enter your first name.'),
-  lastName: Yup.string()
-    .min(2, 'Too Short!')
-    .max(50, 'Too Long!')
-    .required('Please enter your last name name.'),
-  email: Yup.string().email('Invalid email')
-    .required('Please enter your email.'),
-  gender: Yup.string()
-    .notOneOf([Yup.ref('Select an option')], 'Please select a gender')
-    .required('Please select a gender'),
-  dateBirth: Yup.string(),
-  password: Yup.string()
-    .min(8, 'Password must be at least 8 characters long!')
-    .required('Please enter your password.')
-    .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, 'Must contain minimum of 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character'),
-  confirmPassword: Yup.string()
-    .min(8, 'Confirm password must be at least 8 characters long')
-    .oneOf([Yup.ref('password')], 'Your passwords do not match.')
-    .required('Confirm password is required.'),
-  bio: Yup.string(),
-  occupation: Yup.string()
-    .notOneOf(['Select an option'], 'Please select an occupation')
-    .required('Please select an occupation'),
-  occupationDropdownValue: Yup.string()
-    .notOneOf(['Select an option'], 'Please select a value')
-    .required('Please select a value'),
-  smoke: Yup.string()
-    .notOneOf(['Select an option'], 'Please select a value')
-    .required('Please select a value'),
-  tagline: Yup.string(),
-  profilePicURL: Yup.string(),
-  intoVideoURL: Yup.string(),
-  shareName: Yup.string()
-    .notOneOf(['Select an option'], 'Please select a value')
-    .required('Please select a value'),
-  shareData: Yup.string()
-    .notOneOf(['Select an option'], 'Please select a value')
-    .required('Please select a value'),
-  // selectedRentalPref:  Yup.array().required('Please select at least one option')
-  selectedRentalPref: Yup.array().of(Yup.string())
-    .required('Please select at least one option')
-    .min(1, 'Please select at least one option'),
-  addressLine1: Yup.string()
-    .required('Please enter the first line of the address'),
-  addressLine2: Yup.string()
-    .required('Please enter the second line of the address'),
-  city: Yup.string()
-    .required('Please enter the city for the address'),
-  county: Yup.string()
-    .required('Please enter the county for the address'),
-  zip: Yup.string(),
-});
+
 
 const SignUpForm = ({ navigation }) => {
 
@@ -83,6 +29,20 @@ const SignUpForm = ({ navigation }) => {
   const steps = ['Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5', 'Step 6', 'Step 7'];
 
   const [currentStep, setCurrentStep] = useState(1);
+
+  
+  Yup.addMethod(Yup.string, 'val', function () {
+    return this.test('val', 'Invalid input', function (value) {
+
+        let i = validateInput(value)
+
+        if (i)
+            return true
+        else
+            return false
+
+    });
+});
 
   const onPressNext = () => {
     setCurrentStep(currentStep + 1);
@@ -160,6 +120,69 @@ const SignUpForm = ({ navigation }) => {
       return false
     }
   };
+
+  const SignupSchema = Yup.object().shape({
+    firstName: Yup.string()
+    
+      .required('Please enter your first name.')
+      .val(),
+    lastName: Yup.string()
+     
+      .required('Please enter your last name name.')
+      .val(),
+    email: Yup.string().email('Invalid email')
+      .required('Please enter your email.')
+      .val(),
+    gender: Yup.string()
+      .notOneOf([Yup.ref('Select an option')], 'Please select a gender')
+      .required('Please select a gender'),
+    dateBirth: Yup.string(),
+    password: Yup.string()
+      .min(8, 'Password must be at least 8 characters long!')
+      .required('Please enter your password.')
+      .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, 'Must contain minimum of 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character'),
+    confirmPassword: Yup.string()
+      .min(8, 'Confirm password must be at least 8 characters long')
+      .oneOf([Yup.ref('password')], 'Your passwords do not match.')
+      .required('Confirm password is required.'),
+    bio: Yup.string(),
+    occupation: Yup.string()
+      .notOneOf(['Select an option'], 'Please select an occupation')
+      .required('Please select an occupation'),
+    occupationDropdownValue: Yup.string()
+      .notOneOf(['Select an option'], 'Please select a value')
+      .required('Please select a value'),
+    smoke: Yup.string()
+      .notOneOf(['Select an option'], 'Please select a value')
+      .required('Please select a value'),
+    tagline: Yup.string(),
+    profilePicURL: Yup.string(),
+    intoVideoURL: Yup.string(),
+    shareName: Yup.string()
+      .notOneOf(['Select an option'], 'Please select a value')
+      .required('Please select a value'),
+    shareData: Yup.string()
+      .notOneOf(['Select an option'], 'Please select a value')
+      .required('Please select a value'),
+    // selectedRentalPref:  Yup.array().required('Please select at least one option')
+    selectedRentalPref: Yup.array().of(Yup.string())
+      .required('Please select at least one option')
+      .min(1, 'Please select at least one option'),
+    addressLine1: Yup.string()
+      .required('Please enter the first line of the address')
+      .val(),
+    addressLine2: Yup.string()
+      .required('Please enter the second line of the address')
+      .val(),
+    city: Yup.string()
+      .required('Please enter the city for the address')
+      .val(),
+    county: Yup.string()
+      .required('Please enter the county for the address')
+      .val(),
+    zip: Yup.string()
+    
+  });
 
   return (
     <ScrollView>

@@ -15,6 +15,8 @@ const Ad = ({ ad, images, uID, navigation, route }) => {
 
   const [showContainer, setShowContainer] = useState(false);
 
+  console.log(ad);
+
   const handleMatchPercentageClick = () => {
     setShowContainer(true);
   };
@@ -92,7 +94,7 @@ const Ad = ({ ad, images, uID, navigation, route }) => {
               <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
             )}
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Title>Beautiful Property </Title>
+              <Title>{ad.title}</Title>
               {ad.useridentifier !== uID && (
                 <TouchableHighlight onPress={handleMatchPercentageClick} activeOpacity={1} underlayColor="lightgray" style={styles.matchPercentageTouchable}>
                   <Text>{matchColor(ad.matchPercentage)}</Text>
@@ -126,9 +128,8 @@ const Ad = ({ ad, images, uID, navigation, route }) => {
 
               </View>
             )}
-            <Paragraph>2 Bedrooms | 2 Bathrooms | 1500 sqft</Paragraph>
+            <Paragraph>{ad.tagline}</Paragraph>
             <Paragraph>€{ad.price}</Paragraph>
-            <Paragraph style={styles.addressText}>AddID: {ad.addid}</Paragraph>
             <Paragraph style={styles.addressText}>{ad.addressline1}</Paragraph>
             <Paragraph style={styles.addressText}>{ad.addressline2}</Paragraph>
             <Paragraph style={styles.addressText}>{ad.county}</Paragraph>

@@ -337,7 +337,7 @@ const ViewUserProfile = ({ navigation, route }) => {
                                 />
                                 <Title style={styles2.username}>{userDetails.firstname} {userDetails.secondname}</Title>
                                 <Paragraph style={styles2.tagLine}>
-                                    Web Developer | Traveller | Foodie
+                                {signedInUserDetails.tagline}
                                 </Paragraph>
                                 <View style={[styles2.info, { paddingHorizontal: 50 }]}>
 
