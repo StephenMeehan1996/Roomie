@@ -173,7 +173,7 @@ const PostAdd = ({ navigation, route }) => {
         let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/addimages'; // end point for form post
         await callLambdaFunction(imageArray, signUpUrl); // working 
         setUploading(false);
-        navigation.navigate('_Profile');
+        navigation.popToTop();
       } catch (error) {
         console.error('Error occurred during file uploads:', error);
       }
