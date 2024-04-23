@@ -25,11 +25,11 @@ const Profile = ({ navigation, route }) => {
 
   const [uID, setUID] = useState(signedInUserDetails.useridentifier);
 
-  const [userImages, setUserImages] = useState(route.params.userImages);
-  const [userAdImages, setUserAdImages] = useState(route.params.userAdImages);
-  const [userAdDetail, setUserAdDetail] = useState(route.params.userAdDetail);
+  const [userImages, setUserImages] = useState(route?.params.userImages);
+  const [userAdImages, setUserAdImages] = useState(route?.params.userAdImages);
+  const [userAdDetail, setUserAdDetail] = useState(route?.params.userAdDetail);
   const [isBioExpanded, setIsBioExpanded] = useState(false);
-  const { profileImage, setProfileImage } = useAppContext();
+  const {profileImage, setProfileImage } = useAppContext();
   const [coverImage, setCoverImage] = useState(null);
   const [updating, setUpdating] = useState(false);
   const [selectedApplicationTab, setSelectedApplicationTab] = useState('Tab1');

@@ -6,6 +6,7 @@ import { DatePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { MultiSelect, Dropdown } from 'react-native-element-dropdown';
 import StepIndicator from 'react-native-step-indicator';
+import { validateInput } from '../functions/Validation';
 
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -24,6 +25,20 @@ const CreateAdd = ({ navigation, route }) => {
         );
     };
 
+    Yup.addMethod(Yup.string, 'val', function () {
+        return this.test('val', 'Invalid input', function (value) {
+
+            let i = validateInput(value)
+
+            if (i)
+                return true
+            else
+                return false
+
+        });
+    });
+
+
     const nextPage = (values) => {
         console.log(values);
         navigation.navigate('_PostAdd', {
@@ -34,18 +49,24 @@ const CreateAdd = ({ navigation, route }) => {
     const HouseShareSchema = Yup.object().shape({
         addType: Yup.number().integer(),
         addressLine1: Yup.string()
-            .required('Please enter the first line of the address'),
+            .required('Please enter the first line of the address')
+            .val(),
         addressLine2: Yup.string()
-            .required('Please enter the second line of the address'),
+            .required('Please enter the second line of the address')
+            .val(),
         city: Yup.string()
-            .required('Please enter the city for the address'),
+            .required('Please enter the city for the address')
+            .val(),
         county: Yup.string()
-            .required('Please enter the county for the address'),
-        zip: Yup.string(),
+            .required('Please enter the county for the address')
+            .val(),
+        zip: Yup.string()
+            .val(),
         numOccupants: Yup.number().integer()
             .required('Please select the current number of occupants'),
         houseShareHouseType: Yup.string()
-            .required('Please select a property type'),
+            .required('Please select a property type')
+            .val(),
         houseSharePrice: Yup.string()
             .required('Please select a price'),
         houseShareRoomType: Yup.string()
@@ -55,11 +76,17 @@ const CreateAdd = ({ navigation, route }) => {
         houseShareEnsuite: Yup.number().integer()
             .required('Please select a value'),
         bio: Yup.string(),
+        title: Yup.string()
+            .required('Please enter a title')
+            .val(),
+        tagline: Yup.string()
+            .required('Please enter a tagline')
+            .val(),
         referenceRequired: Yup.number().integer()
             .required('Please select an option'),
         deposit: Yup.string()
-            .required('Please enter deposit detail'),
-
+            .required('Please enter deposit detail')
+            .val(),
         houseMateDetailOption: Yup.number().integer()
             .required('Please select a option'),
         houseMateGender: Yup.string()
@@ -81,14 +108,19 @@ const CreateAdd = ({ navigation, route }) => {
     const HouseRentalSchema = Yup.object().shape({
         addType: Yup.string(),
         addressLine1: Yup.string()
-            .required('Please enter the first line of the address'),
+            .required('Please enter the first line of the address')
+            .val(),
         addressLine2: Yup.string()
-            .required('Please enter the second line of the address'),
+            .required('Please enter the second line of the address')
+            .val(),
         city: Yup.string()
-            .required('Please enter the city for the address'),
+            .required('Please enter the city for the address')
+            .val(),
         county: Yup.string()
-            .required('Please enter the county for the address'),
-        zip: Yup.string(),
+            .required('Please enter the county for the address')
+            .val(),
+        zip: Yup.string()
+            .val(),
         numRooms: Yup.string()
             .required('Please enter the city for the address'),
         houseRentalHouseType: Yup.string()
@@ -96,7 +128,12 @@ const CreateAdd = ({ navigation, route }) => {
         houseRentalPrice: Yup.string()
             .required('Please select a price'),
         bio: Yup.string(),
-
+        title: Yup.string()
+            .required('Please enter a title')
+            .val(),
+        tagline: Yup.string()
+            .required('Please enter a tagline')
+            .val(),
         tenantDetailOption: Yup.string()
             .required('Please select an option'),
         tenantGender: Yup.string()
@@ -113,22 +150,28 @@ const CreateAdd = ({ navigation, route }) => {
             .required('Please select an option'),
         deposit: Yup.string()
             .required('Please deposit details')
+            .val()
     });
 
     const DigsSchema = Yup.object().shape({
         addType: Yup.string(),
         addressLine1: Yup.string()
-            .required('Please enter the first line of the address'),
+            .required('Please enter the first line of the address')
+            .val(),
         addressLine2: Yup.string()
-            .required('Please enter the second line of the address'),
+            .required('Please enter the second line of the address')
+            .val(),
         city: Yup.string()
-            .required('Please enter the city for the address'),
+            .required('Please enter the city for the address')
+            .val(),
         county: Yup.string()
-            .required('Please enter the county for the address'),
-        zip: Yup.string(),
-
+            .required('Please enter the county for the address')
+            .val(),
+        zip: Yup.string()
+            .val(),
         numOccupants: Yup.string()
-            .required('Please enter the city for the address'),
+            .required('Please enter the city for the address')
+            .val(),
         digsHouseType: Yup.string()
             .required('Please select a house type'),
         digsPrice: Yup.string()
@@ -140,9 +183,15 @@ const CreateAdd = ({ navigation, route }) => {
         referenceRequired: Yup.string()
             .required('Please select an option'),
         deposit: Yup.string()
-            .required('Please enter deposit detail'),
+            .required('Please enter deposit detail')
+            .val(),
         bio: Yup.string(),
-
+        title: Yup.string()
+            .required('Please enter a title')
+            .val(),
+        tagline: Yup.string()
+            .required('Please enter a tagline')
+            .val(),
         digsDetailOption: Yup.string()
             .required('Please select an option'),
         digsGender: Yup.string()
@@ -251,10 +300,11 @@ const CreateAdd = ({ navigation, route }) => {
                             houseSharePrice: '600',
                             houseShareRoomType: 'Double',
                             houseShareEnsuite: 1,
-                            bio: 'nthusiastic about technology, art, and the beauty of everyday moments. 🎨✨ Coffee lover, bookworm, and aspiring storyteller.',
+                            bio: 'enthusiastic about technology, art, and the beauty of everyday moments. 🎨✨ Coffee lover, bookworm, and aspiring storyteller.',
+                            title: 'Test Title',
+                            tagline: '123',
                             referenceRequired: 1,
                             deposit: '1 Month',
-
                             houseMateDetailOption: 1,
                             houseMateGender: 'Male',
                             houseMateAge: '2',
@@ -367,6 +417,9 @@ const CreateAdd = ({ navigation, route }) => {
                                                         onBlur={() => setFieldTouched('zip')}
                                                     />
                                                 </View>
+                                                {touched.zip && errors.zip && (
+                                                    <Text style={[styles.errorTxt, { marginTop: 18, marginBottom: 0 }]}>{errors.zip}</Text>
+                                                )}
 
                                                 <View style={styles2.buttonContainer}>
 
@@ -407,6 +460,8 @@ const CreateAdd = ({ navigation, route }) => {
                                                         value={values.bio}
                                                         onBlur={() => setFieldTouched('bio')}
                                                     />
+                                                  
+
                                                 </View>
                                                 <View style={styles.lineInput}>
                                                     <Text style={styles.label}>Ad title</Text>
@@ -417,7 +472,11 @@ const CreateAdd = ({ navigation, route }) => {
                                                         value={values.title}
                                                         onBlur={() => setFieldTouched('title')}
                                                     />
+
                                                 </View>
+                                                {touched.title && errors.title && (
+                                                    <Text style={styles.errorTxt}>{errors.title}</Text>
+                                                )}
                                                 <View style={styles.lineInput}>
                                                     <Text style={styles.label}>Ad Tagline</Text>
                                                     <TextInput
@@ -427,9 +486,11 @@ const CreateAdd = ({ navigation, route }) => {
                                                         value={values.tagline}
                                                         onBlur={() => setFieldTouched('tagline')}
                                                     />
+
                                                 </View>
-
-
+                                                {touched.tagline && errors.tagline && (
+                                                    <Text style={styles.errorTxt}>{errors.tagline}</Text>
+                                                )}
 
                                                 <View style={styles.sameLineContainer}>
                                                     <View style={styles.lineInput}>
@@ -812,7 +873,8 @@ const CreateAdd = ({ navigation, route }) => {
                             bio: 'Test test',
                             referenceRequired: '1',
                             deposit: '2 months rent',
-
+                            title: 'Test Title',
+                            tagline: '123',
                             tenantDetailOption: '1',
                             tenantGender: 'Female',
                             tenantAgeBracket: '3',
@@ -1293,8 +1355,8 @@ const CreateAdd = ({ navigation, route }) => {
                             digsMealIncluded: '1',
                             referenceRequired: '1',
                             deposit: '3 Months',
-
-
+                            title: 'Test Title',
+                            tagline: '123',
                             digsDetailOption: '1',
                             digsGender: 'Male',
                             digsAge: '3',
@@ -1423,7 +1485,7 @@ const CreateAdd = ({ navigation, route }) => {
                                     {currentStep === 2 && (
                                         <Card elevation={5} style={styles.card}>
                                             <Card.Content>
-                                            <View style={{ marginBottom: 15 }}>
+                                                <View style={{ marginBottom: 15 }}>
                                                     <StepIndicator
                                                         stepCount={steps.length}
                                                         currentPosition={currentStep}
@@ -1432,7 +1494,7 @@ const CreateAdd = ({ navigation, route }) => {
                                                     />
                                                 </View>
 
-                                            <View>
+                                                <View>
                                                     <Text style={styles.label}>Property Description:</Text>
                                                     <TextInput
                                                         style={styles.input}
@@ -1534,7 +1596,7 @@ const CreateAdd = ({ navigation, route }) => {
                                                     </View>
                                                 </View>
 
-                                            <View style={styles2.buttonContainer}>
+                                                <View style={styles2.buttonContainer}>
                                                     <TouchableOpacity
                                                         style={[styles2.b2, { marginRight: 10 }]}
                                                         onPress={onPressPrevious}
@@ -1619,7 +1681,7 @@ const CreateAdd = ({ navigation, route }) => {
                                                     )}
                                                 </View>
 
-                                           
+
                                                 <View style={styles2.buttonContainer}>
                                                     <TouchableOpacity
                                                         style={[styles2.b2, { marginRight: 10 }]}

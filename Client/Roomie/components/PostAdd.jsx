@@ -195,6 +195,7 @@ const PostAdd = ({ navigation, route }) => {
 
   const confirmAction = async () => {
     hideDialog();
+    
     postAdd();
   };
 
