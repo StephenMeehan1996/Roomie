@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Platform, TextInput, Dimensions, TouchableOpacity, Image, ScrollView, SafeAreaView, Alert, FlatList, ActivityIndicator } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
-import { Avatar, Card, Title, Paragraph, Button, IconButton, Checkbox, RadioButton } from 'react-native-paper';
+import { Avatar, Card, Title, Paragraph, Button, IconButton, Checkbox, RadioButton, Snackbar } from 'react-native-paper';
 import { launchCameraAsync } from 'expo-image-picker';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import styles from '../styles/formStyle.style';
@@ -26,7 +26,15 @@ const PostAdd = ({ navigation, route }) => {
   const steps = ['Step 1', 'Step 2', 'Step 3', 'Step 4'];
 
   const [currentStep, setCurrentStep] = useState(4);
+  const [visible, setVisible] = useState(false);
 
+  const showDialog = () => setVisible(true);
+  const hideDialog = () => {
+    setVisible(false);
+    setBtnVis(true);
+  }
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [btnVis, setBtnVis] = useState(true);
 
 
   const onPressPrevious = () => {
@@ -174,6 +182,22 @@ const PostAdd = ({ navigation, route }) => {
     }
   };
 
+  const handlePostClick = () => {
+    setBtnVis(false)
+  
+    if (selectedFiles.length === 0)
+      setSnackbarMessage('Are you sure you want to make to post this ad without images?');
+    else
+      setSnackbarMessage('Are you sure you want to post this ad?');
+
+    showDialog();
+  };
+
+  const confirmAction = async () => {
+    hideDialog();
+    postAdd();
+  };
+
   return (
     <ScrollView>
       <Card elevation={5} style={[styles.card, { paddingVertical: 0, borderRadius: 0 }]}>
@@ -223,9 +247,9 @@ const PostAdd = ({ navigation, route }) => {
 
       <Card elevation={5} style={styles.card}>
         <Card.Content>
-        <Title style={styles2.title}>Image Upload</Title>
-          <View style={{paddingLeft: 10, marginBottom: 15}}>
-         
+          <Title style={styles2.title}>Image Upload</Title>
+          <View style={{ paddingLeft: 10, marginBottom: 15 }}>
+
             <FlatList
               data={selectedFiles}
               keyExtractor={(item, index) => index.toString()}
@@ -247,35 +271,51 @@ const PostAdd = ({ navigation, route }) => {
             />
           </View>
           <View>
-         
+
             {uploading ? <View style={{ marginBottom: 10 }}><ActivityIndicator size="large" color="#0000ff" /></View>
               : <>
               </>}
-          <View style={styles2.buttonContainer}>
-            <Button
-              style={[styles2.button]}
-              onPress={pickImage}
-              
-            >
-              <Text style={styles2.buttonText}>Select Image</Text>
-            </Button>
-          </View>
+            <View style={styles2.buttonContainer}>
+              <Button
+                style={[styles2.button]}
+                onPress={pickImage}
 
-          <View style={[styles2.buttonContainer,{marginTop: 20}]}>
-          <Button
-              mode="contained"
-              color="#FF5733"
-              style={[styles2.button,{paddingHorizontal: 20}]}
-              onPress={() => postAdd()}>
+              >
+                <Text style={styles2.buttonText}>Select Image</Text>
+              </Button>
+            </View>
+
+            <Snackbar
+              visible={visible}
+              onDismiss={hideDialog}
+   
+              action={{
+                label: 'Confirm',
+                onPress: confirmAction,
+              }}
+            >
+              {snackbarMessage}
+            </Snackbar>
+
+            {btnVis && (
+
               
-              Create ad
-            </Button>
-          </View>
+              <View style={[styles2.buttonContainer, { marginTop: 20 }]}>
+                <Button
+                  mode="contained"
+                  color="#FF5733"
+                  style={[styles2.button, { paddingHorizontal: 20 }]}
+                  onPress={() => handlePostClick()}>
+
+                  Create ad
+                </Button>
+              </View>
+            )}
           </View>
         </Card.Content>
       </Card>
 
- 
+
 
     </ScrollView>
   )
@@ -339,7 +379,7 @@ const styles2 = StyleSheet.create({
   },
   title: {
     marginBottom: 10,
-   
+
     fontSize: 20,
     marginLeft: 15
   },

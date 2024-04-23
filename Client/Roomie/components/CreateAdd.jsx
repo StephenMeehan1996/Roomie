@@ -978,7 +978,7 @@ const CreateAdd = ({ navigation, route }) => {
                                                     <View style={styles.lineInput}>
                                                         <Text style={styles.label}>Deposit:</Text>
                                                         <TextInput
-                                                            style={[styles.input, { marginTop: 21 }]}
+                                                            style={[styles.input]}
                                                             placeholder="Enter deposit detail"
                                                             onChangeText={handleChange('deposit')}
                                                             value={values.deposit}
