@@ -4,6 +4,7 @@ import { Modal, Portal, Provider } from 'react-native-paper';
 import { Avatar, Card, Title, Paragraph, Button, IconButton, Checkbox, RadioButton, MD3Colors, Menu, } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import { Video, ResizeMode } from 'expo-av';
 import styles from '../styles/formStyle.style';
 import postDataToDatabase from '../functions/postDataToDatabase';
 import { launchCameraAsync } from 'expo-image-picker';
@@ -26,11 +27,16 @@ const ManageProfileImages = ({ navigation, route }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [selectedApplicationTab, setSelectedApplicationTab] = useState('Tab1');
 
   //used to get top of the image for dropdown menu
   const windowWidth = Dimensions.get('window').width;
   const [anchorY, setAnchorY] = useState(0);
   const targetViewRef = useRef(null);
+
+  const video = React.useRef(null);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [status, setStatus] = useState({});
 
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
@@ -49,10 +55,12 @@ const ManageProfileImages = ({ navigation, route }) => {
     setUpdating(false);
   };
 
+
+
   const handleSetAsProfile = async () => {
     setUpdating(true);
     let imageID = userImages[0].profileimageid;
-  
+
     closeMenu();
     await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieUpdateProfileImages?imageID=${imageID}&imageType=1&uid=${uid}&id=${userID}`);
     setUpdating(false);
@@ -61,7 +69,7 @@ const ManageProfileImages = ({ navigation, route }) => {
   const handleSetAsCover = async () => {
     setUpdating(true);
     let imageID = userImages[0].profileimageid;
- 
+
     closeMenu();
     await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieUpdateProfileImages?imageID=${imageID}&imageType=2&uid=${uid}&id=${userID}`);
     setUpdating(false);
@@ -118,7 +126,45 @@ const ManageProfileImages = ({ navigation, route }) => {
     }
   }
 
+  const pickVideo = async () => {
 
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      base64: false,
+    })
+    if (!result.cancelled) {
+
+      setSelectedVideo(result.uri);
+    }
+  }
+
+  const deleteVideo = async () => {
+    setSelectedVideo(null);
+  }
+
+  const uploadVideo = async () => {
+    const storage = getStorage();
+    setUploading(true);
+
+    const vid = await fetch(selectedVideo);
+    const blob = await vid.blob();
+    const storageRef = ref(storage, 'Videos/' + generateUUID());
+
+    try {
+      const snapshot = await uploadBytes(storageRef, blob);
+      console.log('Uploaded a blob or file!');
+      const url = await getDownloadURL(snapshot.ref);
+
+      console.log(url);
+
+    } catch (error) {
+      console.error('Error uploading video:', error);
+    }
+    setUploading(false);
+  }
 
   const removeImage = (uri) => {
     const updatedFiles = selectedFiles.filter((image) => image.uri !== uri);
@@ -177,6 +223,198 @@ const ManageProfileImages = ({ navigation, route }) => {
     }
   };
 
+  const renderApplicationTabContent = () => {
+    switch (selectedApplicationTab) {
+      case 'Tab1':
+        return (
+          <View style={styles.tabContent}>
+
+            <View>
+              <Card style={styles2.card}>
+                <Card.Content>
+                  {userImages.length === 1 ? (
+                    <>
+                      <View ref={targetViewRef}>
+                        <Image source={{ uri: currentImage.imageurl }} style={styles2.largeImage} />
+                        <View style={{ position: 'absolute', top: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.7)', borderRadius: 5 }}>
+                          <IconButton
+                            icon="dots-vertical"
+                            size={30}
+                            iconColor={MD3Colors.neutralVariant100}
+                            onPress={openMenu}>
+                          </IconButton>
+                        </View>
+                        {updating ? <View style={{ marginVertical: 10 }}><ActivityIndicator size="large" color="#6200EE" /></View>
+                          : <>
+                          </>}
+                      </View>
+                    </>
+                  ) : userImages.length > 1 ? (
+                    <>
+                      <View ref={targetViewRef}>
+                        <Image source={{ uri: currentImage.imageurl }} style={styles2.largeImage} />
+                        <View style={{ position: 'absolute', top: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.7)', borderRadius: 5 }}>
+                          <IconButton
+                            icon="dots-vertical"
+                            size={30}
+                            iconColor={MD3Colors.neutralVariant100}
+                            onPress={openMenu}>
+                          </IconButton>
+                        </View>
+                        {updating ? <View style={{ marginVertical: 10 }}><ActivityIndicator size="large" color="#6200EE" /></View>
+                          : <>
+                          </>}
+                      </View>
+
+                      <FlatList
+                        data={userImages.slice(1)}
+                        renderItem={renderImageItem}
+                        keyExtractor={(item) => item.profileimageid}
+                        horizontal={false}
+                        numColumns={3}
+
+                      />
+
+                    </>
+                  ) : (
+                    <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
+                  )}
+
+                  <View style={{ marginTop: 20 }}>
+                    <FlatList
+                      data={selectedFiles}
+                      keyExtractor={(item, index) => index.toString()}
+                      horizontal={false}
+                      numColumns={3} // Set the number of columns
+                      contentContainerStyle={styles.listContainer}
+                      renderItem={({ item }) => (
+                        <View key={item.id}>
+                          <Image source={item} style={{ width: 100, height: 100, margin: 5 }} />
+                          <IconButton
+                            icon="trash-can-outline"
+                            size={30}
+                            iconColor="red"
+                            style={{ position: 'absolute', top: -5, right: -5 }}
+                            onPress={() => removeImage(item.uri)}>
+                          </IconButton>
+                        </View>
+                      )}
+                    />
+                  </View>
+                  {uploading ? <View style={{ marginVertical: 10 }}><ActivityIndicator size="large" color="#6200EE" /></View>
+                    : <>
+                    </>}
+                  <View style={{ marginVertical: 15 }}>
+
+                    {selectedFiles.length === 0 ? (
+                      <>
+                        <TouchableOpacity
+                          style={[styles2.button]}
+                          onPress={() => pickImage()}
+                        >
+                          <Text style={[styles2.buttonText]}>Upload Images</Text>
+                        </TouchableOpacity>
+                      </>
+                    ) : selectedFiles.length > 0 ? (
+
+                      <>
+                        <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
+                          <TouchableOpacity
+                            style={[styles2.button, { marginRight: 5 }]}
+                            onPress={() => pickImage()}
+                          >
+                            <Text style={[styles2.buttonText]}>Select Image </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={[styles2.button, { marginLeft: 5 }]}
+                            onPress={() => uploadFile()}
+                          >
+                            <Text style={[styles2.buttonText]}>Upload ({selectedFiles.length})</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </>
+                    ) : (
+                      <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
+                    )}
+
+                    <Menu
+                      visible={menuVisible}
+                      onDismiss={closeMenu}
+                      contentStyle={{ backgroundColor: 'white' }}
+                      anchor={{ x: windowWidth, y: anchorY - 122.5 }} // Adjust the position as needed
+                    >
+                      <Menu.Item style={{ backgroundColor: '#fff' }} onPress={() => handleSetAsProfile()} title="Set as Profile Picture" />
+                      <Menu.Item style={{ backgroundColor: '#fff' }} onPress={() => handleSetAsCover()} title="Set as Cover Photo" />
+
+                      <Menu.Item style={{ backgroundColor: '#fff' }} onPress={() => handleDeleteImage()} title="Delete" />
+                    </Menu>
+                  </View>
+                </Card.Content>
+              </Card>
+            </View>
+
+          </View>
+        );
+      case 'Tab2':
+        return (
+          <View style={styles.tabContent}>
+            <Card elevation={5} style={styles.card}>
+              <Card.Content>
+                {uploading ? (
+                  <View style={{ marginVertical: 10 }}>
+                    <ActivityIndicator size="large" color="#6200EE" />
+                  </View>
+                ) : (
+                  <>
+                    <Paragraph style={{ paddingHorizontal: 25, marginBottom: 15 }}>
+                      To help people get to know you better, you can add a ten-second introduction video. This will be displayed on your profile page.
+                    </Paragraph>
+                    {selectedVideo && (
+                      <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 15 }}>
+                        <Video
+                          style={{ width: 300, height: 150, aspectRatio: 16 / 9 }}
+                          ref={video}
+                          source={{ uri: selectedVideo }}
+                          useNativeControls
+                          resizeMode="contain"
+                          isLooping
+                          onPlaybackStatusUpdate={status => setStatus(status)}
+                        />
+                      </View>
+                    )}
+                  </>
+                )}
+
+                <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 20 }}>
+                  {selectedVideo === null ? (
+                    <TouchableOpacity
+                      style={[styles2.button, { marginRight: 5 }]}
+                      onPress={() => pickVideo()}
+                    >
+                      <Text style={[styles2.buttonText]}>Select Video </Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      style={[styles2.button, { marginRight: 5 }]}
+                      onPress={() => uploadVideo()}
+                    >
+                      <Text style={[styles2.buttonText]}>Upload Video </Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+
+
+
+              </Card.Content>
+            </Card>
+          </View>
+
+        );
+      default:
+        return null;
+    }
+  };
+
   //       const removeImage = (imageurl) => {
   //         console.log('test');
   //  // web
@@ -223,12 +461,34 @@ const ManageProfileImages = ({ navigation, route }) => {
   return (
     <ScrollView>
       <Provider>
-        <View>
 
+        <View >
           <Card elevation={5} style={styles.card}>
             <Card.Content>
               <View style={styles.header}>
-                <Title style={styles.title}>Manage Images</Title>
+
+                <View style={[styles.tabButtons, { width: 300 }]}>
+                  <TouchableOpacity
+                    style={[
+                      styles.tabButton,
+                      selectedApplicationTab === 'Tab1' && styles.selectedTab,
+                    ]}
+                    onPress={() => setSelectedApplicationTab('Tab1')}
+                  >
+                    <Text>Manage Images</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.tabButton,
+                      selectedApplicationTab === 'Tab2' && styles.selectedTab,
+                    ]}
+                    onPress={() => setSelectedApplicationTab('Tab2')}
+                  >
+                    <Text>Manage Video</Text>
+                  </TouchableOpacity>
+
+                </View>
+
                 <IconButton
                   icon="arrow-left"
                   mode="text"
@@ -236,133 +496,13 @@ const ManageProfileImages = ({ navigation, route }) => {
                   style={{ flex: 1, alignItems: 'flex-end' }}
                   onPress={() => navigation.goBack()}>
                 </IconButton>
-
               </View>
-            </Card.Content>
-          </Card>
 
-          <Card style={styles2.card}>
-            <Card.Content>
-              {userImages.length === 1 ? (
-                <>
-                  <View ref={targetViewRef}>
-                    <Image source={{ uri: currentImage.imageurl }} style={styles2.largeImage} />
-                    <View style={{ position: 'absolute', top: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.7)', borderRadius: 5 }}>
-                      <IconButton
-                        icon="dots-vertical"
-                        size={30}
-                        iconColor={MD3Colors.neutralVariant100}
-                        onPress={openMenu}>
-                      </IconButton>
-                    </View>
-                    {updating ? <View style={{ marginVertical: 10 }}><ActivityIndicator size="large" color="#6200EE" /></View>
-                      : <>
-                      </>}
-                  </View>
-                </>
-              ) : userImages.length > 1 ? (
-                <>
-                  <View ref={targetViewRef}>
-                    <Image source={{ uri: currentImage.imageurl }} style={styles2.largeImage} />
-                    <View style={{ position: 'absolute', top: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.7)', borderRadius: 5 }}>
-                      <IconButton
-                        icon="dots-vertical"
-                        size={30}
-                        iconColor={MD3Colors.neutralVariant100}
-                        onPress={openMenu}>
-                      </IconButton>
-                    </View>
-                    {updating ? <View style={{ marginVertical: 10 }}><ActivityIndicator size="large" color="#6200EE" /></View>
-                      : <>
-                      </>}
-                  </View>
-
-                  <FlatList
-                    data={userImages.slice(1)}
-                    renderItem={renderImageItem}
-                    keyExtractor={(item) => item.profileimageid}
-                    horizontal={false}
-                    numColumns={3}
-
-                  />
-
-                </>
-              ) : (
-                <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
-              )}
-
-              <View style={{ marginTop: 20 }}>
-                <FlatList
-                  data={selectedFiles}
-                  keyExtractor={(item, index) => index.toString()}
-                  horizontal={false}
-                  numColumns={3} // Set the number of columns
-                  contentContainerStyle={styles.listContainer}
-                  renderItem={({ item }) => (
-                    <View key={item.id}>
-                      <Image source={item} style={{ width: 100, height: 100, margin: 5 }} />
-                      <IconButton
-                        icon="trash-can-outline"
-                        size={30}
-                        iconColor="red"
-                        style={{ position: 'absolute', top: -5, right: -5 }}
-                        onPress={() => removeImage(item.uri)}>
-                      </IconButton>
-                    </View>
-                  )}
-                />
-              </View>
-              {uploading ? <View style={{ marginVertical: 10 }}><ActivityIndicator size="large" color="#6200EE" /></View>
-                : <>
-                </>}
-              <View style={{ marginVertical: 15 }}>
-
-                {selectedFiles.length === 0 ? (
-                  <>
-                    <TouchableOpacity
-                      style={[styles2.button]}
-                      onPress={() => pickImage()}
-                    >
-                      <Text style={[styles2.buttonText]}>Upload Images</Text>
-                    </TouchableOpacity>
-                  </>
-                ) : selectedFiles.length > 0 ? (
-
-                  <>
-                    <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
-                      <TouchableOpacity
-                        style={[styles2.button, { marginRight: 5 }]}
-                        onPress={() => pickImage()}
-                      >
-                        <Text style={[styles2.buttonText]}>Select Image </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[styles2.button, { marginLeft: 5 }]}
-                        onPress={() => uploadFile()}
-                      >
-                        <Text style={[styles2.buttonText]}>Upload ({selectedFiles.length})</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </>
-                ) : (
-                  <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
-                )}
-
-                <Menu
-                  visible={menuVisible}
-                  onDismiss={closeMenu}
-                  contentStyle={{ backgroundColor: 'white' }}
-                  anchor={{ x: windowWidth, y: anchorY - 122.5 }} // Adjust the position as needed
-                >
-                  <Menu.Item style={{ backgroundColor: '#fff' }} onPress={() => handleSetAsProfile()} title="Set as Profile Picture" />
-                  <Menu.Item style={{ backgroundColor: '#fff' }} onPress={() => handleSetAsCover()} title="Set as Cover Photo" />
-
-                  <Menu.Item style={{ backgroundColor: '#fff' }} onPress={() => handleDeleteImage()} title="Delete" />
-                </Menu>
-              </View>
             </Card.Content>
           </Card>
         </View>
+        {renderApplicationTabContent()}
+
       </Provider>
     </ScrollView>
   )
