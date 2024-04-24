@@ -1,1 +1,18 @@
+Change Log v1.3
+----------
+-	Redesigned signed-up and create ad forms, added form progress bar
+-	Changed UI color selection on multiple pages, to keep consistency 
+-	Added logo 
+-	Added badges for number and email verification
+-	Added upload video, UI and backend
+-	Fixed redirect back to the profile page from create ad
+-	Added Success message notification after creating ad
+-	Updated PostgreSQL functions to support changes made to UI 
+-	Removed last hardcoded values from forms, tagline for profile, and tagline and title from create ad
+-	Added ordering options from search results page
+-	Updated percentage match logic
+Added Components
+----------
+Added SP's
+---------
 
