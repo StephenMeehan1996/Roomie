@@ -4,7 +4,7 @@
 
 CREATE OR REPLACE FUNCTION public.roomiegetuserdetails(
 	id uuid)
-    RETURNS TABLE(_userid integer, email character varying, firstname character varying, secondname character varying, dob date, gender character varying, selectedpreferences character varying, sharedata integer, sharename integer, smoke integer, useridentifier uuid, bio character varying, introvideourl character varying,tagline character varying,addressid integer, addressline1 character varying, addressline2 character varying, county character varying, city character varying, eircode character varying, reviewid integer, positivereview integer, negitivereviews integer, numreviews integer, occupationtitle character varying, occupationdetail character varying, housesharepricemax integer, housesharepricemin integer, houseshareroomtype character varying, houseshareenvoirnment character varying, houserentalpricemax integer, houserentalpricemin integer, houserentalnumrooms integer, houserentalhousetype character varying, digspricemax integer, digspricemin integer, digsroomtype character varying, digsdays character varying, digsmealsincluded integer, digshousetype character varying, housemateexpact character varying, housesharehousetype character varying) 
+    RETURNS TABLE(_userid integer, email character varying, firstname character varying, secondname character varying, dob date, gender character varying, selectedpreferences character varying, sharedata integer, sharename integer, smoke integer, useridentifier uuid, bio character varying, introvideourl character varying, tagline character varying, addressid integer, addressline1 character varying, addressline2 character varying, county character varying, city character varying, eircode character varying, reviewid integer, positivereview integer, negitivereviews integer, numreviews integer, occupationtitle character varying, occupationdetail character varying, housesharepricemax integer, housesharepricemin integer, houseshareroomtype character varying, houseshareenvoirnment character varying, houserentalpricemax integer, houserentalpricemin integer, houserentalnumrooms integer, houserentalhousetype character varying, digspricemax integer, digspricemin integer, digsroomtype character varying, digsdays character varying, digsmealsincluded integer, digshousetype character varying, housemateexpact character varying, housesharehousetype character varying, numberverified integer, emailverified integer) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -59,7 +59,10 @@ BEGIN
 		RP."DigsMealsIncluded",
 		RP."DigsHouseType",
 		RP."HousemateExpect",
-		RP."HouseRentalHouseType"
+		RP."HouseRentalHouseType",
+		
+		PD."EmailVerified",
+		PD."NumberVerified"
     FROM
         public."UserTBL" U
 		

@@ -276,7 +276,7 @@ const HomePage = ({ navigation, route }) => {
             <Button
               mode="outlined"
               onPress={() => openChatFromNotification(item)}
-              style={{ marginRight: 10, borderRadius: 0 }}
+              style={{ marginRight: 10, marginLeft: 5, borderRadius: 0 }}
             >
               View
             </Button>
@@ -296,7 +296,7 @@ const HomePage = ({ navigation, route }) => {
             <Button
               mode="outlined"
               onPress={() => openAdFromNotification(item)}
-              style={{ marginRight: 10, borderRadius: 0 }}
+              style={{ marginRight: 10, marginLeft: 5, borderRadius: 0 }}
             >
               View
             </Button>
@@ -319,7 +319,7 @@ const HomePage = ({ navigation, route }) => {
                 setShowNotifications(false);
                 nextPage('_rentalHistory');
               }}
-              style={{ marginRight: 10, borderRadius: 0 }}
+              style={{ marginRight: 10, marginLeft: 5, borderRadius: 0 }}
             >
               View
             </Button>
@@ -344,7 +344,7 @@ const HomePage = ({ navigation, route }) => {
                 setShowNotifications(false);
                 nextPage('_rentalHistory');
               }}
-              style={{ marginRight: 10, borderRadius: 0 }}
+              style={{ marginRight: 10, marginLeft: 5, borderRadius: 0 }}
             >
               View
             </Button>
@@ -369,7 +369,7 @@ const HomePage = ({ navigation, route }) => {
                 setShowNotifications(false);
                 nextPage('_rentalHistory');
               }}
-              style={{ marginRight: 10, borderRadius: 0 }}
+              style={{ marginRight: 10, marginLeft: 5, borderRadius: 0 }}
             >
               View
             </Button>
@@ -390,11 +390,8 @@ const HomePage = ({ navigation, route }) => {
             </View>
             <Button
               mode="outlined"
-              onPress={() => {
-                setShowNotifications(false);
-                nextPage('_rentalHistory');
-              }}
-              style={{ marginRight: 10, borderRadius: 0 }}
+              onPress={() => openAdFromNotification(item)}
+              style={{ marginRight: 10, marginLeft: 5, borderRadius: 0 }}
             >
               View
             </Button>

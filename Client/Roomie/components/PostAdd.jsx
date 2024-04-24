@@ -173,7 +173,7 @@ const PostAdd = ({ navigation, route }) => {
         let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/addimages'; // end point for form post
         await callLambdaFunction(imageArray, signUpUrl); // working 
         setUploading(false);
-        writeNotification(signedInUserDetails.useridentifier, signedInUserDetails.firstname, signedInUserDetails.useridentifier, generatedID, 6)
+        writeNotification(signedInUserDetails.useridentifier, signedInUserDetails.firstname, 'N/A',signedInUserDetails.useridentifier, generatedID, 6)
         //navigation.popToTop();
         navigation.navigate('_Profile');
       } catch (error) {

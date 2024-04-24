@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, FlatList, ActivityIndicator } from 'react-native';
-import { Avatar, Card, Title, Paragraph, Button, IconButton } from 'react-native-paper';
+import { Avatar, Card, Title, Paragraph, Button, IconButton, Badge } from 'react-native-paper';
 import { Video, ResizeMode } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
@@ -29,7 +29,7 @@ const Profile = ({ navigation, route }) => {
   const [userAdImages, setUserAdImages] = useState(route?.params.userAdImages);
   const [userAdDetail, setUserAdDetail] = useState(route?.params.userAdDetail);
   const [isBioExpanded, setIsBioExpanded] = useState(false);
-  const {profileImage, setProfileImage } = useAppContext();
+  const { profileImage, setProfileImage } = useAppContext();
   const [coverImage, setCoverImage] = useState(null);
   const [updating, setUpdating] = useState(false);
   const [selectedApplicationTab, setSelectedApplicationTab] = useState('Tab1');
@@ -45,7 +45,7 @@ const Profile = ({ navigation, route }) => {
 
   useEffect(() => {
 
-   
+
     const unsubscribe = navigation.addListener('focus', async () => {
       setUpdating(true);
       const getUserImages = await useFetchData(`https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetProfileImages?uid=${uID}`);
@@ -158,10 +158,51 @@ const Profile = ({ navigation, route }) => {
                   size={80}
                   source={profileImage != null ? { uri: profileImage.imageurl } : require('../assets/Icons/images/NoProfile.png')}
                 />
-                <Title style={styles.username}>{signedInUserDetails.firstname} {signedInUserDetails.secondname}</Title>
+
+
+                <View style={styles.container2}>
+                  <View>
+                  <Title style={styles.username}>{signedInUserDetails.firstname} {signedInUserDetails.secondname}</Title>
+
+                  </View>
+                 
+
+                  <View style={{}}>
+
+              
+
+              
+                  <View style={styles.badgeContainer}>
+                    <Badge
+                      // visible={isEmailVerified}
+                      size={24}
+                      style={{ backgroundColor: '#2ecc71', marginRight: 10 }}
+                    >
+                      Email Verified
+                    </Badge>
+                  </View>
+
+              
+                  <View style={styles.badgeContainer}>
+                    <Badge
+                      // visible={isNumberVerified}
+                      size={24}
+                      style={{ backgroundColor: '#2ecc71', marginRight: 10 }}
+                    >
+                      Number Verified
+                    </Badge>
+                  </View>
+                  </View>
+                </View>
+
                 <Paragraph style={styles.tagLine}>
-                {signedInUserDetails.tagline}
+                  {signedInUserDetails.tagline}
                 </Paragraph>
+
+
+
+
+
                 <View style={styles.info}>
                   {userAdDetail && (
                     <Text style={styles.infoText}>Active Adds: {userAdDetail.filter(ad => ad.active === 1).length}</Text>
@@ -260,15 +301,15 @@ const Profile = ({ navigation, route }) => {
                   )}
 
                 </View>
-                  
 
 
-            </Card.Content>
-          </Card>
-      </>
+
+              </Card.Content>
+            </Card>
+          </>
         )}
 
-    </View>
+      </View>
     </ScrollView >
   )
 }
@@ -279,10 +320,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
+  container2: {
+    flex: 1,
+    flexDirection: 'column'
+  },
   vidContainer: {
 
     justifyContent: 'center',
 
+  },
+  username: {
+    fontSize: 20,
+    marginBottom: 10,
+  },
+  badgeContainer: {
+    flexDirection: 'col',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   video: {
     alignSelf: 'center',

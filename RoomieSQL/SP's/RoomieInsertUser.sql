@@ -1,6 +1,6 @@
--- FUNCTION: public.roomieinsertuser(text, text, text, date, text, text, numeric, numeric, numeric, uuid, text, text, text, text, text, text, text, text, text, numeric, numeric, text, text, text, text, numeric, numeric, numeric, text, numeric, numeric, text, text, numeric, text)
+-- FUNCTION: public.roomieinsertuser(text, text, text, date, text, text, numeric, numeric, numeric, uuid, text, text, text, text, text, text, text, text, text, text, numeric, numeric, text, text, text, text, numeric, numeric, numeric, text, numeric, numeric, text, text, numeric, text)
 
--- DROP FUNCTION IF EXISTS public.roomieinsertuser(text, text, text, date, text, text, numeric, numeric, numeric, uuid, text, text, text, text, text, text, text, text, text, numeric, numeric, text, text, text, text, numeric, numeric, numeric, text, numeric, numeric, text, text, numeric, text);
+-- DROP FUNCTION IF EXISTS public.roomieinsertuser(text, text, text, date, text, text, numeric, numeric, numeric, uuid, text, text, text, text, text, text, text, text, text, text, numeric, numeric, text, text, text, text, numeric, numeric, numeric, text, numeric, numeric, text, text, numeric, text);
 
 CREATE OR REPLACE FUNCTION public.roomieinsertuser(
 	in_email text,
@@ -60,9 +60,9 @@ BEGIN
 		(v_user_id, in_address_line1, in_address_line2, in_county, in_city, in_eircode);
 	
     INSERT INTO 
-		public."ProfileDetailTBL"("UserID","Bio", "IntroVideoURL", "tagline" )
+		public."ProfileDetailTBL"("UserID","Bio", "IntroVideoURL", "tagline", "EmailVerified", "NumberVerified" )
     VALUES 
-		(v_user_id, in_bio, in_intro_video_url,in_tagline );
+		(v_user_id, in_bio, in_intro_video_url,in_tagline, 0, 0 );
 	
 	INSERT INTO 
 		public."OccupationTBL"("UserID","OccupationTitle","OccupationDetail")
