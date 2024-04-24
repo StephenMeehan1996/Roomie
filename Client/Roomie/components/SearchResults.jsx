@@ -125,7 +125,7 @@ const SearchResults = ({ navigation, route }) => {
 
           <View style={styles.pickerContainer}>
             <View style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-              <Paragraph>Rental Type:</Paragraph>
+              <Paragraph style={styles.black}>Rental Type:</Paragraph>
               <Picker
                 style={[styles.input]}
                 selectedValue={rentalType}
@@ -140,7 +140,7 @@ const SearchResults = ({ navigation, route }) => {
 
           <View style={styles.pickerContainer}>
             <View style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-              <Paragraph>Location:</Paragraph>
+              <Paragraph style={styles.black}>Location:</Paragraph>
               {countyLocations.length > 0 ? (
                 <Picker
                   style={[styles.input, { marginTop: 0 }]}
@@ -165,10 +165,11 @@ const SearchResults = ({ navigation, route }) => {
           </View>
 
           <View style={[, { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }]}>
-            <Appbar.Action icon="filter" onPress={showDialog} style={{ marginLeft: -2 }} />
+            <Appbar.Action icon="filter" iconColor='#1c1b1fde' onPress={showDialog} style={{ marginLeft: -2 }} />
             <IconButton
               icon="arrow-left"
               mode="text"
+              iconColor='#1c1b1fde'
               size={30}
               style={{ marginLeft: -18 }}
               onPress={() => navigation.goBack()}>
@@ -270,6 +271,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  black: {
+    color: '#1c1b1fde' 
+   },
   noResultsText: {
     fontSize: 18,
     color: 'gray',

@@ -17,7 +17,7 @@ const Search = ({ navigation, route }) => {
   const [uID, setUID] = useState(signedInUserDetails.useridentifier);
   const {userImages } = route.params;
 
-  const [searchQuery, setSearchQuery] = useState('Sligo');
+  const [searchQuery, setSearchQuery] = useState('');
   const [searchResult, setSearchResult] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [locations, setLocations] = useState([]);
@@ -65,19 +65,23 @@ const Search = ({ navigation, route }) => {
   };
 
   const search = (query) => {
-    setUploading(true);
-    setAutocompleteData([]);
-    setSearchQuery(query);
-    let type = returnAdTypeText(selectedButton);
-    const searchValue = {
-      "rentalType": type,
-      "query": searchQuery
-    }
+    if(searchQuery.length > 0){
+      setUploading(true);
+      setAutocompleteData([]);
+      setSearchQuery(query);
+      let type = returnAdTypeText(selectedButton);
+      const searchValue = {
+        "rentalType": type,
+        "query": searchQuery
+      }
+  
+      if (searchQuery != '') {
+        let url = `https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetHouseShare?addType=${selectedButton}&loc=${searchValue.query}`;
+        handleSearch(url, searchValue);
+      }
 
-    if (searchQuery != '') {
-      let url = `https://o4b55eqbhi.execute-api.eu-west-1.amazonaws.com/RoomieGetHouseShare?addType=${selectedButton}&loc=${searchValue.query}`;
-      handleSearch(url, searchValue);
     }
+  
   }
 
   const handleSearch = async (url, searchValue) => {
@@ -150,11 +154,12 @@ const Search = ({ navigation, route }) => {
           <Card style={[styles.card, {paddingTop: 10, paddingBottom: 80}]}>
             <Card.Content>
               <View style={styles.header}>
-                <Title style={styles.title}>Add Type:</Title>
+                <Title style={[styles.title]}>Add Type:</Title>
                 <IconButton
                   icon="arrow-left"
                   mode="text"
                   size={30}
+                  iconColor='#1c1b1fde'
                   style={{ flex: 1, alignItems: 'flex-end' }}
                   onPress={() => navigation.goBack()}>
                 </IconButton>

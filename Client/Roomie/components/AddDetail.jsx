@@ -175,33 +175,33 @@ const AddDetail = ({ navigation, route }) => {
                 <View>
                   <Card style={styles.card2}>
                     <Card.Content style={{ padding: 5 }}>
-                      <Title style={{ textDecorationLine: 'underline', }}>Beautiful Property</Title>
-                      <Paragraph>Ad Type: <Text style={{ fontWeight: 'bold' }}>{returnAdTypeText(ad.addtype)}</Text> </Paragraph>
-                      <Paragraph style={{ marginVertical: 8, paddingRight: 10 }}>
+                      <Title style={[styles.black,{ textDecorationLine: 'underline' }]}>Beautiful Property</Title>
+                      <Paragraph style={styles.black}>Ad Type: <Text style={[styles.black,{ fontWeight: 'bold' }]}>{returnAdTypeText(ad.addtype)}</Text> </Paragraph>
+                      <Paragraph style={[styles.black,{ marginVertical: 8, paddingRight: 10 }]}>
                         {ad.description}
                       </Paragraph>
 
-                      <Paragraph>Property Details:</Paragraph>
+                      <Paragraph style={styles.black}>Property Details:</Paragraph>
                       <View style={styles.chipContainer}>
-                        <Chip style={styles.chip}>{ad.propertytype}</Chip>
-                        <Chip style={styles.chip}>{ad.deposit}</Chip>
-                        <Chip style={styles.chip}>{smoking(ad.smokingpermitted)}</Chip>
-                        <Chip style={styles.chip}>{references(ad.referencerequired)}</Chip>
+                        <Chip style={styles.chip}><Text style={styles.black}>{ad.propertytype}</Text></Chip>
+                        <Chip style={styles.chip}><Text style={styles.black}>{ad.deposit}</Text></Chip>
+                        <Chip style={styles.chip}><Text style={styles.black}>{smoking(ad.smokingpermitted)}</Text></Chip>
+                        <Chip style={styles.chip}><Text style={styles.black}>{references(ad.referencerequired)}</Text></Chip>
                       </View>
 
                       {ad.addtype === 1 ? (
                         <>
-                          <Paragraph>Current occupants:</Paragraph>
+                          <Paragraph style={styles.black}>Current occupants:</Paragraph>
                           <View style={styles.chipContainer}>
-                            <Chip style={styles.chip}>3</Chip>
+                            <Chip style={styles.chip}><Text style={styles.black}>3</Text></Chip>
                           </View>
                           {ad.preferenceset === 1 ? (
                             <>
-                              <Paragraph>Looking For:</Paragraph>
+                              <Paragraph style={styles.black}>Looking For:</Paragraph>
                               <View style={styles.chipContainer}>
-                                <Chip style={styles.chip}>{ad.gender}</Chip>
-                                <Chip style={styles.chip}>Age:{ad.agebracket}</Chip>
-                                <Chip style={styles.chip}>{ad.occupation}</Chip>
+                                <Chip style={styles.chip}><Text style={styles.black}>{ad.gender}</Text></Chip>
+                                <Chip style={styles.chip}><Text style={styles.black}>Age:{ad.agebracket}</Text></Chip>
+                                <Chip style={styles.chip}><Text style={styles.black}>{ad.occupation}</Text></Chip>
                               </View>
                             </>
                           ) : (
@@ -209,15 +209,15 @@ const AddDetail = ({ navigation, route }) => {
                           )}
                           <View style={styles.sameLineContainer}>
                             <View style={styles.lineInput}>
-                              <Paragraph>Environment:</Paragraph>
+                              <Paragraph style={styles.black}>Environment:</Paragraph>
                               <View style={styles.chipContainer}>
-                                <Chip style={styles.chip}>{ad.envoirnment}</Chip>
+                                <Chip style={styles.chip}><Text style={styles.black}>{ad.envoirnment}</Text></Chip>
                               </View>
                             </View>
                             <View style={styles.lineInput}>
-                              <Paragraph>Roomie Expectation:</Paragraph>
+                              <Paragraph style={styles.black}>Roomie Expectation:</Paragraph>
                               <View style={styles.chipContainer}>
-                                <Chip style={styles.chip}>{ad.houseexpectation}</Chip>
+                                <Chip style={styles.chip}><Text style={styles.black}>{ad.houseexpectation}</Text></Chip>
                               </View>
                             </View>
                           </View>
@@ -225,18 +225,18 @@ const AddDetail = ({ navigation, route }) => {
                       ) : ad.addtype === 2 ? (
                         <>
                           <View>
-                            <Paragraph>Number of Bedrooms:</Paragraph>
+                            <Paragraph style={styles.black}>Number of Bedrooms:</Paragraph>
                             <View style={styles.chipContainer}>
-                              <Chip style={styles.chip}>{ad.houserentalnumbedrooms}</Chip>
+                              <Chip style={styles.chip}><Text style={styles.black}>{ad.houserentalnumbedrooms}</Text></Chip>
                             </View>
 
                             {ad.preferenceset === 1 ? (
                               <>
-                                <Paragraph>Looking For:</Paragraph>
+                                <Paragraph style={styles.black}>Looking For:</Paragraph>
                                 <View style={styles.chipContainer}>
-                                  <Chip style={styles.chip}>{ad.gender}</Chip>
-                                  <Chip style={styles.chip}>{ad.agebracket}</Chip>
-                                  <Chip style={styles.chip}>Age: {ad.occupation}</Chip>
+                                  <Chip style={styles.chip}><Text style={styles.black}>{ad.gender}</Text></Chip>
+                                  <Chip style={styles.chip}><Text style={styles.black}>{ad.agebracket}</Text></Chip>
+                                  <Chip style={styles.chip}><Text style={styles.black}>Age: {ad.occupation}</Text></Chip>
                                 </View>
                               </>
                             ) : (
@@ -248,20 +248,20 @@ const AddDetail = ({ navigation, route }) => {
                         <>
                           <View>
 
-                            <Paragraph>Digs Details:</Paragraph>
+                            <Paragraph style={styles.black}>Digs Details:</Paragraph>
                             <View style={styles.chipContainer}>
-                              <Chip style={styles.chip}>{ad.digscurrentoccupants} occupants</Chip>
-                              <Chip style={styles.chip}>{digsMeals(ad.digsmealsprovided)}</Chip>
-                              <Chip style={styles.chip}>{ad.digsdaysavailable}</Chip>
+                              <Chip style={styles.chip}><Text style={styles.black}>{ad.digscurrentoccupants} occupants</Text></Chip>
+                              <Chip style={styles.chip}><Text style={styles.black}>{digsMeals(ad.digsmealsprovided)}</Text></Chip>
+                              <Chip style={styles.chip}><Text style={styles.black}>{ad.digsdaysavailable}</Text></Chip>
                             </View>
 
                             {ad.preferenceset === 1 ? (
                               <>
-                                <Paragraph>Looking For:</Paragraph>
+                                <Paragraph style={styles.black}>Looking For:</Paragraph>
                                 <View style={styles.chipContainer}>
-                                  <Chip style={styles.chip}>{ad.gender}</Chip>
-                                  <Chip style={styles.chip}>Age: {ad.agebracket}</Chip>
-                                  <Chip style={styles.chip}>{ad.occupation}</Chip>
+                                  <Chip style={styles.chip}><Text style={styles.black}>{ad.gender}</Text></Chip>
+                                  <Chip style={styles.chip}><Text style={styles.black}>Age: {ad.agebracket}</Text></Chip>
+                                  <Chip style={styles.chip}><Text style={styles.black}>{ad.occupation}</Text></Chip>
                                 </View>
                               </>
                             ) : (
@@ -298,23 +298,24 @@ const AddDetail = ({ navigation, route }) => {
                         source={posterProfileImage != null ? { uri: posterProfileImage.imageurl } : require('../assets/Icons/images/NoProfile.png')}
                       />
                     </View>
-                    <Title>{posterDetail.firstname} {posterDetail.secondname}</Title>
+                    <Title style={styles.black}>{posterDetail.firstname} {posterDetail.secondname}</Title>
                     <Text style={styles.infoText}>Rating: {calculateReviewStats(posterDetail.numreviews, posterDetail.posistivereview)}</Text>
                     <View style={styles.chipContainer}>
-                      <Chip style={styles.chip}>{posterDetail.occupation}</Chip>
-                      <Chip style={styles.chip}>{posterDetail.occupationdetail} </Chip>
+                      <Chip style={styles.chip}><Text style={styles.black}>{posterDetail.occupation}</Text></Chip>
+                      <Chip style={styles.chip}><Text style={styles.black}>{posterDetail.occupationdetail}</Text></Chip>
                     </View>
-                    <Paragraph>
+                    <Paragraph style={styles.black}>
                       {posterDetail.bio}
                     </Paragraph>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
-                      <Button
+                      <IconButton
                         icon="email"
                         mode="outlined"
+                        iconColor='#6750a4'
                         style={{ width: 150 }}
                         onPress={() => navChat()}>
-                        Message
-                      </Button>
+              
+                      </IconButton>
                     </View>
                   </Card.Content>
                 </Card>
@@ -331,7 +332,7 @@ const AddDetail = ({ navigation, route }) => {
 
                 {messages.length > 0 ? (
                   <>
-                    <Paragraph>Select from saved messages:</Paragraph>
+                    <Paragraph style={styles.black}>Select from saved messages:</Paragraph>
                     <Picker
                       style={styles.input}
                       selectedValue={selectedOption}
@@ -369,10 +370,10 @@ const AddDetail = ({ navigation, route }) => {
                   <Button
                     mode="contained"
                     onPress={handleApply}
-                    style={{ marginRight: 10, borderRadius: 0 }} // Adjust margin as needed
+                    style={{ marginRight: 10, borderRadius: 0, backgroundColor: '#6750a4' }} // Adjust margin as needed
 
                   >
-                    Apply
+                    <Text style={{color: 'white'}}>Apply</Text>
                   </Button>
 
                 </View>
@@ -433,13 +434,13 @@ const AddDetail = ({ navigation, route }) => {
                   <Text>{selectedImageIndex + 1}/{images.length}</Text>
                 </View>
                 <View>
-                  <Title>{ad.title}</Title>
-                  <Paragraph>{ad.tagline}</Paragraph>
-                  <Paragraph>€{ad.price}</Paragraph>
-                  <Paragraph style={styles.addressText}>{ad.addressline1}</Paragraph>
-                  <Paragraph style={styles.addressText}>{ad.addressline2}</Paragraph>
-                  <Paragraph style={styles.addressText}>{ad.city}</Paragraph>
-                  <Paragraph style={styles.addressText}>{ad.county}</Paragraph>
+                  <Title style={styles.black}>{ad.title}</Title>
+                  <Paragraph style={styles.black}>{ad.tagline}</Paragraph>
+                  <Paragraph style={styles.black}>€{ad.price}</Paragraph>
+                  <Paragraph style={[styles.addressText, styles.black]}>{ad.addressline1}</Paragraph>
+                  <Paragraph style={[styles.addressText, styles.black]}>{ad.addressline2}</Paragraph>
+                  <Paragraph style={[styles.addressText, styles.black]}>{ad.city}</Paragraph>
+                  <Paragraph style={[styles.addressText, styles.black]}>{ad.county}</Paragraph>
                 </View>
               </Card.Content>
             </Card>
@@ -538,7 +539,7 @@ const AddDetail = ({ navigation, route }) => {
                         ]}
                         onPress={() => setSelectedApplicationTab('Tab1')}
                       >
-                        <Text>Advertisement</Text>
+                        <Text style={{fontSize: 13.5}}>Advertisement</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={[
@@ -547,7 +548,7 @@ const AddDetail = ({ navigation, route }) => {
                         ]}
                         onPress={() => setSelectedApplicationTab('Tab2')}
                       >
-                        <Text>Applications</Text>
+                        <Text style={{fontSize: 13.5}} >Applications</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={[
@@ -556,7 +557,7 @@ const AddDetail = ({ navigation, route }) => {
                         ]}
                         onPress={() => setSelectedApplicationTab('Tab3')}
                       >
-                        <Text>Manage</Text>
+                        <Text style={{fontSize: 13.5}}>Manage</Text>
                       </TouchableOpacity>
                     </View>
                   )}
@@ -564,6 +565,7 @@ const AddDetail = ({ navigation, route }) => {
                     icon="arrow-left"
                     mode="text"
                     size={30}
+                    iconColor='#1c1b1fde'
                     style={{ flex: 1, alignItems: 'flex-end' }}
                     onPress={() => navigation.goBack()}>
                   </IconButton>

@@ -158,7 +158,7 @@ const Profile = ({ navigation, route }) => {
                   size={80}
                   source={profileImage != null ? { uri: profileImage.imageurl } : require('../assets/Icons/images/NoProfile.png')}
                 />
-                <Title style={styles.username}>{signedInUserDetails.firstname} {signedInUserDetails.secondname}</Title>
+                <Title style={[styles.username,styles.black]}>{signedInUserDetails.firstname} {signedInUserDetails.secondname}</Title>
                 {(signedInUserDetails.numberverified == 1 || signedInUserDetails.emailverified == 1) && (
                   <View style={styles.container2}>
                     <View style={styles.badgeContainer}>
@@ -169,7 +169,7 @@ const Profile = ({ navigation, route }) => {
                           size={24}
                           style={{ backgroundColor: '#24ad5f', marginRight: 10 }}
                         >
-                          Email Verified
+                          <Text style={{color: 'white'}}>Email Verified</Text>
                         </Badge>
                       )}
                       {/* Display phone number verification status */}
@@ -179,7 +179,7 @@ const Profile = ({ navigation, route }) => {
                           size={24}
                           style={{ backgroundColor: '#24ad5f', marginRight: 10, marginTop: 10 }}
                         >
-                          Number Verified
+                          <Text style={{color: 'white'}}>Number Verified</Text>
                         </Badge>
                       )}
                     </View>
@@ -187,11 +187,9 @@ const Profile = ({ navigation, route }) => {
                 )}
 
 
-                <Paragraph style={styles.tagLine}>
+                <Paragraph style={[styles.tagLine, styles.black]}>
                   {signedInUserDetails.tagline}
                 </Paragraph>
-
-
 
                 <View style={styles.info}>
                   {userAdDetail && (
@@ -204,29 +202,31 @@ const Profile = ({ navigation, route }) => {
                     <Button
                       icon="email"
                       mode="outlined"
-                      style={{ width: 150 }}
+                      style={{ width: 150}}
                       onPress={() => console.log('Message button pressed')}>
                       Message
                     </Button>
                   )}
 
                   <View style={{ flexDirection: 'row', marginVertical: 10 }}>
-                    <Button
+                    <IconButton
                       icon="text-box"
                       mode="outlined"
+                      iconColor='#6750a4'
                       onPress={() => setSelectedApplicationTab('Tab1')}
-                      style={[styles.bioButton, { width: 150, borderRadius: 0, marginRight: 10 },
+                      style={[styles.bioButton, { width: 150, borderRadius: 0, marginRight: 10},
                       selectedApplicationTab === 'Tab1' ? styles.selectedTab : null,]}>
-                      Bio
-                    </Button>
-                    <Button
+                      
+                    </IconButton>
+                    <IconButton
                       icon="video-outline"
                       mode="outlined"
+                      iconColor='#6750a4'
                       onPress={() => setSelectedApplicationTab('Tab2')}
                       style={[styles.bioButton, { width: 150, borderRadius: 0, marginLeft: 10 },
                       selectedApplicationTab === 'Tab2' ? styles.selectedTab : null,]}>
-                      Video
-                    </Button>
+                     
+                    </IconButton>
 
                   </View>
 
@@ -236,7 +236,7 @@ const Profile = ({ navigation, route }) => {
 
                 </View>
                 <Collapsible collapsed={!isBioExpanded}>
-                  <Paragraph style={styles.bio}>{signedInUserDetails.bio}</Paragraph>
+                  <Paragraph style={[styles.bio]}>{signedInUserDetails.bio}</Paragraph>
                 </Collapsible>
               </Card.Content>
             </>
@@ -250,12 +250,12 @@ const Profile = ({ navigation, route }) => {
               <Card.Content>
 
 
-                <Title style={styles.username}>Active ads</Title>
+                <Title style={[styles.username, styles.black]}>Active ads</Title>
                 <View >
 
                   {userAdDetail.filter(ad => ad.active === 1).length === 0 ? (
                     <View style={{ padding: 10, marginVertical: 15 }}>
-                      <Text style={{ fontSize: 16, textAlign: 'center' }}>No Active Ads</Text>
+                      <Text style={[styles.black,{ fontSize: 16, textAlign: 'center' }]}>No Active Ads</Text>
                     </View>
                   ) : (
                     <View>
@@ -269,11 +269,12 @@ const Profile = ({ navigation, route }) => {
 
                   {userAdDetail.filter(ad => ad.active === 0).length > 0 ? (
                     <View>
-                      <Title style={styles.username}>Inactive ads</Title>
+                      <Title style={[styles.username, styles.black]}>Inactive ads</Title>
                       <View style={formStyles.iconContainer}>
                         <IconButton
                           icon={iconDirection}
                           size={40}
+                          iconColor='#6750a4'
                           onPress={toggleIconDirection}
                           style={formStyles.icon}
                         />
@@ -306,6 +307,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+
+  black: {
+   color: '#1c1b1fde'
+   
   },
   container2: {
 
@@ -363,7 +369,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 8,
     textAlign: 'left',
-    padding: 10
+    padding: 10,
+    color: '#1c1b1fde'
   },
   tagLine: {
     fontSize: 16,
@@ -377,6 +384,7 @@ const styles = StyleSheet.create({
   bioButton: {
     alignSelf: 'center',
     marginVertical: 8,
+
   },
   info: {
     flexDirection: 'row',

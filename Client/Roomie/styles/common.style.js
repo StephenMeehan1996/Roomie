@@ -7,6 +7,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
       },
+      black: {
+        //color: '#1c1b1fde' 
+        color: 'red' 
+       },
     input: {
         fontSize: 14,
         borderWidth: 1,
@@ -24,6 +28,7 @@ const styles = StyleSheet.create({
       },
       title: {
         fontSize: 20,
+        color: 'red',
         fontWeight: 'bold',
         marginBottom: 10
       },
@@ -203,6 +208,8 @@ const styles = StyleSheet.create({
       chip: {
         marginRight: 8,
         marginBottom: 8,
+        backgroundColor: '#ebdefa'
+       
       },
       iconButton: {
         alignSelf: 'flex-end',

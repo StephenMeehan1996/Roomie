@@ -446,7 +446,7 @@ const HomePage = ({ navigation, route }) => {
                       {newMessages.length}
                     </Badge>
                   )}
-                  <Appbar.Action icon="message" onPress={() => t(newMessages)} size={30} />
+                  <Appbar.Action icon="message" iconColor='#1c1b1fde' onPress={() => t(newMessages)} size={30} />
                 </View>
                 <View>
                   {newNotifications.length > 0 && (
@@ -454,11 +454,12 @@ const HomePage = ({ navigation, route }) => {
                       {newNotifications.length}
                     </Badge>
                   )}
-                  <Appbar.Action icon="bell" onPress={handleIconPress} size={30} />
+                  <Appbar.Action icon="bell" iconColor='#1c1b1fde' onPress={handleIconPress} size={30} />
                 </View>
                 <IconButton
                   icon="cog"
                   size={30}
+                  iconColor='#1c1b1fde'
                   style={{ marginHorizontal: 0 }}
                   onPress={showDialog}
                 />
@@ -498,7 +499,7 @@ const HomePage = ({ navigation, route }) => {
 
           <Portal style={{}}>
             <Dialog visible={visible} onDismiss={hideDialog} style={styles.popup}>
-              <Dialog.Title>Settings</Dialog.Title>
+              <Dialog.Title style={{color: '#1c1b1fde'}}>Settings</Dialog.Title>
               <Dialog.Content>
 
                 <View >
@@ -576,7 +577,7 @@ const HomePage = ({ navigation, route }) => {
 
               </Dialog.Content>
               <Dialog.Actions>
-                <Button onPress={hideDialog}>Close</Button>
+                <Button onPress={hideDialog}> <Text style={{color: '#6750a4'}}>Close</Text></Button>
               </Dialog.Actions>
             </Dialog>
           </Portal>

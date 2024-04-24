@@ -8,16 +8,25 @@
     "slug": "Roomie",
     "plugins": [
       [
-        "expo-router"    
+        "expo-router"
       ],
-     
       [
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ]
-    ]
-    
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "99e43662-242c-46d2-bdbf-dd4cd0a093a0"
+      }
+    },
+    "android": {
+      "package": "com.stepheneire.Roomie"
+    }
   }
 }

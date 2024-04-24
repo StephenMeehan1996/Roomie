@@ -69,21 +69,21 @@ const AdApplications = ({ navigation, route, applications }) => {
                     <Text style={styles.lastMessageDate}>{convertToDateTimeString(item.appdate)}</Text>
                 </View>
             </View>
-            <Paragraph style={{ width: '100%' }}>{item.appmessage}</Paragraph>
+            <Paragraph style={[styles.black,{ width: '100%' }]}>{item.appmessage}</Paragraph>
             <View style={[styles.buttonContainer2, { marginVertical: 10, paddingHorizontal: 50 }]}>
                 <Button
                     mode="outlined"
                     onPress={() => handleApplicationClick(item.useridentifier)}
                     style={{ marginRight: 10, borderRadius: 0 }}
                 >
-                    Profile
+                   <Text style={{color: '#6750a4'}}>Profile</Text> 
                 </Button>
                 <Button
                     mode="outlined"
                     onPress={() => message(item.useridentifier)}
                     style={{ marginRight: 10, borderRadius: 0 }}
                 >
-                    Message
+                    <Text style={{color: '#6750a4'}}>Message</Text> 
                 </Button>
             </View>
         </View>
@@ -94,11 +94,11 @@ const AdApplications = ({ navigation, route, applications }) => {
             <Card elevation={5} style={[styles.card]}>
                 <Card.Content>
                     <View style={[styles.header, { paddingHorizontal: 15 }]}>
-                        <Paragraph>Applicants: {applications.length}</Paragraph>
+                        <Paragraph style={styles.black}>Applicants: {applications.length}</Paragraph>
 
                         <View style={styles.pickerContainer}>
                             <View style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                                <Paragraph>Filter By:</Paragraph>
+                                <Paragraph style={styles.black}>Filter By:</Paragraph>
                                 <Picker
                                     style={[styles.input, { marginTop: 0 }]}
                                     selectedValue={filter}

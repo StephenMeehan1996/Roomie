@@ -89,10 +89,12 @@ const Ad = ({ ad, images, uID, navigation, route }) => {
                 />
               </>
             ) : (
-              <Text>No Images Available</Text> // You can replace this with your symbol or placeholder
+              <Text style={styles.black}>No Images Available</Text> // You can replace this with your symbol or placeholder
             )}
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Title>{ad.title}</Title>
+
+              <Title style={[styles.black, {marginRight: 15}]}>{ad.title}</Title>
+
               {ad.useridentifier !== uID && (
                 <TouchableHighlight onPress={handleMatchPercentageClick} activeOpacity={1} underlayColor="lightgray" style={styles.matchPercentageTouchable}>
                   <Text>{matchColor(ad.matchPercentage)}</Text>
@@ -126,12 +128,12 @@ const Ad = ({ ad, images, uID, navigation, route }) => {
 
               </View>
             )}
-            <Paragraph>{ad.tagline}</Paragraph>
-            <Paragraph>{convertToShortDateString(ad.postdate)} </Paragraph>
-            <Paragraph>€{ad.price}</Paragraph>
-            <Paragraph style={styles.addressText}>{ad.addressline1}</Paragraph>
-            <Paragraph style={styles.addressText}>{ad.addressline2}</Paragraph>
-            <Paragraph style={styles.addressText}>{ad.county}</Paragraph>
+            <Paragraph style={styles.black}>{ad.tagline}</Paragraph>
+            <Paragraph style={styles.black}>{convertToShortDateString(ad.postdate)} </Paragraph>
+            <Paragraph style={styles.black}>€{ad.price}</Paragraph>
+            <Paragraph style={[styles.addressText,styles.black]}>{ad.addressline1}</Paragraph>
+            <Paragraph style={[styles.addressText,styles.black]}>{ad.addressline2}</Paragraph>
+            <Paragraph style={[styles.addressText,styles.black]}>{ad.county}</Paragraph>
 
           </Card.Content>
         </Card>
@@ -152,6 +154,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200
   },
+  black: {
+    color: '#1c1b1fde'    
+   },
   smallImage: {
     width: 100,
     height: 100,
