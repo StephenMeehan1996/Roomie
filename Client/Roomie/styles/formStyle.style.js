@@ -10,6 +10,10 @@ const styles = StyleSheet.create({
       fontSize: 16,
       marginBottom: 8,
     },
+    black: {
+      //color: '#1c1b1fde' 
+      color: 'red' 
+     },
     sameLineContainer: {
       flexDirection: 'row', // Display first and last name fields horizontally
       justifyContent: 'space-between' // Add space between the two fields
@@ -50,12 +54,14 @@ const styles = StyleSheet.create({
     title: {
       fontSize: 20,
       fontWeight: 'bold',
-      marginBottom: 10
+      marginBottom: 10,
+      color: 'red'
     },
     title2: {
       fontSize: 17,
       fontWeight: 'bold',
-      marginBottom: 10
+      marginBottom: 10,
+      color: 'red'
     },
     resultText: {
       fontSize: 18,

@@ -16,7 +16,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { MultiSelect, Dropdown } from 'react-native-element-dropdown';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { useAppContext } from '../Providers/AppContext';
-import { sendEmailVerification, PhoneAuthProvider,multiFactor  } from 'firebase/auth';
+import { sendEmailVerification, PhoneAuthProvider, multiFactor } from 'firebase/auth';
 import formStyles from '../styles/formStyle.style';
 
 
@@ -90,19 +90,22 @@ const VerifyAccount = ({ navigation, route }) => {
             case 'Tab1':
                 return (
                     <View style={styles2.container}>
-                        <Title style={styles2.title}>Verify Email</Title>
+                        <Title style={[styles.black, styles2.title]}>Verify Email</Title>
 
                         {emailVerified ? (
                             <View style={styles.container}>
-                                <Title style={styles2.title2}>Email Verified</Title>
+                                <Title style={[styles.black, styles2.title2]}>Email Verified</Title>
                             </View>
                         ) : (
                             <Paragraph style={{ marginVertical: 15, padding: 5 }}>{paraText}</Paragraph>
                         )}
 
 
-                        <Button mode="contained" style={{ borderRadius: 0, marginVertical: 10 }} onPress={() => verifyEmail()} >
-                            {buttonText}
+                        <Button mode="contained"
+                            style={{ borderRadius: 0, marginVertical: 10, backgroundColor: '#6750a4' }}
+                            onPress={() => verifyEmail()}
+                        >
+                            <Text style={{ color: 'white' }}>{buttonText}</Text>
                         </Button>
                     </View>
 
@@ -111,7 +114,7 @@ const VerifyAccount = ({ navigation, route }) => {
                 return (
                     <View>
 
-                        <Title style={styles2.title}>Verify Number</Title>
+                        <Title style={[styles.black, styles2.title]}>Verify Number</Title>
 
                         <TextInput
                             label="Mobile Number"
@@ -120,8 +123,8 @@ const VerifyAccount = ({ navigation, route }) => {
                             keyboardType="phone-pad"
                             style={styles2.input}
                         />
-                        <Button mode="contained" style={{ borderRadius: 0, marginVertical: 10 }} onPress={() => verifyNum()} >
-                            Verify Number
+                        <Button mode="contained" style={{ borderRadius: 0, marginVertical: 10, backgroundColor: '#6750a4' }} onPress={() => verifyNum()} >
+                            <Text style={{ color: 'white' }}>Verify Number</Text>
                         </Button>
 
                     </View>
@@ -184,6 +187,7 @@ const VerifyAccount = ({ navigation, route }) => {
                             icon="arrow-left"
                             mode="text"
                             size={30}
+                            iconColor='#1c1b1fde'
                             style={{ flex: 1, alignItems: 'flex-end' }}
                             onPress={() => navigation.goBack()}>
                         </IconButton>

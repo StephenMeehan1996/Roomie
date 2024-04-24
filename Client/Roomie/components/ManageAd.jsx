@@ -558,11 +558,11 @@ const ManageAd = ({ navigation, route, ad, images }) => {
                             <Button
                               mode="contained"
                               color="#FF5733"
-                              style={{ marginVertical: 20, padding: 2 }}
+                              style={{ marginVertical: 20, padding: 2, backgroundColor: '#6750a4', borderRadius: 0}}
                               labelStyle={styles.buttonLabel}
                               disabled={!isValid || !dirty}
                               onPress={handleSubmit}>
-                              Save Changes
+                              <Text style={{color: 'white'}}>Save Changes</Text> 
                             </Button>
 
                           </Card.Content>
@@ -575,8 +575,8 @@ const ManageAd = ({ navigation, route, ad, images }) => {
                             <Text style={styles.label}>What are you looking for in a Roomie:</Text>
                             <RadioButton.Group onValueChange={(newValue) => setFieldValue('houseMateDetailOption', newValue)} value={values.houseMateDetailOption}>
                               <View style={styles.radioContainerStart}>
-                                <RadioButton.Item label="Be Specific" value="1" />
-                                <RadioButton.Item label="Flexible" value="0" />
+                                <RadioButton.Item label="Be Specific" value="1" labelStyle={{ color: '#1c1b1fde' }}/>
+                                <RadioButton.Item label="Flexible" value="0" labelStyle={{ color: '#1c1b1fde' }}/>
                               </View>
                             </RadioButton.Group>
                             {values.houseMateDetailOption === "1" && (
@@ -718,11 +718,11 @@ const ManageAd = ({ navigation, route, ad, images }) => {
                             <Button
                               mode="contained"
                               color="#FF5733"
-                              style={{ marginVertical: 20, padding: 2 }}
+                              style={{ marginVertical: 20, padding: 2, backgroundColor: '#6750a4', borderRadius: 0}}
                               labelStyle={styles.buttonLabel}
                               disabled={!isValid || !dirty}
                               onPress={handleSubmit}>
-                              Save Changes
+                               <Text style={{color: 'white'}}>Save Changes</Text> 
                             </Button>
                           </Card.Content>
                         </Card>
@@ -866,9 +866,9 @@ const ManageAd = ({ navigation, route, ad, images }) => {
                               color="#FF5733"
                               labelStyle={styles.buttonLabel}
                               disabled={!isValid || !dirty}
-                              style={{ marginVertical: 10 }}
+                              style={{ marginVertical: 20, padding: 2, backgroundColor: '#6750a4', borderRadius: 0}}
                               onPress={handleSubmit}>
-                              Save Changes
+                              <Text style={{color: 'white'}}>Save Changes</Text>
                             </Button>
                           </Card.Content>
                         </Card>
@@ -882,8 +882,8 @@ const ManageAd = ({ navigation, route, ad, images }) => {
                             <Text style={styles.label}>What Are You Looking For In a Tenant:</Text>
                             <RadioButton.Group onValueChange={(newValue) => setFieldValue('tenantDetailOption', newValue)} value={values.tenantDetailOption}>
                               <View style={styles.radioContainerStart}>
-                                <RadioButton.Item label="Be Specific" value="1" />
-                                <RadioButton.Item label="Flexible" value="0" />
+                              <RadioButton.Item label="Be Specific" value="1" labelStyle={{ color: '#1c1b1fde' }}/>
+                                <RadioButton.Item label="Flexible" value="0" labelStyle={{ color: '#1c1b1fde' }}/>
                               </View>
                             </RadioButton.Group>
 
@@ -998,9 +998,9 @@ const ManageAd = ({ navigation, route, ad, images }) => {
                               color="#FF5733"
                               labelStyle={styles.buttonLabel}
                               disabled={!isValid || !dirty}
-                              style={{ marginVertical: 10 }}
+                              style={{ marginVertical: 20, padding: 2, backgroundColor: '#6750a4', borderRadius: 0}}
                               onPress={handleSubmit}>
-                              Save Changes
+                              <Text style={{color: 'white'}}>Save Changes</Text>
                             </Button>
 
                           </Card.Content>
@@ -1179,11 +1179,11 @@ const ManageAd = ({ navigation, route, ad, images }) => {
                             <Button
                               mode="contained"
                               color="#FF5733"
-                              style={{ marginVertical: 20, padding: 2 }}
+                              style={{ marginVertical: 20, padding: 2, backgroundColor: '#6750a4', borderRadius: 0}}
                               labelStyle={styles.buttonLabel}
                               disabled={!isValid || !dirty}
                               onPress={handleSubmit}>
-                              Add Images
+                              <Text style={{color: 'white'}}>Save Changes</Text> 
                             </Button>
 
                           </Card.Content>
@@ -1196,8 +1196,8 @@ const ManageAd = ({ navigation, route, ad, images }) => {
                             <Text style={styles.label}>What Are You Looking For In A Tenant:</Text>
                             <RadioButton.Group onValueChange={(newValue) => setFieldValue('digsDetailOption', newValue)} value={values.digsDetailOption}>
                               <View style={styles.radioContainerStart}>
-                                <RadioButton.Item label="Be Specific" value="1" />
-                                <RadioButton.Item label="Flexible" value="0" />
+                              <RadioButton.Item label="Be Specific" value="1" labelStyle={{ color: '#1c1b1fde' }}/>
+                                <RadioButton.Item label="Flexible" value="0" labelStyle={{ color: '#1c1b1fde' }}/>
                               </View>
                             </RadioButton.Group>
 
@@ -1306,11 +1306,11 @@ const ManageAd = ({ navigation, route, ad, images }) => {
                             <Button
                               mode="contained"
                               color="#FF5733"
-                              style={{ marginVertical: 20, padding: 2 }}
+                              style={{ marginVertical: 20, padding: 2, backgroundColor: '#6750a4', borderRadius: 0}}
                               labelStyle={styles.buttonLabel}
                               disabled={!isValid || !dirty}
                               onPress={handleSubmit}>
-                              Save Changes
+                              <Text style={{color: 'white'}}>Save Changes</Text> 
                             </Button>
                           </Card.Content>
                         </Card>
@@ -1486,13 +1486,13 @@ const ManageAd = ({ navigation, route, ad, images }) => {
                   </View>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
                     <Button mode="contained" style={{ flex: 1, marginHorizontal: 5, borderRadius: 0, backgroundColor: 'red' }} onPress={handleDeleteAd}>
-                      Delete Ad
+                    <Text style={{color: 'white'}}> Delete Ad</Text>
                     </Button>
-                    <Button mode="contained" style={{ flex: 1, marginHorizontal: 5, borderRadius: 0 }} onPress={handleChangeAdState}>
+                    <Button mode="contained" style={{ flex: 1, marginHorizontal: 5, borderRadius: 0, backgroundColor: '#6750a4' }} onPress={handleChangeAdState}>
                       {ad.active === 1 ? (
-                        <Text>Make Ad Inactive</Text>
+                        <Text style={{color: 'white'}}>Make Ad Inactive</Text>
                       ) : (
-                        <Text>Activate Ad</Text>
+                        <Text style={{color: 'white'}}>Activate Ad</Text>
                       )}
                     </Button>
 

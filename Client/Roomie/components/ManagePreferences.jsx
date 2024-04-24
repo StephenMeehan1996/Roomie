@@ -149,6 +149,7 @@ const ManagePreferences = ({ navigation, route }) => {
                         icon="arrow-left"
                         mode="text"
                         size={30}
+                        iconColor='#1c1b1fde'
                         style={{ flex: 1, alignItems: 'flex-end' }}
                         onPress={() => navigation.goBack()}>
                       </IconButton>
