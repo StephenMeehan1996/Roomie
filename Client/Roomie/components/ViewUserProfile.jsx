@@ -9,7 +9,7 @@ import CarouselCards from './CarouselCards'
 import AddDetail from './AddDetail'
 import Ad from './Ad';
 import formStyles from '../styles/formStyle.style';
-import { calculateReviewStats, returnSelectedProfileImage, returnSelectedCoverImage, handleChat, convertToDateTimeString, generateUUID, writeNotification } from '../functions/CommonFunctions';
+import { calculateReviewStats, returnSelectedProfileImage, returnSelectedCoverImage, handleChat, convertToDateTimeString, generateUUID, writeNotification, convertToShortDateString } from '../functions/CommonFunctions';
 import useFetchData from '../functions/GetAPI';
 import useFetchDataBoth from '../functions/DetailAndImageGetAPI';
 import { useAppContext } from '../Providers/AppContext';
@@ -135,8 +135,8 @@ const ViewUserProfile = ({ navigation, route }) => {
                             <View style={styles2.profileInfo}>
                                 <Avatar.Image size={50} source={{ uri: item.authorprofile }} style={{ marginRight: 15 }} />
                                 <View style={styles2.userInfo}>
-                                    <Title>{item.authorfirstname} {item.authorsecondname}</Title>
-                                    <Paragraph>{convertToDateTimeString(item.reviewdate)}</Paragraph>
+                                    <Title style={styles.black}>{item.authorfirstname} {item.authorsecondname}</Title>
+                                    <Paragraph>{convertToShortDateString(item.reviewdate)}</Paragraph>
                                 </View>
 
                                 <View style={{ marginLeft: 20 }}>
@@ -185,7 +185,7 @@ const ViewUserProfile = ({ navigation, route }) => {
             case 'Tab1':
                 return (
                     <View >
-                        <Paragraph style={styles2.bio}>{userDetails.bio}</Paragraph>
+                        <Paragraph style={[styles2.bio, styles.black]}>{userDetails.bio}</Paragraph>
                     </View>
 
                 );
@@ -225,17 +225,17 @@ const ViewUserProfile = ({ navigation, route }) => {
                 return (
                     <View style={styles2.tabContent}>
 
-                        <Title>{userDetails.firstname}'s Details</Title>
+                        <Title style={styles.black}>{userDetails.firstname}'s Details</Title>
                         <View style={styles.chipContainer}>
-                            <Chip style={styles.chip}>{userDetails.gender}</Chip>
+                            <Chip style={styles.chip}><Text style={styles.black}>{userDetails.gender}</Text></Chip>
 
-                            <Chip style={styles.chip}>{userDetails.occupationtitle}</Chip>
-                            <Chip style={styles.chip}>Year: {userDetails.occupationdetail}</Chip>
+                            <Chip style={styles.chip}><Text style={styles.black}>{userDetails.occupationtitle}</Text></Chip>
+                            <Chip style={styles.chip}><Text style={styles.black}>Year: {userDetails.occupationdetail}</Text></Chip>
                         </View>
 
                         <View style={[styles.chipContainer, { marginTop: 15 }]}>
-                            <Chip style={styles.chip}>Email Verified</Chip>
-                            <Chip style={styles.chip}>Mobile Number Verified</Chip>
+                            <Chip style={styles.chip}><Text style={styles.black}>Email Verified</Text></Chip>
+                            <Chip style={styles.chip}><Text style={styles.black}>Mobile Number Verified</Text></Chip>
                         </View>
 
 
@@ -270,7 +270,7 @@ const ViewUserProfile = ({ navigation, route }) => {
                                 />
                             ) : (
                                 <View>
-                                    <Title style={{ textAlign: 'center', marginVertical: 15 }}>No Reviews</Title>
+                                    <Title style={[{ textAlign: 'center', marginVertical: 15 }, styles.black]}>No Reviews</Title>
                                 </View>
                             )}
                         </View>
@@ -282,12 +282,12 @@ const ViewUserProfile = ({ navigation, route }) => {
                     <View style={styles2.tabContent}>
 
                         <View style={{ paddingHorizontal: 10 }}>
-                            <Paragraph style={styles2.bio}>
+                            <Paragraph style={[styles2.bio , styles.black]}>
                                 By clicking accept, you will send {userDetails.firstname} a notification to confirm that a rental agreement has taken place.
                                 Once accepted on both ends, you can review each other.
                             </Paragraph>
 
-                            <Paragraph style={styles2.bio}>
+                            <Paragraph style={[styles2.bio , styles.black]}>
                                 This action also makes the ad inactive, it will not be deleted, to activate the ad again go to your inactive ad section.
                             </Paragraph>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 10 }}>
@@ -335,50 +335,51 @@ const ViewUserProfile = ({ navigation, route }) => {
                                         { uri: userImages.find(image => image.imagetype === 1 && image.currentselected === 1)?.imageurl || require('../assets/Icons/images/NoProfile.png') } :
                                         require('../assets/Icons/images/NoProfile.png')}
                                 />
-                                <Title style={styles2.username}>{userDetails.firstname} {userDetails.secondname}</Title>
-                                <Paragraph style={styles2.tagLine}>
+                                <Title style={[styles2.username,styles.black]}>{userDetails.firstname} {userDetails.secondname}</Title>
+                                <Paragraph style={[styles2.tagLine, styles.black]}>
                                 {signedInUserDetails.tagline}
                                 </Paragraph>
                                 <View style={[styles2.info, { paddingHorizontal: 50 }]}>
 
                                     <Text style={styles2.infoText}>Rating: {calculateReviewStats(userDetails.numreviews, userDetails.positivereview)}</Text>
-                                    <Button
+                                    <IconButton
                                         icon="email"
                                         mode="outlined"
+                                        iconColor='#6750a4'
                                         onPress={() => message()}
                                         style={{
 
                                             height: 25, // Adjust the height as needed
-                                            paddingLeft: 11,
+                                            padding: 10,
                                             borderRadius: 8, // Adjust the border radius to make it square
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                         }}>
 
-                                    </Button>
+                                    </IconButton>
                                 </View>
                                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginVertical: 10 }}>
 
-
-
                                     <View style={{ flexDirection: 'row', marginVertical: 10 }}>
 
-                                        <Button
+                                        <IconButton
                                             icon="text-box"
                                             mode="outlined"
+                                            iconColor='#6750a4'
                                             onPress={() => setSelectedApplicationTab('Tab1')}
                                             style={[styles2.bioButton, { width: 150, borderRadius: 0, marginRight: 10 },
                                             selectedApplicationTab === 'Tab1' ? styles2.selectedTab : null,]}>
                                             Bio
-                                        </Button>
-                                        <Button
+                                        </IconButton>
+                                        <IconButton
                                             icon="video-outline"
                                             mode="outlined"
+                                            iconColor='#6750a4'
                                             onPress={() => setSelectedApplicationTab('Tab2')}
                                             style={[styles2.bioButton, { width: 150, borderRadius: 0, marginLeft: 10 },
                                             selectedApplicationTab === 'Tab2' ? styles2.selectedTab : null,]}>
                                             Video
-                                        </Button>
+                                        </IconButton>
 
                                     </View>
 

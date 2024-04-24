@@ -8,7 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { returnAdTypeText, references, smoking } from '../functions/CommonFunctions';
 import useFetchData from '../functions/GetAPI';
-import { calculateReviewStats, digsMeals, returnSelectedProfileImage, returnSelectedCoverImage, convertToDateTimeString ,updateNotifications, handleChat} from '../functions/CommonFunctions';
+import { calculateReviewStats, digsMeals, returnSelectedProfileImage, returnSelectedCoverImage, convertToDateTimeString ,updateNotifications, handleChat,convertToShortDateString} from '../functions/CommonFunctions';
 import styles from '../styles/common.style';
 import formStyles from '../styles/formStyle.style';
 import callLambdaFunction from '../functions/PostAPI';
@@ -87,7 +87,7 @@ export default function ChatList({ navigation, route }) {
           <Image source={{ uri: item.userprofileimage }} style={styles.profileImage} />
           <View style={styles.chatDetails}>
             <Text style={styles.username}>{item.username}</Text>
-            <Text style={styles.lastMessageDate}>{convertToDateTimeString(item.createddate)}</Text>
+            <Text style={styles.lastMessageDate}>{convertToShortDateString(item.createddate)}</Text>
           </View>
         </View>
       </TouchableOpacity>

@@ -130,7 +130,6 @@ const RentalPreferencesForm = ({ navigation, route }) => {
 
       await insertUser(formsToCombine);
 
-      alert('Check your emails!');
     } catch (error) {
       console.log(error);
       alert('Registration failed: ' + error.message);
@@ -143,25 +142,25 @@ const RentalPreferencesForm = ({ navigation, route }) => {
     <ScrollView>
       <Formik
         initialValues={{
-          houseSharePriceRangeMin: '700',
-          houseSharePriceRangeMax: '1200',
-          houseShareRoomType: 'Double',
-          houseShareHouseType: 'Apartment',
-          houseShareEnsuite: '1',
-          houseMateExpect: 'Friendly',
-          environment: 'Social',
+          houseSharePriceRangeMin: '',
+          houseSharePriceRangeMax: '',
+          houseShareRoomType: '',
+          houseShareHouseType: '',
+          houseShareEnsuite: '',
+          houseMateExpect: '',
+          environment: '',
 
-          houseRentalPriceRangeMin: '500',
-          houseRentalPriceRangeMax: '1200',
-          numRooms: '3',
-          houseRentalHouseType: 'Apartment',
+          houseRentalPriceRangeMin: '',
+          houseRentalPriceRangeMax: '',
+          numRooms: '',
+          houseRentalHouseType: '',
 
-          digsPriceRangeMin: '200',
-          digsPriceRangeMax: '600',
-          digsRoomType: 'Double',
-          digsHouseType: 'Apartment',
-          digsDays: 'Mon-Friday',
-          digsMealIncluded: '1'
+          digsPriceRangeMin: '',
+          digsPriceRangeMax: '',
+          digsRoomType: '',
+          digsHouseType: '',
+          digsDays: '',
+          digsMealIncluded: ''
         }}
         validationSchema={SignupSchema}
         onSubmit={values => signUp(values)}

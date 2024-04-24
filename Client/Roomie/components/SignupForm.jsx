@@ -99,7 +99,7 @@ const SignUpForm = ({ navigation }) => {
     return (
       <View style={styles.item}>
         <Text style={styles.textItem}>{item.label}</Text>
-        <Image style={styles.icon} source={require('../assets/Icons/twitter.png')} />
+       
       </View>
     );
   };
@@ -189,31 +189,31 @@ const SignUpForm = ({ navigation }) => {
 
       <Formik
         initialValues={{
-          firstName: 'Ciara',
-          lastName: 'Jones (P400)',
-          email: 'cds123meehan@gmail.com',
+          firstName: '',
+          lastName: '',
+          email: '',
           //dob: new Date(),
-          gender: 'Female',
+          gender: '',
           dateBirth: dob,
-          password: 'Roomie##2',
-          confirmPassword: 'Roomie##2',
-          bio: 'Passionate explorer navigating the journey of life 🌍. Enthusiastic about technology, art, and the beauty of everyday moments. 🎨✨ Coffee lover, bookworm, and aspiring storyteller',
-          occupation: 'Student',
-          occupationDropdownValue: '1st',
-          tagline: 'Social Software Developer',
+          password: '',
+          confirmPassword: '',
+          bio: '',
+          occupation: '',
+          occupationDropdownValue: '',
+          tagline: '',
           smoke: 1,
           userIdentifier: '',
           profilePicURL: '',
           intoVideoURL: '',
           shareName: 1,
           shareData: 1,
-          selectedRentalPref: ['House Share', 'House Rental', 'Digs'],
+          selectedRentalPref: [],
           //added address
-          addressLine1: 'Kilgarve, Keadue',
-          addressLine2: 'Boyle',
-          city: 'Roscommon',
-          county: 'Roscommon',
-          zip: 'F91 XY32',
+          addressLine1: '',
+          addressLine2: '',
+          city: '',
+          county: '',
+          zip: '',
         }}
         validationSchema={SignupSchema}
         onSubmit={values => nextPage(values)
@@ -603,8 +603,8 @@ const SignUpForm = ({ navigation }) => {
                   <Text style={styles.label}>Share name on profile page:</Text>
                   <RadioButton.Group onValueChange={(newValue) => setFieldValue('shareName', newValue)} value={values.shareName}>
                     <View style={styles.radioContainer}>
-                      <RadioButton.Item label="Yes" value="1" />
-                      <RadioButton.Item label="No" value="0" />
+                      <RadioButton.Item label="Yes" value="1" labelStyle={styles.black}/>
+                      <RadioButton.Item label="No" value="0"labelStyle={styles.black} />
                     </View>
                   </RadioButton.Group>
                   {errors.shareName && (
@@ -614,8 +614,8 @@ const SignUpForm = ({ navigation }) => {
                   <Text style={styles.label}>Consent to share your data:</Text>
                   <RadioButton.Group onValueChange={(newValue) => setFieldValue('shareData', newValue)} value={values.shareData}>
                     <View style={styles.radioContainer}>
-                      <RadioButton.Item label="Yes" value="1" />
-                      <RadioButton.Item label="No" value="0" />
+                      <RadioButton.Item label="Yes" value="1" labelStyle={styles.black} />
+                      <RadioButton.Item label="No" value="0" labelStyle={styles.black}/>
                     </View>
                   </RadioButton.Group>
                   {errors.shareData && (

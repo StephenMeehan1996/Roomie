@@ -7,7 +7,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import { returnAdTypeText, references, smoking } from '../functions/CommonFunctions';
 import useFetchData from '../functions/GetAPI';
-import { convertToDateTimeString, writeNotification } from '../functions/CommonFunctions';
+import { convertToDateTimeString, writeNotification, convertToShortDateString} from '../functions/CommonFunctions';
 import styles from '../styles/common.style';
 import callLambdaFunction from '../functions/PostAPI';
 import formStyles from '../styles/formStyle.style';
@@ -106,7 +106,6 @@ const RentalHistory = ({ navigation, route }) => {
 
         values.authorID = signedInUserDetails.useridentifier;
         values.subjectID = reviewFormUID;
-        alert('hey')
         console.log(values);
         setIsLoading(true);
         let url = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/review';
@@ -144,14 +143,13 @@ const RentalHistory = ({ navigation, route }) => {
             <View>
                 {item.status === 0 ? (
                     <View>
-
                         <Card style={styles.card}>
                             <Card.Content style={styles2.cardContent2}>
                                 <View style={styles2.profileInfo}>
                                     <Avatar.Image size={50} source={{ uri: item.authorprofile }} />
                                     <View style={styles2.userInfo}>
-                                        <Title>{item.authorfirstname} {item.authorsecondname}</Title>
-                                        <Paragraph>{convertToDateTimeString(item.requestdate)}</Paragraph>
+                                        <Title style={styles.black}>{item.authorfirstname} {item.authorsecondname}</Title>
+                                        <Paragraph style={styles.black}>{convertToShortDateString(item.requestdate)}</Paragraph>
                                     </View>
 
                                 </View>
@@ -180,8 +178,8 @@ const RentalHistory = ({ navigation, route }) => {
                                 <View style={styles2.profileInfo}>
                                     <Avatar.Image size={50} source={{ uri: item.authorprofile }} />
                                     <View style={styles2.userInfo}>
-                                        <Title>{item.authorfirstname} {item.authorsecondname}</Title>
-                                        <Paragraph>{convertToDateTimeString(item.requestdate)}</Paragraph>
+                                        <Title style={styles.black}>{item.authorfirstname} {item.authorsecondname}</Title>
+                                        <Paragraph style={styles.black}>{convertToShortDateString(item.requestdate)}</Paragraph>
                                     </View>
                                 </View>
                                 {/* <View style={styles2.propertyInfo}>
@@ -192,8 +190,8 @@ const RentalHistory = ({ navigation, route }) => {
                             {!showForm && (
                                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 10 }}>
                                     <Button mode="contained" onPress={() => openReviewForm(item.authorfirstname, item.authorprofile, item.authoridentifier
-                                    )} style={styles2.button}>
-                                        Write a Review
+                                    )} style={[styles2.button, {backgroundColor: '#6750a4'}]}>
+                                       <Text style={{color: 'white'}}>Write a Review</Text> 
                                     </Button>
                                 </View>
                             )}
@@ -217,8 +215,8 @@ const RentalHistory = ({ navigation, route }) => {
                             <View style={styles2.profileInfo}>
                                 <Avatar.Image size={50} source={{ uri: item.authorprofile }} />
                                 <View style={styles2.userInfo}>
-                                    <Title>{item.authorfirstname} {item.authorsecondname}</Title>
-                                    <Paragraph>{convertToDateTimeString(item.reviewdate)}</Paragraph>
+                                    <Title style={styles.black}>{item.authorfirstname} {item.authorsecondname}</Title>
+                                    <Paragraph style={styles.black}>{convertToShortDateString(item.reviewdate)}</Paragraph>
                                 </View>
 
                                 <View style={{ marginLeft: 20 }}>
@@ -246,8 +244,8 @@ const RentalHistory = ({ navigation, route }) => {
 
                             </View>
                             <View >
-                                <Title style={{ marginVertical: 10 }}>{item.reviewtitle}</Title>
-                                <Paragraph>{item.reviewtext}</Paragraph>
+                                <Title style={[{ marginVertical: 10 }, styles.black]}>{item.reviewtitle}</Title>
+                                <Paragraph style={styles.black}>{item.reviewtext}</Paragraph>
                             </View>
 
                         </Card.Content>
@@ -280,7 +278,7 @@ const RentalHistory = ({ navigation, route }) => {
                                     </View>
                                 ) : (
                                     <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 15 }}>
-                                        <Title>No rental requests pending</Title>
+                                        <Title style={styles.black}>No rental requests pending</Title>
                                     </View>
                                 )}
                             </Card.Content>
@@ -310,7 +308,7 @@ const RentalHistory = ({ navigation, route }) => {
 
 
                                             <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 15 }}>
-                                                <Title>No rental requests pending</Title>
+                                                <Title style={styles.black}>No rental requests pending</Title>
                                             </View>
                                         )}
                                     </View>
@@ -350,7 +348,7 @@ const RentalHistory = ({ navigation, route }) => {
                                                 <View >
                                                     <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                                                         <Avatar.Image size={50} style={{ marginRight: 15 }} source={{ uri: reviewFormPic }} />
-                                                        <Title style={{ textAlign: 'center' }}>Leave a Review For {reviewFormName}</Title>
+                                                        <Title style={[{ textAlign: 'center' }, styles.black]}>Leave a Review For {reviewFormName}</Title>
                                                     </View>
 
                                                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 15 }}>

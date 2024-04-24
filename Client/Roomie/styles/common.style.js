@@ -8,8 +8,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
       },
       black: {
-        //color: '#1c1b1fde' 
-        color: 'red' 
+        color: '#1c1b1fde' 
+     
        },
     input: {
         fontSize: 14,
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
       },
       title: {
         fontSize: 20,
-        color: 'red',
+        color: '#1c1b1fde' ,
         fontWeight: 'bold',
         marginBottom: 10
       },

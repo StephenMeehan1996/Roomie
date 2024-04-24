@@ -41,12 +41,11 @@ const AdApplications = ({ navigation, route, applications }) => {
     const handleMessage = async () => {
 
     }
-    const handleApplicationClick = async (UUID) => {
+    const handleApplicationClick = async (UUID, id) => {
 
-        console.log(applications);
         navigation.navigate('_ViewProfile', {
             uID: UUID,
-            adID: applications[0].adid
+            adID: id
             
         });
 
@@ -73,7 +72,7 @@ const AdApplications = ({ navigation, route, applications }) => {
             <View style={[styles.buttonContainer2, { marginVertical: 10, paddingHorizontal: 50 }]}>
                 <Button
                     mode="outlined"
-                    onPress={() => handleApplicationClick(item.useridentifier)}
+                    onPress={() => handleApplicationClick(item.useridentifier, item.adid)}
                     style={{ marginRight: 10, borderRadius: 0 }}
                 >
                    <Text style={{color: '#6750a4'}}>Profile</Text> 

@@ -231,7 +231,7 @@ const PostAdd = ({ navigation, route }) => {
       <Card elevation={5} style={styles.card}>
         <Card.Content>
           <View>
-            <Title style={styles2.title}>Summary</Title>
+            <Title style={[styles2.title , styles.black]}>Summary</Title>
             <View style={[styles2.container, { paddingHorizontal: 10 }]}>
               <View style={[styles2.column, { marginRight: 50 }]}>
                 <Text style={styles2.boldText}>Ad Detail:</Text>
@@ -251,7 +251,7 @@ const PostAdd = ({ navigation, route }) => {
 
       <Card elevation={5} style={styles.card}>
         <Card.Content>
-          <Title style={styles2.title}>Image Upload</Title>
+          <Title style={[styles2.title, styles.black]}>Image Upload</Title>
           <View style={{ paddingLeft: 10, marginBottom: 15 }}>
 
             <FlatList

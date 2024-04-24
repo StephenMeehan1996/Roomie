@@ -20,7 +20,6 @@ const CreateAdd = ({ navigation, route }) => {
         return (
             <View style={styles.item}>
                 <Text style={styles.textItem}>{item.label}</Text>
-                <Image style={styles.icon} source={require('../assets/Icons/twitter.png')} />
             </View>
         );
     };
@@ -291,29 +290,29 @@ const CreateAdd = ({ navigation, route }) => {
                     {showForm === 1 && (
                         <Formik initialValues={{
                             addType: 1,
-                            addressLine1: 'Canal Road',
-                            addressLine2: 'Ballinode',
-                            city: 'Sligo',
-                            county: 'Sligo',
-                            zip: 'F91 XY32',
+                            addressLine1: '',
+                            addressLine2: '',
+                            city: '',
+                            county: '',
+                            zip: '',
                             numOccupants: 3,
-                            houseShareHouseType: 'Apartment',
-                            houseSharePrice: '600',
-                            houseShareRoomType: 'Double',
+                            houseShareHouseType: '',
+                            houseSharePrice: '',
+                            houseShareRoomType: '',
                             houseShareEnsuite: 1,
-                            bio: 'enthusiastic about technology, art, and the beauty of everyday moments. 🎨✨ Coffee lover, bookworm, and aspiring storyteller.',
-                            title: 'Test Title',
-                            tagline: '123',
+                            bio: '',
+                            title: '',
+                            tagline: '',
                             referenceRequired: 1,
-                            deposit: '1 Month',
+                            deposit: '',
                             houseMateDetailOption: 1,
-                            houseMateGender: 'Male',
-                            houseMateAge: '2',
-                            houseMateOccupation: 'Working Professional',
-                            occupationDropdownValue: '9-5',
+                            houseMateGender: '',
+                            houseMateAge: '',
+                            houseMateOccupation: '',
+                            occupationDropdownValue: '',
                             houseMateSmoking: 1,
-                            houseMateExpect: 'Friendly',
-                            environment: 'Social'
+                            houseMateExpect: '',
+                            environment: ''
                         }}
                             validationSchema={HouseShareSchema}
                             onSubmit={values => nextPage(values)}
@@ -862,26 +861,26 @@ const CreateAdd = ({ navigation, route }) => {
                     {showForm === 2 && (
                         <Formik initialValues={{
                             addType: '2',
-                            addressLine1: 'Church Hill Road',
-                            addressLine2: 'The Showgrounds',
-                            city: 'Sligo',
-                            county: 'Sligo',
-                            zip: 'F91 XH11',
+                            addressLine1: '',
+                            addressLine2: '',
+                            city: '',
+                            county: '',
+                            zip: '',
 
-                            numRooms: '2',
-                            houseRentalHouseType: 'Apartment',
-                            houseRentalPrice: '1300',
-                            bio: 'Test test',
-                            referenceRequired: '1',
-                            deposit: '2 months rent',
-                            title: 'Test Title',
-                            tagline: '123',
-                            tenantDetailOption: '1',
-                            tenantGender: 'Female',
-                            tenantAgeBracket: '3',
-                            tenantOccupation: 'Student',
-                            occupationDropdownValue: '1st',
-                            tenantSmoking: '1'
+                            numRooms: '',
+                            houseRentalHouseType: '',
+                            houseRentalPrice: '',
+                            bio: '',
+                            referenceRequired: '',
+                            deposit: '',
+                            title: '',
+                            tagline: '',
+                            tenantDetailOption: '',
+                            tenantGender: '',
+                            tenantAgeBracket: '',
+                            tenantOccupation: '',
+                            occupationDropdownValue: '',
+                            tenantSmoking: ''
 
                         }}
                             validationSchema={HouseRentalSchema}
@@ -1343,27 +1342,27 @@ const CreateAdd = ({ navigation, route }) => {
                     {showForm === 3 && (
                         <Formik initialValues={{
                             addType: '3',
-                            addressLine1: '84 Wellpark Grove',
-                            addressLine2: 'Galway',
-                            city: 'Galway City',
-                            county: 'Galway',
-                            zip: 'F99 HXV3',
-                            numOccupants: '4',
-                            digsHouseType: 'Apartment',
-                            digsPrice: '500',
-                            bio: 'Test Test',
-                            digsDays: 'Mon-Friday',
-                            digsMealIncluded: '1',
-                            referenceRequired: '1',
-                            deposit: '3 Months',
-                            title: 'Test Title',
-                            tagline: '123',
-                            digsDetailOption: '1',
-                            digsGender: 'Male',
-                            digsAge: '3',
-                            digsOccupation: 'Student',
-                            occupationDropdownValue: 'PHD',
-                            digsSmoking: '1'
+                            addressLine1: '',
+                            addressLine2: '',
+                            city: '',
+                            county: '',
+                            zip: '',
+                            numOccupants: '',
+                            digsHouseType: '',
+                            digsPrice: '',
+                            bio: '',
+                            digsDays: '',
+                            digsMealIncluded: '',
+                            referenceRequired: '',
+                            deposit: '',
+                            title: '',
+                            tagline: '',
+                            digsDetailOption: '',
+                            digsGender: '',
+                            digsAge: '',
+                            digsOccupation: '',
+                            occupationDropdownValue: '',
+                            digsSmoking: ''
                         }}
                             validationSchema={DigsSchema}
                             onSubmit={values => nextPage(values)}

@@ -11,8 +11,8 @@ const styles = StyleSheet.create({
       marginBottom: 8,
     },
     black: {
-      //color: '#1c1b1fde' 
-      color: 'red' 
+      color: '#1c1b1fde' 
+     // color: 'red' 
      },
     sameLineContainer: {
       flexDirection: 'row', // Display first and last name fields horizontally
@@ -55,13 +55,15 @@ const styles = StyleSheet.create({
       fontSize: 20,
       fontWeight: 'bold',
       marginBottom: 10,
-      color: 'red'
+      //color: 'red'
+      color: '#1c1b1fde' 
     },
     title2: {
       fontSize: 17,
       fontWeight: 'bold',
       marginBottom: 10,
-      color: 'red'
+      //color: 'red'
+      color: '#1c1b1fde' 
     },
     resultText: {
       fontSize: 18,
