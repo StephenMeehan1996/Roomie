@@ -44,7 +44,7 @@ const Profile = ({ navigation, route }) => {
 
 
   useEffect(() => {
-
+    console.log(signedInUserDetails)
 
     const unsubscribe = navigation.addListener('focus', async () => {
       setUpdating(true);
@@ -158,48 +158,38 @@ const Profile = ({ navigation, route }) => {
                   size={80}
                   source={profileImage != null ? { uri: profileImage.imageurl } : require('../assets/Icons/images/NoProfile.png')}
                 />
-
-
-                <View style={styles.container2}>
-                  <View>
-                  <Title style={styles.username}>{signedInUserDetails.firstname} {signedInUserDetails.secondname}</Title>
-
+                <Title style={styles.username}>{signedInUserDetails.firstname} {signedInUserDetails.secondname}</Title>
+                {(signedInUserDetails.numberverified == 1 || signedInUserDetails.emailverified == 1) && (
+                  <View style={styles.container2}>
+                    <View style={styles.badgeContainer}>
+                      {/* Display email verification status */}
+                      {signedInUserDetails.emailverified == 1 && (
+                        <Badge
+                          visible={true}
+                          size={24}
+                          style={{ backgroundColor: '#24ad5f', marginRight: 10 }}
+                        >
+                          Email Verified
+                        </Badge>
+                      )}
+                      {/* Display phone number verification status */}
+                      {signedInUserDetails.numberverified == 1 && (
+                        <Badge
+                          visible={true}
+                          size={24}
+                          style={{ backgroundColor: '#24ad5f', marginRight: 10, marginTop: 10 }}
+                        >
+                          Number Verified
+                        </Badge>
+                      )}
+                    </View>
                   </View>
-                 
+                )}
 
-                  <View style={{}}>
-
-              
-
-              
-                  <View style={styles.badgeContainer}>
-                    <Badge
-                      // visible={isEmailVerified}
-                      size={24}
-                      style={{ backgroundColor: '#2ecc71', marginRight: 10 }}
-                    >
-                      Email Verified
-                    </Badge>
-                  </View>
-
-              
-                  <View style={styles.badgeContainer}>
-                    <Badge
-                      // visible={isNumberVerified}
-                      size={24}
-                      style={{ backgroundColor: '#2ecc71', marginRight: 10 }}
-                    >
-                      Number Verified
-                    </Badge>
-                  </View>
-                  </View>
-                </View>
 
                 <Paragraph style={styles.tagLine}>
                   {signedInUserDetails.tagline}
                 </Paragraph>
-
-
 
 
 
@@ -301,9 +291,6 @@ const Profile = ({ navigation, route }) => {
                   )}
 
                 </View>
-
-
-
               </Card.Content>
             </Card>
           </>
@@ -318,27 +305,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
+  },
+  container2: {
+
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
-  container2: {
-    flex: 1,
-    flexDirection: 'column'
+  username: {
+    fontSize: 20,
+    marginBottom: 10,
+  },
+  badgeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+
   },
   vidContainer: {
 
     justifyContent: 'center',
 
   },
-  username: {
-    fontSize: 20,
-    marginBottom: 10,
-  },
-  badgeContainer: {
-    flexDirection: 'col',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
+
   video: {
     alignSelf: 'center',
     width: 320,
