@@ -7,7 +7,7 @@ import { launchCameraAsync } from 'expo-image-picker';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import styles from '../styles/formStyle.style';
 import callLambdaFunction from '../functions/PostAPI';
-import { generateUUID, returnAdTypeText } from '../functions/CommonFunctions';
+import { generateUUID, returnAdTypeText, writeNotification } from '../functions/CommonFunctions';
 import { useAppContext } from '../Providers/AppContext';
 import StepIndicator from 'react-native-step-indicator';
 
@@ -173,7 +173,9 @@ const PostAdd = ({ navigation, route }) => {
         let signUpUrl = 'https://2j5x7drypl.execute-api.eu-west-1.amazonaws.com/dev/addimages'; // end point for form post
         await callLambdaFunction(imageArray, signUpUrl); // working 
         setUploading(false);
-        navigation.popToTop();
+        writeNotification(signedInUserDetails.useridentifier, signedInUserDetails.firstname, signedInUserDetails.useridentifier, generatedID, 6)
+        //navigation.popToTop();
+        navigation.navigate('_Profile');
       } catch (error) {
         console.error('Error occurred during file uploads:', error);
       }

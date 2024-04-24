@@ -183,7 +183,7 @@ const RentalPreferencesForm = ({ navigation, route }) => {
                   </IconButton>
                 </View>
 
-                <View style={styles2.buttonContainer}>
+                
                   <StepIndicator
                     stepCount={steps.length}
                     currentPosition={currentStep}
@@ -191,7 +191,7 @@ const RentalPreferencesForm = ({ navigation, route }) => {
                     customStyles={stepIndicatorStyles}
                   />
 
-                </View>
+              
               </Card.Content>
             </Card>
             {currentStep === 5 && (
@@ -598,7 +598,7 @@ const RentalPreferencesForm = ({ navigation, route }) => {
 const stepIndicatorStyles = {
   stepIndicatorSize: 35,
   currentStepIndicatorSize: 40,
-  separatorStrokeWidth: 10,
+  separatorStrokeWidth: 4,
   currentStepStrokeWidth: 3,
   stepStrokeWidth: 3,
   stepStrokeCurrentColor: '#6750a4', // Change color to match #6200EE

@@ -469,6 +469,8 @@ export const returnNotificationMessage = (notType, name) => {
       return `${name} has left you a review`
     case 5:
       return `${name} has confirmed your rental request`
+    case 6:
+      return `Success ${name}, your ad has been created `
   }
 }
 

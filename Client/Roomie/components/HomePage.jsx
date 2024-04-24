@@ -72,12 +72,14 @@ function CreateTabStackScreens({ route }) {
   // const { uID, userDetails } = route.params;
 
   //const userID = userDetails._userid;
+  const { userImages, userAdImages, userAdDetail } = route.params;
 
   return (
     <SecondTabStack.Navigator initialRouteName='_CreateAdd' screenOptions={{ headerShown: false }}>
       <SecondTabStack.Screen name="_CreateAdd" component={CreateAdd} />
       <SecondTabStack.Screen name="_TestAPI" component={TestAPI} />
       <SecondTabStack.Screen name="_PostAdd" component={PostAdd} />
+      <SecondTabStack.Screen name="_Profile" component={Profile} initialParams={{ userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail }} />
     </SecondTabStack.Navigator>
   );
 }
@@ -374,6 +376,31 @@ const HomePage = ({ navigation, route }) => {
 
           </View>
 
+        ) : item.notificationType === 6 ? (
+          <View style={styles.notificationItem}>
+            <View style={{ paddingVertical: 10 }}>
+              <Image
+                style={styles.notificationAvatar}
+                source={require('../assets/Icons/images/success.jpg')}
+              />
+            </View>
+            <View style={styles.notificationContent}>
+              <Text style={styles.notificationMessage}>{item.message}</Text>
+              <Text style={styles.notificationDate}>{formattedDateTimeString}</Text>
+            </View>
+            <Button
+              mode="outlined"
+              onPress={() => {
+                setShowNotifications(false);
+                nextPage('_rentalHistory');
+              }}
+              style={{ marginRight: 10, borderRadius: 0 }}
+            >
+              View
+            </Button>
+
+          </View>
+
         ) : (
           <View style={styles.notificationItem}>
             <View style={{ paddingVertical: 10 }}>
@@ -578,7 +605,7 @@ const HomePage = ({ navigation, route }) => {
             })}
           >
             <Tab.Screen name="Profile" component={ProfileTabStackScreens} options={{ headerShown: false }} initialParams={{ userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail }} />
-            <Tab.Screen name="CreateAdd" component={CreateTabStackScreens} options={{ headerShown: false }} />
+            <Tab.Screen name="CreateAdd" component={CreateTabStackScreens} options={{ headerShown: false }} initialParams={{ userImages: userImages, userAdImages: userAdImages, userAdDetail: userAdDetail }} />
             <Tab.Screen name="Search" component={SearchTabStackScreens} options={{ headerShown: false }} initialParams={{ userImages: userImages }} />
 
           </Tab.Navigator>

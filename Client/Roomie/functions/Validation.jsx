@@ -10,7 +10,7 @@ export const validateInput = (input) => {
     const inputStr = String(input);
   
     // Perform input validation
-    const regex = /^[a-zA-Z0-9\s]+$/;
+    const regex = /^[a-zA-Z0-9\s.,@:]+$/;
     if (!regex.test(inputStr)) {
       //throw new Error('Input contains invalid characters');
       return false

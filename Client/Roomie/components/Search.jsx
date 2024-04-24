@@ -197,7 +197,7 @@ const Search = ({ navigation, route }) => {
                 onChangeText={onChangeSearch}
                 value={searchQuery}
                 clearIcon='close'
-                iconColor="tomato" // Customize the search icon color
+                iconColor="#6200EE" // Customize the search icon color
                 inputStyle={{ backgroundColor: 'white', padding: 10 }} // Customize the input field style
                 style={{
                   margin: 10,
